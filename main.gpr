@@ -1,0 +1,26 @@
+with "../gl/GL";
+with "../GLFW3/GLFW3";
+
+project Main is
+
+	for Languages use ("ada");
+	for Source_Dirs use ("src");
+	for Main use ("draw.adb");
+	for Object_Dir use "obj";
+	for Library_Dir use "lib";
+	for Exec_Dir use "bin";
+
+	package Builder is
+	end Builder;
+
+	package Compiler is
+	end Compiler;
+
+	package Binder is
+	end Binder;
+
+	package Linker is
+	end Linker;
+
+
+end Main;
