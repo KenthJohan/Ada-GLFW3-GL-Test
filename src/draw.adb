@@ -1,4 +1,3 @@
-with GL.C.Complete;
 with GL.C.Initializations;
 with GL.Shaders;
 with GL.Shaders.Programs;
@@ -6,9 +5,7 @@ with GL.Shaders.Programs.Files;
 
 with GLFW3;
 with GLFW3.Windows;
-with GLFW3.Monitors;
-
-with Interfaces.C;
+with GLFW3.Extensions;
 
 with System;
 with System.Address_Image;
@@ -27,12 +24,14 @@ procedure Draw is
       function Loader (Name : String) return Address is
          use Ada.Text_IO;
          use Ada.Strings.Fixed;
-         A : Address := GLFW3.Get_Procedure_Address (Name);
+         use GLFW3.Extensions;
+         Return_Address : constant Address := To_Address (Get_Procedure_Address (Name));
+         String_Address : constant String := Address_Image (Return_Address);
       begin
          Put (Head (Name, 30));
-         Put (Address_Image (A));
+         Put (String_Address);
          New_Line;
-         return A;
+         return Return_Address;
       end;
 
    begin
@@ -46,7 +45,6 @@ procedure Draw is
 begin
 
    declare
-      use Interfaces.C;
       use GLFW3.Windows;
    begin
       GLFW3.Initialize;
@@ -60,9 +58,9 @@ begin
          use GL.Shaders;
          use GL.Shaders.Programs;
          use GL.Shaders.Programs.Files;
-         P : Program := Create;
+         P : constant Program := Create;
       begin
-         Attach (P, Vertex_Type, "test.glfs");
+         Attach_Checked_Source (P, Vertex_Type, "test.glfs");
       exception
          when Error : others =>
             Put_Line ("Exception:.");
