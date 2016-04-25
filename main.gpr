@@ -1,5 +1,5 @@
-with "../gl/GL";
-with "../GLFW3/GLFW3";
+with "../Ada-GL/GL";
+with "../Ada-GLFW3/GLFW3";
 
 project Main is
 
@@ -18,7 +18,7 @@ project Main is
 	package Builder is
 		for Default_Switches ("ada") use ("-v");
 	end Builder;
-	
+
 
 	-- "-gnatwa"
 	-- Activate all optional errors.
