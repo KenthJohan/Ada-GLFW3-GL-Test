@@ -1,15 +1,18 @@
 with GL.C.Initializations;
-with GL.Shaders;
-with GL.Shaders.Programs;
-with GL.Shaders.Programs.Files;
+with GL.Programs_Overhaul;
 
 with GLFW3;
 with GLFW3.Windows;
+with GLFW3.Windows.Keys;
 
 with Ada.Text_IO;
 with Ada.Exceptions;
 
 with OpenGL_Loader_Test;
+
+with Cameras;
+
+with OS_Systems;
 
 procedure Draw is
 
@@ -22,7 +25,6 @@ begin
       use GL.C.Initializations;
    begin
       GLFW3.Initialize;
-      W := Create_Window (400, 400, "Hello");
       W := Create_Window_Ada (400, 400, "Hello");
       Make_Context_Current (W);
       Initialize (OpenGL_Loader_Test'Unrestricted_Access);
@@ -30,31 +32,53 @@ begin
       declare
          use Ada.Text_IO;
          use Ada.Exceptions;
-         use GL.Shaders;
-         use GL.Shaders.Programs;
-         use GL.Shaders.Programs.Files;
-         P : constant Program := Create;
+         use GL.Programs_Overhaul;
+         P : constant Program := Create_Empty;
       begin
-         Attach_Checked_Source (P, Vertex_Type, "test.glfs");
+         Attach (P, "test.glfs");
       exception
          when Error : others =>
-            Put_Line ("Exception:.");
+            Put_Line ("Exception others:");
             Put_Line (Exception_Information (Error));
             --Put_Line (String (Get_Compile_Log (S)));
       end;
-
    end;
-
-
-
 
 
    declare
       use GLFW3;
       use GLFW3.Windows;
+      use GLFW3.Windows.Keys;
+      use Ada.Text_IO;
+      use Cameras;
+      use OS_Systems;
+      C : Camera := Create_RC;
    begin
+
+      Perspective_RC (C, 90.0, 1.0, 1.0, 100.0);
+
+
       loop
          Poll_Events;
+
+         delay 0.1;
+         Clear_Screen;
+
+         if Get_Key (W, Key_Up) = Key_Action_Press then
+            Put_Line ("Key_Up");
+            Rotate_RC (C, Create_From_Axis_Angle ((1.0, 0.0, 0.0), Degree (5.0)));
+         else
+            New_Line;
+         end if;
+
+         if Get_Key (W, Key_Down) = Key_Action_Press then
+            Put_Line ("Key_Down");
+            Rotate_RC (C, Create_From_Axis_Angle ((1.0, 0.0, 0.0), Degree (-5.0)));
+         else
+            New_Line;
+         end if;
+
+         Put (C);
          pragma Warnings (Off);
          exit when Window_Should_Close (W) = 1;
          pragma Warnings (On);
