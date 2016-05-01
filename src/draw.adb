@@ -1,13 +1,14 @@
 with GL.C.Initializations;
-with GL.Programs_Overhaul;
-with GL.Programs.Uniforms;
+with GL.Programs;
+with GL.Shaders;
+with GL.Shaders.Files;
+with GL.Uniforms;
 
 with GLFW3;
 with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 
 with Ada.Text_IO;
-with Ada.Exceptions;
 
 with OpenGL_Loader_Test;
 
@@ -15,57 +16,60 @@ with Cameras;
 
 with OS_Systems;
 
+
 procedure Draw is
 
-   W : GLFW3.Window;
 
-   procedure Render (Transformation_Location : GL.Programs.Uniforms.Location) is
+   function Setup_Program return GL.Programs.Program is
+      use GL.Shaders;
+      use GL.Programs;
+      use GL.Shaders.Files;
+      use Ada.Text_IO;
+      Vertex_Shader : constant Shader := Create_Empty (Vertex_Stage);
+      Fragment_Shader : constant Shader := Create_Empty (Fragment_Stage);
+      My_Program : constant Program := Create_Empty;
    begin
-      null;
+      Set_Source_File (Vertex_Shader, "test.glvs");
+      Set_Source_File (Fragment_Shader, "test.glfs");
+      Compile (Vertex_Shader);
+      Compile (Fragment_Shader);
+
+      if Compile_Succeess (Vertex_Shader) then
+         Attach (My_Program, Identity (Vertex_Shader));
+         Put_Line ("Compile_Succeess (Vertex_Shader)");
+      else
+         Put_Line (Get_Compile_Log (Vertex_Shader));
+      end if;
+
+      if Compile_Succeess (Fragment_Shader) then
+         Attach (My_Program, Identity (Fragment_Shader));
+         Put_Line ("Compile_Succeess (Fragment_Shader)");
+      else
+         Put_Line (Get_Compile_Log (Fragment_Shader));
+      end if;
+
+      Link (My_Program);
+
+      if Link_Succeess (My_Program) then
+         Put_Line ("Link_Succeess");
+      else
+         Put_Line (Get_Compile_Log (My_Program));
+      end if;
+
+      return My_Program;
    end;
 
 
-begin
 
-   declare
-      use GLFW3.Windows;
-      use GL.C.Initializations;
-   begin
-      GLFW3.Initialize;
-      W := Create_Window_Ada (400, 400, "Hello");
-      Make_Context_Current (W);
-      Initialize (OpenGL_Loader_Test'Unrestricted_Access);
-
-      declare
-         use Ada.Text_IO;
-         use Ada.Exceptions;
-         use GL.Programs_Overhaul;
-         P : constant Program := Create_Empty;
-      begin
-         Attach (P, "test.glfs");
-      exception
-         when Error : others =>
-            Put_Line ("Exception others:");
-            Put_Line (Exception_Information (Error));
-            --Put_Line (String (Get_Compile_Log (S)));
-      end;
-   end;
-
-
-   declare
+   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
+      use OS_Systems;
       use Ada.Text_IO;
       use Cameras;
-      use OS_Systems;
-      use GL.Programs.Uniforms;
-      --L : Location := Get ("transformation");
-      C : Camera := Create_RC;
+      use GL.Uniforms;
    begin
-
-      Perspective_RC (C, 90.0, 3.0/4.0, 5.0, 80.0);
-
       loop
          Poll_Events;
 
@@ -102,11 +106,46 @@ begin
 
          Put (C);
 
+         Modify (L, Build (C)'Address);
+
          pragma Warnings (Off);
          exit when Window_Should_Close (W) = 1;
          pragma Warnings (On);
-
       end loop;
+   end;
+
+   function Setup_Window return GLFW3.Window is
+      use GLFW3;
+      use GLFW3.Windows;
+      use GL.C.Initializations;
+      W : constant Window := Create_Window_Ada (400, 400, "Hello");
+   begin
+      Make_Context_Current (W);
+      Initialize (OpenGL_Loader_Test'Unrestricted_Access);
+      return W;
+   end;
+
+
+begin
+
+   GLFW3.Initialize;
+
+   declare
+      use GLFW3;
+      use GLFW3.Windows;
+      use Ada.Text_IO;
+      use GL.Programs;
+      use GL.Uniforms;
+      use Cameras;
+      W : constant Window := Setup_Window;
+      P : constant Program := Setup_Program;
+      L : constant Location := Get (Identity (P), "transform");
+      C : Camera := Create_RC;
+   begin
+      --Put (L);
+      delay 4.0;
+      Perspective_RC (C, 90.0, 3.0/4.0, 5.0, 80.0);
+      Render_Loop (W, L, C);
       Destroy_Window (W);
    end;
 
