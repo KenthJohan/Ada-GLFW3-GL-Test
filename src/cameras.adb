@@ -5,7 +5,7 @@ with Ada.Float_Text_IO;
 
 package body Cameras is
 
-   function Create_From_Axis_Angle (V : Vector; Angle : Radian) return Quaternion is
+   function Convert (V : Vector; Angle : Radian) return Quaternion is
       use Ada.Numerics;
       use Ada.Numerics.Elementary_Functions;
       Factor : constant Float := Sin (Float (Angle));
@@ -18,10 +18,10 @@ package body Cameras is
       return Q;
    end;
 
-   function Create_From_Axis_Angle (V : Vector; Angle : Degree) return Quaternion is
+   function Convert (V : Vector; Angle : Degree) return Quaternion is
       use Ada.Numerics;
    begin
-      return Create_From_Axis_Angle (V, Radian (Angle * (Pi / 180.0)));
+      return Convert (V, Radian (Angle * (Pi / 180.0)));
    end;
 
    function Cross_Product (L, R : Vector) return Vector is
@@ -45,13 +45,15 @@ package body Cameras is
       V (4) := (L (1) * R (4)) + (L (2) * R (3)) - (L (3) * R (2)) + (L (4) * R (1));
       return V;
    end;
+   pragma Inline (Product);
+
 
    procedure Frustum_RC (M : out Matrix; Left, Right, Bottom, Top, Near, Far : Float) is
    begin
       M (1, 1) := (2.0 * Near) / (Right - Left);
       M (2, 2) := (2.0 * Near) / (Top - Bottom);
 
-      M (3, 4) := (2.0 * Far * Near) / (Far - Near);
+      M (3, 4) := -((2.0 * Far * Near) / (Far - Near));
       M (4, 3) := -1.0;
 
       M (1, 3) := (Right + Left) / (Right - Left);
@@ -64,7 +66,7 @@ package body Cameras is
       M (1, 1) := (2.0 * Near) / (Right - Left);
       M (2, 2) := (2.0 * Near) / (Top - Bottom);
 
-      M (4, 3) := (2.0 * Far * Near) / (Far - Near);
+      M (4, 3) := -((2.0 * Far * Near) / (Far - Near));
       M (3, 4) := -1.0;
 
       M (3, 1) := (Right + Left) / (Right - Left);
@@ -92,16 +94,16 @@ package body Cameras is
 
    procedure Translate_RC (M : in out Matrix; V : Vector) is
    begin
-      M (1, 1) := M (1, 1) + V (1);
-      M (1, 2) := M (1, 2) + V (2);
-      M (1, 3) := M (1, 3) + V (3);
+      M (1, 4) := M (1, 4) + V (1);
+      M (2, 4) := M (2, 4) + V (2);
+      M (3, 4) := M (3, 4) + V (3);
    end;
 
    procedure Translate_CR (M : in out Matrix; V : Vector) is
    begin
-      M (1, 1) := M (1, 1) + V (1);
-      M (2, 1) := M (2, 1) + V (2);
-      M (3, 1) := M (3, 1) + V (3);
+      M (4, 1) := M (4, 1) + V (1);
+      M (4, 2) := M (4, 2) + V (2);
+      M (4, 3) := M (4, 3) + V (3);
    end;
 
    procedure Convert (M : out Matrix; Q : Quaternion) is
@@ -120,6 +122,12 @@ package body Cameras is
       M (3, 2) := (2.0 * Q (3) * Q (4)) + (2.0 * Q (1) * Q (2));
    end;
 
+
+
+
+
+
+
    procedure Frustum_RC (C : in out Camera; Left, Right, Bottom, Top, Near, Far : Float) is
    begin
       Frustum_RC (C.Projection, Left, Right, Bottom, Top, Near, Far);
@@ -129,6 +137,9 @@ package body Cameras is
    begin
       Frustum_CR (C.Projection, Left, Right, Bottom, Top, Near, Far);
    end;
+
+
+
 
    procedure Perspective_RC (C : in out Camera; Field_Of_View, Aspect, Near, Far : Float) is
    begin
@@ -140,6 +151,8 @@ package body Cameras is
       Perspective_CR (C.Projection, Field_Of_View, Aspect, Near, Far);
    end;
 
+
+
    procedure Translate_RC (C : in out Camera; V : Vector) is
    begin
       Translate_RC (C.View, V);
@@ -149,6 +162,9 @@ package body Cameras is
    begin
       Translate_CR (C.View, V);
    end;
+
+
+
 
    procedure Rotate_RC (C : in out Camera; Q : Quaternion) is
    begin
@@ -162,11 +178,18 @@ package body Cameras is
       Convert (C.View, C.Rotation);
    end;
 
+
+
+
+
    function Build (C : Camera) return Matrix is
       use type Matrix;
    begin
       return C.Projection * C.View;
    end;
+
+
+
 
    function Create_RC return Camera is
       C : Camera;
@@ -174,6 +197,7 @@ package body Cameras is
       C.Projection := (others => (others => 0.0));
       C.Projection (4, 3) := -1.0;
       C.Rotation := (1.0, 0.0, 0.0, 0.0);
+      C.View (4, 4) := 1.0;
       Convert (C.View, C.Rotation);
       return C;
    end;
@@ -184,9 +208,14 @@ package body Cameras is
       C.Projection := (others => (others => 0.0));
       C.Projection (3, 4) := -1.0;
       C.Rotation := (1.0, 0.0, 0.0, 0.0);
+      C.View (4, 4) := 1.0;
       Convert (C.View, C.Rotation);
       return C;
    end;
+
+
+
+
 
 
    procedure Put (M : Matrix) is

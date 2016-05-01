@@ -20,10 +20,17 @@ package Cameras is
    procedure Perspective_RC (C : in out Camera; Field_Of_View, Aspect, Near, Far : Float);
    procedure Perspective_CR (C : in out Camera; Field_Of_View, Aspect, Near, Far : Float);
 
-   function Create_From_Axis_Angle (V : Vector; Angle : Degree) return Quaternion;
-   function Create_From_Axis_Angle (V : Vector; Angle : Radian) return Quaternion;
+   function Convert (V : Vector; Angle : Degree) return Quaternion;
+   function Convert (V : Vector; Angle : Radian) return Quaternion;
+
    procedure Rotate_RC (C : in out Camera; Q : Quaternion);
    procedure Rotate_CR (C : in out Camera; Q : Quaternion);
+
+   --procedure Rotate_RC (C : in out Camera; V : Vector; Angle : Radian);
+   --procedure Rotate_CR (C : in out Camera; V : Vector; Angle : Radian);
+
+   --procedure Rotate_RC (C : in out Camera; V : Vector; Angle : Degree);
+   --procedure Rotate_CR (C : in out Camera; V : Vector; Angle : Degree);
 
    function Build (C : Camera) return Matrix;
    function Create_RC return Camera;
@@ -36,12 +43,8 @@ private
 
    type Camera is record
       Projection : Matrix;
-
       View : Matrix;
-
       Rotation : Quaternion;
-
-      -- Model : Matrix;
    end record;
 
 end;
