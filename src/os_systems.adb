@@ -2,16 +2,23 @@ with Interfaces.C;
 
 package body OS_Systems is
 
-   procedure Clear_Screen is
-      use Interfaces.C;
-      function Sys (Arg : Char_Array) return Integer with Import, Convention => C, External_Name => "system";
-      Ret_Val : Integer;
+   use Interfaces.C;
+
+   function System (Arg : char_array) return int with Import, Convention => C, External_Name => "system";
+
+   procedure System (Arg : String) is
+      R : int;
    begin
-      Ret_Val := Sys (To_C ("cls"));
-      if Ret_Val /= 0 then
-         null;
-         raise Program_Error with "system failure. Ret_Val: " & Ret_Val'Img;
+      R := System (To_C (Arg));
+      if R /= 0 then
+         raise Program_Error with "system failure. Ret_Val: " & R'Img;
       end if;
+   end;
+
+
+   procedure Clear_Screen is
+   begin
+      System ("cls");
    end;
 
 end;

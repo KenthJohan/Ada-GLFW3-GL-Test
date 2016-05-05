@@ -1,8 +1,13 @@
 with GL.C.Initializations;
 with GL.Programs;
+with GL.Programs.Vertex_Attributes;
+with GL.Programs.Shaders;
+with GL.Programs.Uniforms;
 with GL.Shaders;
 with GL.Shaders.Files;
 with GL.Uniforms;
+with GL.Vertex_Attributes;
+with GL.Buffers;
 
 with GLFW3;
 with GLFW3.Windows;
@@ -19,44 +24,39 @@ with OS_Systems;
 
 procedure Draw is
 
+   function Setup_Shader (Name : String; Stage : GL.Shaders.Shader_Stage) return GL.Shaders.Shader is
+      use GL.Shaders;
+      use GL.Shaders.Files;
+      use Ada.Text_IO;
+      Item : constant Shader := Create_Empty (Stage);
+   begin
+      Set_Source_File (Item, Name);
+      Compile_Checked (Item);
+      return Item;
+   exception
+      when Compile_Error =>
+         Put_Line ("Compile_Error");
+         Put_Line (Get_Compile_Log (Item));
+         return Item;
+   end;
 
    function Setup_Program return GL.Programs.Program is
       use GL.Shaders;
       use GL.Programs;
+      use GL.Programs.Shaders;
       use GL.Shaders.Files;
       use Ada.Text_IO;
-      Vertex_Shader : constant Shader := Create_Empty (Vertex_Stage);
-      Fragment_Shader : constant Shader := Create_Empty (Fragment_Stage);
-      My_Program : constant Program := Create_Empty;
+      Item : constant Program := Create_Empty;
    begin
-      Set_Source_File (Vertex_Shader, "test.glvs");
-      Set_Source_File (Fragment_Shader, "test.glfs");
-      Compile (Vertex_Shader);
-      Compile (Fragment_Shader);
-
-      if Compile_Succeess (Vertex_Shader) then
-         Attach (My_Program, Identity (Vertex_Shader));
-         Put_Line ("Compile_Succeess (Vertex_Shader)");
-      else
-         Put_Line (Get_Compile_Log (Vertex_Shader));
-      end if;
-
-      if Compile_Succeess (Fragment_Shader) then
-         Attach (My_Program, Identity (Fragment_Shader));
-         Put_Line ("Compile_Succeess (Fragment_Shader)");
-      else
-         Put_Line (Get_Compile_Log (Fragment_Shader));
-      end if;
-
-      Link (My_Program);
-
-      if Link_Succeess (My_Program) then
-         Put_Line ("Link_Succeess");
-      else
-         Put_Line (Get_Compile_Log (My_Program));
-      end if;
-
-      return My_Program;
+      Attach (Item, Setup_Shader ("test.glvs", Vertex_Stage));
+      Attach (Item, Setup_Shader ("test.glfs", Fragment_Stage));
+      Link_Checked (Item);
+      return Item;
+   exception
+      when Link_Error =>
+         Put_Line ("Link_Error");
+         Put_Line (Get_Link_Log (Item));
+         return Item;
    end;
 
 
@@ -126,6 +126,59 @@ procedure Draw is
    end;
 
 
+   procedure Setup_Vertices (Item : GL.Buffers.Buffer) is
+      use GL.Vertex_Attributes;
+      use GL.Buffers;
+      type Vector is array (Integer range <>) of Float;
+      subtype Vector_3 is Vector (1 .. 3);
+      subtype Vector_4 is Vector (1 .. 4);
+      type Vertex is record
+         A : Vector_3;
+         C : Vector_4;
+      end record;
+      type Vertex_Array is array (Integer range <>) of Vertex;
+      Cube : Vertex_Array (1 .. 36);
+   begin
+      Cube (1).A := (-1.0,-1.0,-1.0);
+      Cube (2).A := (-1.0,-1.0, 1.0);
+      Cube (3).A := (-1.0, 1.0, 1.0);
+      Cube (4).A := (1.0, 1.0,-1.0);
+      Cube (5).A := (-1.0,-1.0,-1.0);
+      Cube (6).A := (-1.0, 1.0,-1.0);
+      Cube (7).A := (1.0,-1.0, 1.0);
+      Cube (8).A := (-1.0,-1.0,-1.0);
+      Cube (9).A := (1.0,-1.0,-1.0);
+      Cube (10).A := (1.0, 1.0,-1.0);
+      Cube (11).A := (1.0,-1.0,-1.0);
+      Cube (12).A := (-1.0,-1.0,-1.0);
+      Cube (13).A := (-1.0,-1.0,-1.0);
+      Cube (14).A := (-1.0, 1.0, 1.0);
+      Cube (15).A := (-1.0, 1.0,-1.0);
+      Cube (16).A := (1.0,-1.0, 1.0);
+      Cube (17).A := (-1.0,-1.0, 1.0);
+      Cube (18).A := (-1.0,-1.0,-1.0);
+      Cube (19).A := (-1.0, 1.0, 1.0);
+      Cube (20).A := (-1.0,-1.0, 1.0);
+      Cube (21).A := (1.0,-1.0, 1.0);
+      Cube (22).A := (1.0, 1.0, 1.0);
+      Cube (23).A := (1.0,-1.0,-1.0);
+      Cube (24).A := (1.0, 1.0,-1.0);
+      Cube (25).A := (1.0,-1.0,-1.0);
+      Cube (26).A := (1.0, 1.0, 1.0);
+      Cube (27).A := (1.0,-1.0, 1.0);
+      Cube (28).A := (1.0, 1.0, 1.0);
+      Cube (29).A := (1.0, 1.0,-1.0);
+      Cube (30).A := (-1.0, 1.0,-1.0);
+      Cube (31).A := (1.0, 1.0, 1.0);
+      Cube (32).A := (-1.0, 1.0,-1.0);
+      Cube (33).A := (-1.0, 1.0, 1.0);
+      Cube (34).A := (1.0, 1.0, 1.0);
+      Cube (35).A := (-1.0, 1.0, 1.0);
+      Cube (36).A := (1.0,-1.0, 1.0);
+
+   end;
+
+
 begin
 
    GLFW3.Initialize;
@@ -135,17 +188,23 @@ begin
       use GLFW3.Windows;
       use Ada.Text_IO;
       use GL.Programs;
+      use GL.Programs.Uniforms;
       use GL.Uniforms;
+      use GL.Vertex_Attributes;
+      use GL.Programs.Vertex_Attributes;
       use Cameras;
       W : constant Window := Setup_Window;
       P : constant Program := Setup_Program;
-      L : constant Location := Get (Identity (P), "transform");
+      UL : constant GL.Uniforms.Location := Get (P, "transform");
+      VL : constant GL.Vertex_Attributes.Location := Get (P, "position");
       C : Camera := Create_RC;
+      CC : Character;
    begin
-      --Put (L);
-      delay 4.0;
+      Put_Line_Fancy (UL);
+      Put_Line_Fancy (VL);
+      Get_Immediate (CC);
       Perspective_RC (C, 90.0, 3.0/4.0, 5.0, 80.0);
-      Render_Loop (W, L, C);
+      Render_Loop (W, UL, C);
       Destroy_Window (W);
    end;
 
