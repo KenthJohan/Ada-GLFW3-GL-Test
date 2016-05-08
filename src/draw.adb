@@ -62,8 +62,6 @@ procedure Draw is
          return Item;
    end;
 
-
-
    procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera) is
       use GLFW3;
       use GLFW3.Windows;
@@ -128,7 +126,6 @@ procedure Draw is
    end;
    pragma Unreferenced (Render_Loop);
 
-
    procedure Render_Loop (W : GLFW3.Window) is
       use GLFW3;
       use GLFW3.Windows;
@@ -170,6 +167,7 @@ procedure Draw is
    function Setup_Vertices (Vert_Attr : GL.Vertex_Attributes.Location) return GL.Buffers.Buffer is
       use GL.Vertex_Attributes;
       use GL.Buffers;
+      use Ada.Text_IO;
 
       type Vector is array (Integer range <>) of Float;
       for Vector'Component_Size use 32;
@@ -180,7 +178,7 @@ procedure Draw is
 
       type Vertex is record
          A : Vector_3;
-         C : Vector_4;
+         --C : Vector_4;
       end record;
 
       type Vertex_Array is array (Integer range <>) of Vertex;
@@ -188,55 +186,70 @@ procedure Draw is
       for Vertex_Array'Alignment use 32;
 
       Cube : Vertex_Array (1 .. 36);
-      Buf_Obj : constant Buffer := Generate;
-      VBO : constant Config := Generate;
+      VBO : constant Buffer := Generate;
+      VAO : constant Config := Generate;
    begin
-      Bind (VBO);
-      Bind (Buf_Obj, Array_Slot);
-      Allocate (Array_Slot, Cube'Size / System.Storage_Unit, Static_Usage);
 
-      Cube (1).A := (-1.0,-1.0,-1.0);
-      Cube (2).A := (-1.0,-1.0, 1.0);
-      Cube (3).A := (-1.0, 1.0, 1.0);
-      Cube (4).A := (1.0, 1.0,-1.0);
-      Cube (5).A := (-1.0,-1.0,-1.0);
-      Cube (6).A := (-1.0, 1.0,-1.0);
-      Cube (7).A := (1.0,-1.0, 1.0);
-      Cube (8).A := (-1.0,-1.0,-1.0);
-      Cube (9).A := (1.0,-1.0,-1.0);
-      Cube (10).A := (1.0, 1.0,-1.0);
-      Cube (11).A := (1.0,-1.0,-1.0);
-      Cube (12).A := (-1.0,-1.0,-1.0);
-      Cube (13).A := (-1.0,-1.0,-1.0);
-      Cube (14).A := (-1.0, 1.0, 1.0);
-      Cube (15).A := (-1.0, 1.0,-1.0);
-      Cube (16).A := (1.0,-1.0, 1.0);
-      Cube (17).A := (-1.0,-1.0, 1.0);
-      Cube (18).A := (-1.0,-1.0,-1.0);
-      Cube (19).A := (-1.0, 1.0, 1.0);
-      Cube (20).A := (-1.0,-1.0, 1.0);
-      Cube (21).A := (1.0,-1.0, 1.0);
-      Cube (22).A := (1.0, 1.0, 1.0);
-      Cube (23).A := (1.0,-1.0,-1.0);
-      Cube (24).A := (1.0, 1.0,-1.0);
-      Cube (25).A := (1.0,-1.0,-1.0);
-      Cube (26).A := (1.0, 1.0, 1.0);
-      Cube (27).A := (1.0,-1.0, 1.0);
-      Cube (28).A := (1.0, 1.0, 1.0);
-      Cube (29).A := (1.0, 1.0,-1.0);
-      Cube (30).A := (-1.0, 1.0,-1.0);
-      Cube (31).A := (1.0, 1.0, 1.0);
-      Cube (32).A := (-1.0, 1.0,-1.0);
-      Cube (33).A := (-1.0, 1.0, 1.0);
-      Cube (34).A := (1.0, 1.0, 1.0);
-      Cube (35).A := (-1.0, 1.0, 1.0);
-      Cube (36).A := (1.0,-1.0, 1.0);
-      Redefine (Array_Slot, 0, Cube'Size / System.Storage_Unit, Cube'Address);
+      Put_Line_Fancy (VBO);
+
+      Bind (VAO);
+      Bind (VBO, Array_Slot);
+
+
+      Cube (1).A := (0.5, -0.5, 0.0);
+      Cube (2).A := (-0.5, -0.5, 0.0);
+      Cube (3).A := ( 0.0,  0.5, 0.0);
+
+--        Cube (1).A := (-1.0,-1.0,-1.0);
+--        Cube (2).A := (-1.0,-1.0, 1.0);
+--        Cube (3).A := (-1.0, 1.0, 1.0);
+--        Cube (4).A := (1.0, 1.0,-1.0);
+--        Cube (5).A := (-1.0,-1.0,-1.0);
+--        Cube (6).A := (-1.0, 1.0,-1.0);
+--        Cube (7).A := (1.0,-1.0, 1.0);
+--        Cube (8).A := (-1.0,-1.0,-1.0);
+--        Cube (9).A := (1.0,-1.0,-1.0);
+--        Cube (10).A := (1.0, 1.0,-1.0);
+--        Cube (11).A := (1.0,-1.0,-1.0);
+--        Cube (12).A := (-1.0,-1.0,-1.0);
+--        Cube (13).A := (-1.0,-1.0,-1.0);
+--        Cube (14).A := (-1.0, 1.0, 1.0);
+--        Cube (15).A := (-1.0, 1.0,-1.0);
+--        Cube (16).A := (1.0,-1.0, 1.0);
+--        Cube (17).A := (-1.0,-1.0, 1.0);
+--        Cube (18).A := (-1.0,-1.0,-1.0);
+--        Cube (19).A := (-1.0, 1.0, 1.0);
+--        Cube (20).A := (-1.0,-1.0, 1.0);
+--        Cube (21).A := (1.0,-1.0, 1.0);
+--        Cube (22).A := (1.0, 1.0, 1.0);
+--        Cube (23).A := (1.0,-1.0,-1.0);
+--        Cube (24).A := (1.0, 1.0,-1.0);
+--        Cube (25).A := (1.0,-1.0,-1.0);
+--        Cube (26).A := (1.0, 1.0, 1.0);
+--        Cube (27).A := (1.0,-1.0, 1.0);
+--        Cube (28).A := (1.0, 1.0, 1.0);
+--        Cube (29).A := (1.0, 1.0,-1.0);
+--        Cube (30).A := (-1.0, 1.0,-1.0);
+--        Cube (31).A := (1.0, 1.0, 1.0);
+--        Cube (32).A := (-1.0, 1.0,-1.0);
+--        Cube (33).A := (-1.0, 1.0, 1.0);
+--        Cube (34).A := (1.0, 1.0, 1.0);
+--        Cube (35).A := (-1.0, 1.0, 1.0);
+--        Cube (36).A := (1.0,-1.0, 1.0);
+
+      Allocate (Array_Slot, Cube'Size / System.Storage_Unit, Cube'Address, Static_Usage);
+      --Redefine (Array_Slot, 0, Cube'Size / System.Storage_Unit, Cube'Address);
 
       Enable_Vertex_Attribute_Array (Vert_Attr);
-      Set_Vertex_Attribute (Vert_Attr, Vector_3'Size / System.Storage_Unit, Float_Type, False, Vertex_Array'Component_Size / System.Storage_Unit, 0);
+      Set_Vertex_Attribute (Vert_Attr, Vector_3'Length, Float_Type, False, Vertex'Size / System.Storage_Unit, 0);
 
-      return Buf_Obj;
+      Put_Line ("Size " & Integer (Vector_3'Length)'Img);
+      Put_Line ("Kind " & Float_Type'Img);
+      Put_Line ("Normalized " & False'Img);
+      Put_Line ("Stride " & Integer (Vertex'Size / System.Storage_Unit)'Img);
+      Put_Line ("Pointer " & Integer (0)'Img);
+
+      return VBO;
    end;
 
 
