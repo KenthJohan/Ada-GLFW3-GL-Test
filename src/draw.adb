@@ -1,14 +1,14 @@
 with GL.C.Initializations;
 with GL.Programs;
-with GL.Programs.Vertex_Attributes;
 with GL.Programs.Shaders;
-with GL.Programs.Uniforms;
 with GL.Shaders;
 with GL.Shaders.Files;
-with GL.Uniforms;
-with GL.Vertex_Attributes;
 with GL.Buffers;
 with GL.Drawings;
+with GL.Programs.Uniforms;
+with GL.C;
+with GL.Uniforms;
+
 
 with GLFW3;
 with GLFW3.Windows;
@@ -16,16 +16,26 @@ with GLFW3.Windows.Keys;
 
 with Ada.Text_IO;
 
-with System;
-
 with OpenGL_Loader_Test;
-
+with Vertices;
 with Cameras;
-
 with OS_Systems;
 
-
 procedure Draw is
+
+   function Setup_Window return GLFW3.Window is
+      use GLFW3;
+      use GLFW3.Windows;
+      use GL.C.Initializations;
+      use GL.Drawings;
+      W : constant Window := Create_Window_Ada (400, 400, "Hello");
+   begin
+      Viewport (0, 0, 400, 400);
+      Make_Context_Current (W);
+      Initialize (OpenGL_Loader_Test'Unrestricted_Access);
+      return W;
+   end;
+
 
    function Setup_Shader (Name : String; Stage : GL.Shaders.Shader_Stage) return GL.Shaders.Shader is
       use GL.Shaders;
@@ -62,85 +72,123 @@ procedure Draw is
          return Item;
    end;
 
+
+
+   procedure Set_Translation (W : GLFW3.Window; T : out Cameras.Vector) is
+      use GLFW3.Windows.Keys;
+      use Cameras;
+      use type Cameras.Vector;
+   begin
+
+      T (1) := 0.0;
+      T (2) := 0.0;
+      T (3) := 0.0;
+
+      if Get_Key (W, Key_W) = Key_Action_Press then
+         T (3) := T (3) + 1.0;
+      end if;
+
+      if Get_Key (W, Key_S) = Key_Action_Press then
+         T (3) := T (3) - 1.0;
+      end if;
+
+      if Get_Key (W, Key_Space) = Key_Action_Press then
+         T (2) := T (2) + 1.0;
+      end if;
+
+      if Get_Key (W, Key_Left_Control) = Key_Action_Press then
+         T (2) := T (2) - 1.0;
+      end if;
+
+      if Get_Key (W, Key_A) = Key_Action_Press then
+         T (1) := T (1) + 1.0;
+      end if;
+
+      if Get_Key (W, Key_D) = Key_Action_Press then
+         T (1) := T (1) - 1.0;
+      end if;
+
+      T := T * 0.01;
+
+   end;
+
+
+
+   procedure Set_Rotation (W : GLFW3.Window; R : out Cameras.Vector) is
+      use GLFW3.Windows.Keys;
+      use Cameras;
+   begin
+
+      R (1) := 0.0;
+      R (2) := 0.0;
+      R (3) := 0.0;
+
+      if Get_Key (W, Key_Up) = Key_Action_Press then
+         R (1) := R (1) + 1.0;
+      end if;
+
+      if Get_Key (W, Key_Down) = Key_Action_Press then
+         R (1) := R (1) - 1.0;
+      end if;
+
+      if Get_Key (W, Key_Left) = Key_Action_Press then
+         R (2) := R (2) + 1.0;
+      end if;
+
+      if Get_Key (W, Key_Right) = Key_Action_Press then
+         R (2) := R (2) - 1.0;
+      end if;
+
+   end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
-      use OS_Systems;
       use Ada.Text_IO;
-      use Cameras;
-      use GL.Uniforms;
       use GL.Buffers;
       use GL.Drawings;
+      use Cameras;
+      use GL.Uniforms;
+      R : Vector;
+      T : Vector;
+      Q : Quaternion;
    begin
       loop
          Poll_Events;
-
          Clear (Color_Plane);
          Clear (Depth_Plane);
 
-         if Get_Key (W, Key_Up) = Key_Action_Press then
-            Put_Line ("Key_Up");
-            Rotate_RC (C, Convert ((1.0, 0.0, 0.0), Degree (5.0)));
-         else
-            New_Line;
-         end if;
+         Set_Translation (W, T);
+         Set_Rotation (W, R);
 
-         if Get_Key (W, Key_Down) = Key_Action_Press then
-            Put_Line ("Key_Down");
-            Rotate_RC (C, Convert ((1.0, 0.0, 0.0), Degree (-5.0)));
-         else
-            New_Line;
-         end if;
+         Q := Convert (R, Degree (1.0));
 
-         if Get_Key (W, Key_Space) = Key_Action_Press then
-            Put_Line ("Key_Space");
-            Translate_RC (C, (0.0, 0.0, 0.1));
-         else
-            New_Line;
-         end if;
+         Rotate_CR (C, Q);
+         Translate_CR (C, T);
 
-         if Get_Key (W, Key_Left_Control) = Key_Action_Press then
-            Put_Line ("Key_Left_Control");
-            Translate_RC (C, (0.0, 0.0, -0.1));
-         else
-            New_Line;
-         end if;
-
-         Put (C);
-
+         --OS_Systems.Clear_Screen;
+         --Put_Quaternion (Q);
+         --Put (C);
+         delay 0.01;
          Modify (L, Build (C)'Address);
 
-
---           delay 0.1;
---           Clear_Screen;
-
-         Draw (Triangle_Mode, 0, 32);
-
-         Swap_Buffers (W);
-
-         pragma Warnings (Off);
-         exit when Window_Should_Close (W) = 1;
-         pragma Warnings (On);
-      end loop;
-   end;
-   pragma Unreferenced (Render_Loop);
-
-   procedure Render_Loop (W : GLFW3.Window) is
-      use GLFW3;
-      use GLFW3.Windows;
-      use GLFW3.Windows.Keys;
-      use OS_Systems;
-      use Ada.Text_IO;
-      use Cameras;
-      use GL.Uniforms;
-      use GL.Buffers;
-      use GL.Drawings;
-   begin
-      loop
-         Poll_Events;
-         Clear (Color_Plane);
-         --Clear (Depth_Plane);
          Draw (Triangle_Mode, 0, 3);
          Swap_Buffers (W);
          pragma Warnings (Off);
@@ -149,109 +197,23 @@ procedure Draw is
       end loop;
    end;
 
-
-   function Setup_Window return GLFW3.Window is
-      use GLFW3;
-      use GLFW3.Windows;
-      use GL.C.Initializations;
-      use GL.Drawings;
-      W : constant Window := Create_Window_Ada (400, 400, "Hello");
-   begin
-      Viewport (0, 0, 400, 400);
-      Make_Context_Current (W);
-      Initialize (OpenGL_Loader_Test'Unrestricted_Access);
-      return W;
-   end;
-
-
-   function Setup_Vertices (Vert_Attr : GL.Vertex_Attributes.Location) return GL.Buffers.Buffer is
-      use GL.Vertex_Attributes;
+   procedure Setup_Vertices is
       use GL.Buffers;
-      use Ada.Text_IO;
-
-      type Vector is array (Integer range <>) of Float;
-      for Vector'Component_Size use 32;
-
-      subtype Vector_3 is Vector (1 .. 3);
-      subtype Vector_4 is Vector (1 .. 4);
-
-
-      type Vertex is record
-         A : Vector_3;
-         --C : Vector_4;
-      end record;
-
-      type Vertex_Array is array (Integer range <>) of Vertex;
-      for Vertex'Alignment use 32;
-      for Vertex_Array'Alignment use 32;
-
-      Cube : Vertex_Array (1 .. 36);
-      VBO : constant Buffer := Generate;
-      VAO : constant Config := Generate;
+      use type GL.C.GLfloat;
+      use Vertices;
+      B : constant Buffer := Generate;
+      V : Vertex_Array (1 .. 3);
    begin
-
-      Put_Line_Fancy (VBO);
-
-      Bind (VAO);
-      Bind (VBO, Array_Slot);
-
-
-      Cube (1).A := (0.5, -0.5, 0.0);
-      Cube (2).A := (-0.5, -0.5, 0.0);
-      Cube (3).A := ( 0.0,  0.5, 0.0);
-
---        Cube (1).A := (-1.0,-1.0,-1.0);
---        Cube (2).A := (-1.0,-1.0, 1.0);
---        Cube (3).A := (-1.0, 1.0, 1.0);
---        Cube (4).A := (1.0, 1.0,-1.0);
---        Cube (5).A := (-1.0,-1.0,-1.0);
---        Cube (6).A := (-1.0, 1.0,-1.0);
---        Cube (7).A := (1.0,-1.0, 1.0);
---        Cube (8).A := (-1.0,-1.0,-1.0);
---        Cube (9).A := (1.0,-1.0,-1.0);
---        Cube (10).A := (1.0, 1.0,-1.0);
---        Cube (11).A := (1.0,-1.0,-1.0);
---        Cube (12).A := (-1.0,-1.0,-1.0);
---        Cube (13).A := (-1.0,-1.0,-1.0);
---        Cube (14).A := (-1.0, 1.0, 1.0);
---        Cube (15).A := (-1.0, 1.0,-1.0);
---        Cube (16).A := (1.0,-1.0, 1.0);
---        Cube (17).A := (-1.0,-1.0, 1.0);
---        Cube (18).A := (-1.0,-1.0,-1.0);
---        Cube (19).A := (-1.0, 1.0, 1.0);
---        Cube (20).A := (-1.0,-1.0, 1.0);
---        Cube (21).A := (1.0,-1.0, 1.0);
---        Cube (22).A := (1.0, 1.0, 1.0);
---        Cube (23).A := (1.0,-1.0,-1.0);
---        Cube (24).A := (1.0, 1.0,-1.0);
---        Cube (25).A := (1.0,-1.0,-1.0);
---        Cube (26).A := (1.0, 1.0, 1.0);
---        Cube (27).A := (1.0,-1.0, 1.0);
---        Cube (28).A := (1.0, 1.0, 1.0);
---        Cube (29).A := (1.0, 1.0,-1.0);
---        Cube (30).A := (-1.0, 1.0,-1.0);
---        Cube (31).A := (1.0, 1.0, 1.0);
---        Cube (32).A := (-1.0, 1.0,-1.0);
---        Cube (33).A := (-1.0, 1.0, 1.0);
---        Cube (34).A := (1.0, 1.0, 1.0);
---        Cube (35).A := (-1.0, 1.0, 1.0);
---        Cube (36).A := (1.0,-1.0, 1.0);
-
-      Allocate (Array_Slot, Cube'Size / System.Storage_Unit, Cube'Address, Static_Usage);
-      --Redefine (Array_Slot, 0, Cube'Size / System.Storage_Unit, Cube'Address);
-
-      Enable_Vertex_Attribute_Array (Vert_Attr);
-      Set_Vertex_Attribute (Vert_Attr, Vector_3'Length, Float_Type, False, Vertex'Size / System.Storage_Unit, 0);
-
-      Put_Line ("Size " & Integer (Vector_3'Length)'Img);
-      Put_Line ("Kind " & Float_Type'Img);
-      Put_Line ("Normalized " & False'Img);
-      Put_Line ("Stride " & Integer (Vertex'Size / System.Storage_Unit)'Img);
-      Put_Line ("Pointer " & Integer (0)'Img);
-
-      return VBO;
+      V (1).Pos := (0.5, -0.5, 0.0);
+      V (1).Col := (1.0, 0.0, 0.0, 1.0);
+      V (2).Pos := (-0.5, -0.5, 0.0);
+      V (2).Col := (0.0, 1.0, 0.0, 1.0);
+      V (3).Pos := (0.0,  0.5, 0.0);
+      V (3).Col := (0.0, 0.0, 1.0, 1.0);
+      Bind (Array_Slot, B);
+      Allocate (Array_Slot, Bit (V'Size), Static_Usage);
+      Redefine (Array_Slot, 0, Bit (V'Size), V'Address);
    end;
-
 
 begin
 
@@ -260,30 +222,21 @@ begin
    declare
       use GLFW3;
       use GLFW3.Windows;
-      use Ada.Text_IO;
       use GL.Programs;
-      use GL.Programs.Uniforms;
-      use GL.Uniforms;
-      use GL.Vertex_Attributes;
-      use GL.Programs.Vertex_Attributes;
       use GL.Buffers;
+      use GL.Programs.Uniforms;
+      use Vertices;
       use Cameras;
+      C : Camera := Create_CR;
       W : constant Window := Setup_Window;
       P : constant Program := Setup_Program;
-      --UL : constant GL.Uniforms.Location := Get (P, "transform");
-      VL : constant GL.Vertex_Attributes.Location := Get (P, "position");
-      C : Camera := Create_RC;
-      CC : Character;
-      B : constant Buffer := Setup_Vertices (VL);
+      L : constant GL.Uniforms.Location := Get (P, "transform");
    begin
-      --Put_Line_Fancy (UL);
-      Put_Line_Fancy (VL);
-      Get_Immediate (CC);
-      Perspective_RC (C, 90.0, 3.0/4.0, 5.0, 80.0);
-      Bind (B, Array_Slot);
+      Perspective_CR (C, 90.0, 3.0/4.0, 0.1, 80.0);
+      Setup_Vertices;
+      Setup_Vertex_Attribute;
       Set_Current (P);
-      --Render_Loop (W, UL, C);
-      Render_Loop (W);
+      Render_Loop (W, L, C);
       Destroy_Window (W);
    end;
 

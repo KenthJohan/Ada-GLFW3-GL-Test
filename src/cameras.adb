@@ -3,18 +3,23 @@ with Ada.Numerics.Elementary_Functions;
 with Ada.Text_IO;
 with Ada.Float_Text_IO;
 
+
 package body Cameras is
 
    function Convert (V : Vector; Angle : Radian) return Quaternion is
       use Ada.Numerics;
       use Ada.Numerics.Elementary_Functions;
+      use type Quaternion;
       Factor : constant Float := Sin (Float (Angle));
       Q : Quaternion;
+      S : Float;
    begin
       Q (1) := Cos (Float (Angle));
       Q (2) := V (1) * Factor;
       Q (3) := V (2) * Factor;
       Q (4) := V (3) * Factor;
+      S := 1.0 / abs Q;
+      Q := Q * S;
       return Q;
    end;
 
@@ -155,12 +160,12 @@ package body Cameras is
 
    procedure Translate_RC (C : in out Camera; V : Vector) is
    begin
-      Translate_RC (C.View, V);
+      Translate_RC (C.ViewTranslation, V);
    end;
 
    procedure Translate_CR (C : in out Camera; V : Vector) is
    begin
-      Translate_CR (C.View, V);
+      Translate_CR (C.ViewTranslation, V);
    end;
 
 
@@ -168,14 +173,16 @@ package body Cameras is
 
    procedure Rotate_RC (C : in out Camera; Q : Quaternion) is
    begin
-      C.Rotation := Product (C.Rotation, Q);
-      Convert (C.View, C.Rotation);
+      --C.Rotation := Product (C.Rotation, Q);
+      C.Rotation := Product (Q, C.Rotation);
+      Convert (C.ViewRotation, C.Rotation);
    end;
 
    procedure Rotate_CR (C : in out Camera; Q : Quaternion) is
    begin
-      C.Rotation := Product (C.Rotation, Q);
-      Convert (C.View, C.Rotation);
+      --C.Rotation := Product (C.Rotation, Q);
+      C.Rotation := Product (Q, C.Rotation);
+      Convert (C.ViewRotation, C.Rotation);
    end;
 
 
@@ -185,7 +192,9 @@ package body Cameras is
    function Build (C : Camera) return Matrix is
       use type Matrix;
    begin
-      return C.Projection * C.View;
+      --return C.Projection * C.ViewRotation * C.ViewTranslation;
+      --return C.Projection * C.ViewTranslation * C.ViewRotation;
+      return C.ViewTranslation * C.ViewRotation * C.Projection;
    end;
 
 
@@ -197,8 +206,9 @@ package body Cameras is
       C.Projection := (others => (others => 0.0));
       C.Projection (4, 3) := -1.0;
       C.Rotation := (1.0, 0.0, 0.0, 0.0);
-      C.View (4, 4) := 1.0;
-      Convert (C.View, C.Rotation);
+      C.ViewRotation := Ada.Numerics.Real_Arrays.Unit_Matrix (4);
+      C.ViewTranslation := Ada.Numerics.Real_Arrays.Unit_Matrix (4);
+      Convert (C.ViewRotation, C.Rotation);
       return C;
    end;
 
@@ -208,11 +218,11 @@ package body Cameras is
       C.Projection := (others => (others => 0.0));
       C.Projection (3, 4) := -1.0;
       C.Rotation := (1.0, 0.0, 0.0, 0.0);
-      C.View (4, 4) := 1.0;
-      Convert (C.View, C.Rotation);
+      C.ViewRotation := Ada.Numerics.Real_Arrays.Unit_Matrix (4);
+      C.ViewTranslation := Ada.Numerics.Real_Arrays.Unit_Matrix (4);
+      Convert (C.ViewRotation, C.Rotation);
       return C;
    end;
-
 
 
 
@@ -224,10 +234,20 @@ package body Cameras is
    begin
       for I in M'Range (1) loop
          for J in M'Range (2) loop
-            Put (M (I, J), 3, 3, 0);
+            Put (M (J, I), 3, 3, 0);
          end loop;
          New_Line;
       end loop;
+   end;
+
+   procedure Put_Quaternion (M : Quaternion) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for J in M'Range loop
+         Put (M (J), 3, 3, 0);
+      end loop;
+      New_Line;
    end;
 
    procedure Put (C : Camera) is
@@ -235,10 +255,15 @@ package body Cameras is
    begin
       Put (C.Projection);
       New_Line;
-      Put (C.View);
+      Put_Quaternion (C.Rotation);
+      Put (C.ViewRotation);
+      New_Line;
+      Put (C.ViewTranslation);
       New_Line;
       Put (Build (C));
    end;
+
+
 
 
 end;

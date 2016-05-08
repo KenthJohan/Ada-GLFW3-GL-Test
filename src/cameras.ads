@@ -38,12 +38,14 @@ package Cameras is
 
    procedure Put (C : Camera);
    procedure Put (M : Matrix);
+   procedure Put_Quaternion (M : Quaternion);
 
 private
 
    type Camera is record
       Projection : Matrix;
-      View : Matrix;
+      ViewRotation : Matrix;
+      ViewTranslation : Matrix;
       Rotation : Quaternion;
    end record;
 
