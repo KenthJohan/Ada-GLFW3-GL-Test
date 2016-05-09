@@ -1,52 +1,44 @@
-with Ada.Numerics.Real_Arrays;
+with Maths;
 
 package Cameras is
 
-   type Radian is new Float;
-   type Degree is new Float;
+   use Maths;
 
-   subtype Matrix is Ada.Numerics.Real_Arrays.Real_Matrix (1 .. 4, 1 .. 4);
-   subtype Vector is Ada.Numerics.Real_Arrays.Real_Vector (1 .. 3);
-   subtype Quaternion is Ada.Numerics.Real_Arrays.Real_Vector (1 .. 4);
+   --type Radian is new Element;
+   --type Degree is new Element;
+   type Camera_RC is private;
+   type Camera_CR is private;
 
-   type Camera is private;
+   function Build (C : Camera_RC) return Matrix_RC_4;
+   function Create return Camera_RC;
+   procedure Put (C : Camera_RC);
+   procedure Translate (C : in out Camera_RC; V : Vector_3);
+   procedure Perspective (C : in out Camera_RC; Field_Of_View, Aspect, Near, Far : Element);
 
-   procedure Translate_RC (C : in out Camera; V : Vector);
-   procedure Translate_CR (C : in out Camera; V : Vector);
+   function Build (C : Camera_CR) return Matrix_CR_4;
+   function Create return Camera_CR;
+   procedure Put (C : Camera_CR);
+   procedure Translate (C : in out Camera_CR; V : Vector_3);
+   procedure Rotate (C : in out Camera_CR; V : Quaternion);
 
-   procedure Frustum_RC (C : in out Camera; Left, Right, Bottom, Top, Near, Far : Float);
-   procedure Frustum_CR (C : in out Camera; Left, Right, Bottom, Top, Near, Far : Float);
-
-   procedure Perspective_RC (C : in out Camera; Field_Of_View, Aspect, Near, Far : Float);
-   procedure Perspective_CR (C : in out Camera; Field_Of_View, Aspect, Near, Far : Float);
-
-   function Convert (V : Vector; Angle : Degree) return Quaternion;
-   function Convert (V : Vector; Angle : Radian) return Quaternion;
-
-   procedure Rotate_RC (C : in out Camera; Q : Quaternion);
-   procedure Rotate_CR (C : in out Camera; Q : Quaternion);
-
-   --procedure Rotate_RC (C : in out Camera; V : Vector; Angle : Radian);
-   --procedure Rotate_CR (C : in out Camera; V : Vector; Angle : Radian);
-
-   --procedure Rotate_RC (C : in out Camera; V : Vector; Angle : Degree);
-   --procedure Rotate_CR (C : in out Camera; V : Vector; Angle : Degree);
-
-   function Build (C : Camera) return Matrix;
-   function Create_RC return Camera;
-   function Create_CR return Camera;
-
-   procedure Put (C : Camera);
-   procedure Put (M : Matrix);
-   procedure Put_Quaternion (M : Quaternion);
+   procedure Perspective (C : in out Camera_CR; Field_Of_View, Aspect, Near, Far : Element);
 
 private
 
-   type Camera is record
-      Projection : Matrix;
-      ViewRotation : Matrix;
-      ViewTranslation : Matrix;
+   type Camera_RC is record
+      Projection : Matrix_RC_4;
+      ViewRotation : Matrix_RC_4;
+      ViewTranslation : Matrix_RC_4;
       Rotation : Quaternion;
+      Translation : Vector_3;
+   end record;
+
+   type Camera_CR is record
+      Projection : Matrix_CR_4;
+      ViewRotation : Matrix_CR_4;
+      ViewTranslation : Matrix_CR_4;
+      Rotation : Quaternion;
+      Translation : Vector_3;
    end record;
 
 end;

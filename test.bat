@@ -1,3 +1,3 @@
 cd bin
-test.exe
+draw.exe
 cd ..

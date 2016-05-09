@@ -9,16 +9,15 @@ package Maths is
    subtype Dimension_3 is Dimension range 1 .. 3;
    subtype Dimension_4 is Dimension range 1 .. 4;
    subtype Dimension_Quaternion is Dimension range 1 .. 4;
-   subtype Element is GL.C.GLfloat;
+   type Element is new GL.C.GLfloat;
 
    type Vector is array (Dimension range <>) of Element;
    type Vector_3 is new Vector (Dimension_3);
    type Vector_4 is new Vector (Dimension_4);
    type Quaternion is new Vector (Dimension_Quaternion);
 
-
    type Matrix is array (Dimension range <>, Dimension range <>) of Element;
-   type Matrix_Square is new Matrix with Dynamic_Predicate => Matrix_Square'Length (1) = Matrix_Square'Length (2);
+   type Matrix_Square is new Matrix;-- with Dynamic_Predicate => Matrix_Square'Length (1) = Matrix_Square'Length (2);
    type Matrix_3 is new Matrix_Square (Dimension_3, Dimension_3);
    type Matrix_4 is new Matrix_Square (Dimension_4, Dimension_4);
 
@@ -70,21 +69,24 @@ package Maths is
    procedure Product is new Generic_Matrix_Product_CR_Constrained (Dimension_4, Element, Matrix_CR_4);
    procedure Product is new Generic_Matrix_Product_RC_Constrained (Dimension_3, Element, Matrix_RC_3);
    procedure Product is new Generic_Matrix_Product_RC_Constrained (Dimension_4, Element, Matrix_RC_4);
-   function Product is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_3, Element, Matrix_CR_3);
-   function Product is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_4, Element, Matrix_CR_4);
-   function Product is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_3, Element, Matrix_RC_3);
-   function Product is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_4, Element, Matrix_RC_4);
+   function "*" is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_3, Element, Matrix_CR_3);
+   function "*" is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_4, Element, Matrix_CR_4);
+   function "*" is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_3, Element, Matrix_RC_3);
+   function "*" is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_4, Element, Matrix_RC_4);
+   procedure Add is new Generic_Vector_Add_Unconstrained (Dimension, Element, Vector);
+   procedure Add is new Generic_Vector_Add_Constrained (Dimension_3, Element, Vector_3);
+   procedure Add is new Generic_Vector_Add_Constrained (Dimension_4, Element, Vector_4);
+   procedure Add is new Generic_Vector_Add_Constrained (Dimension_Quaternion, Element, Quaternion);
 
 
    function Unit return Quaternion is (1.0, 0.0, 0.0, 0.0);
 
-
-
-
    procedure Convert (Axis : Vector_3; Angle : Element; Result : out Quaternion);
    function Convert (Axis : Vector_3; Angle : Element) return Quaternion;
+
    procedure Hamilton_Product (Left, Right : Quaternion; Result : out Quaternion);
    function Hamilton_Product (Left, Right : Quaternion) return Quaternion;
+
    procedure Convert (Item : Quaternion; Result : out Matrix_4);
    function Convert (Item : Quaternion) return Matrix_4;
 
@@ -94,5 +96,10 @@ package Maths is
    procedure Make_Perspective (Item : in out Matrix_CR_4; Field_Of_View, Aspect, Near, Far : Element);
    procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_3);
    procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_3);
+
+
+   procedure Put (Item : Matrix_CR);
+   procedure Put (Item : Matrix_RC);
+   procedure Put (Item : Vector);
 
 end;

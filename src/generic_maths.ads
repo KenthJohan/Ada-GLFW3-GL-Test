@@ -70,25 +70,25 @@ package Generic_Maths is
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : out Matrix);
+   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix);
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : out Matrix);
+   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix);
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : out Matrix);
+   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : in out Matrix);
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : out Matrix);
+   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : in out Matrix);
 
    generic
       type Index is range <>;
@@ -102,6 +102,22 @@ package Generic_Maths is
       type Matrix is array (Index, Index) of Element;
    function Generic_Matrix_Create_Product_CR_Constrained (Left, Right : Matrix) return Matrix;
 
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index range <>) of Element;
+   procedure Generic_Vector_Add_Unconstrained (Left, Right : Vector; Result : out Vector);
+
+
+
+
+
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+   procedure Generic_Vector_Add_Constrained (Left, Right : Vector; Result : out Vector);
 
 
 end;

@@ -1,4 +1,5 @@
 with Ada.Numerics.Generic_Elementary_Functions;
+--with Ada.Text_IO;
 
 package body Generic_Maths is
 
@@ -60,6 +61,7 @@ package body Generic_Maths is
       Factor : constant Element := Length (Item);
    begin
       Scale (Item, 1.0 / Factor);
+      null;
    end;
 
    procedure Generic_Normalize_Constrained (Item : in out Vector) is
@@ -68,6 +70,7 @@ package body Generic_Maths is
       Factor : constant Element := Length (Item);
    begin
       Scale (Item, 1.0 / Factor);
+      null;
    end;
 
    procedure Generic_Set_Diagonal_Square_Matrix_Unconstrained (Item : in out Matrix; Value : Element) is
@@ -93,35 +96,36 @@ package body Generic_Maths is
    end;
 
 
-   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : out Matrix) is
+   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix) is
    begin
       for K in Left'Range (1) loop
-         Result (I, J) := Left (I, K) * Right (K, J);
+         Result (I, J) := Result (I, J) + Left (I, K) * Right (K, J);
       end loop;
    end;
 
-   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : out Matrix) is
+   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix) is
    begin
       for K in Left'Range (1) loop
-         Result (I, J) := Left (K, I) * Right (J, K);
+         Result (I, J) := Result (I, J) + Left (K, J) * Right (I, K);
       end loop;
    end;
 
-   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : out Matrix) is
+   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : in out Matrix) is
       procedure Product_IJ is new Generic_Matrix_Product_IJ_RC_Constrained (Index, Element, Matrix);
    begin
       for I in Result'Range (1) loop
          for J in Result'Range (2) loop
             Product_IJ (Left, Right, I, J, Result);
+            null;
          end loop;
       end loop;
    end;
 
-   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : out Matrix) is
+   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : in out Matrix) is
       procedure Product_IJ is new Generic_Matrix_Product_IJ_CR_Constrained (Index, Element, Matrix);
    begin
-      for I in Result'Range (1) loop
-         for J in Result'Range (2) loop
+      for I in Index loop
+         for J in Index loop
             Product_IJ (Left, Right, I, J, Result);
          end loop;
       end loop;
@@ -129,7 +133,7 @@ package body Generic_Maths is
 
    function Generic_Matrix_Create_Product_RC_Constrained (Left, Right : Matrix) return Matrix is
       procedure Product is new Generic_Matrix_Product_RC_Constrained (Index, Element, Matrix);
-      Result : Matrix;
+      Result : Matrix := (others => (others => 0.0));
    begin
       Product (Left, Right, Result);
       return Result;
@@ -137,10 +141,26 @@ package body Generic_Maths is
 
    function Generic_Matrix_Create_Product_CR_Constrained (Left, Right : Matrix) return Matrix is
       procedure Product is new Generic_Matrix_Product_CR_Constrained (Index, Element, Matrix);
-      Result : Matrix;
+      Result : Matrix := (others => (others => 0.0));
    begin
       Product (Left, Right, Result);
       return Result;
+   end;
+
+
+   procedure Generic_Vector_Add_Unconstrained (Left, Right : Vector; Result : out Vector) is
+   begin
+      for I in Result'Range loop
+         Result (I) := Left (I) + Right (I);
+      end loop;
+   end;
+
+
+   procedure Generic_Vector_Add_Constrained (Left, Right : Vector; Result : out Vector) is
+   begin
+      for I in Index loop
+         Result (I) := Left (I) + Right (I);
+      end loop;
    end;
 
 

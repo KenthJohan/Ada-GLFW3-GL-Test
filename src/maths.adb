@@ -1,5 +1,7 @@
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
+with Ada.Text_IO;
+with Ada.Float_Text_IO;
 
 package body Maths is
 
@@ -119,5 +121,38 @@ package body Maths is
       return Result;
    end;
 
+   procedure Put (Item : Matrix_CR) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for I in Item'Range (1) loop
+         for J in Item'Range (2) loop
+            Put (Float (Item (J, I)), 3, 3, 0);
+         end loop;
+         New_Line;
+      end loop;
+   end;
+
+   procedure Put (Item : Matrix_RC) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for I in Item'Range (1) loop
+         for J in Item'Range (2) loop
+            Put (Float (Item (I, J)), 3, 3, 0);
+         end loop;
+         New_Line;
+      end loop;
+   end;
+
+   procedure Put (Item : Vector) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for J in Item'Range loop
+         Put (Float (Item (J)), 3, 3, 0);
+      end loop;
+      New_Line;
+   end;
 
 end;

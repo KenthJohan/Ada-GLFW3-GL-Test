@@ -20,6 +20,7 @@ with OpenGL_Loader_Test;
 with Vertices;
 with Cameras;
 with OS_Systems;
+with Maths;
 
 procedure Draw is
 
@@ -74,10 +75,11 @@ procedure Draw is
 
 
 
-   procedure Set_Translation (W : GLFW3.Window; T : out Cameras.Vector) is
+   procedure Set_Translation (W : GLFW3.Window; T : out Maths.Vector_3) is
       use GLFW3.Windows.Keys;
       use Cameras;
-      use type Cameras.Vector;
+      use type Maths.Element;
+      use Maths;
    begin
 
       T (1) := 0.0;
@@ -108,15 +110,16 @@ procedure Draw is
          T (1) := T (1) - 1.0;
       end if;
 
-      T := T * 0.01;
+      Scale (T, 0.01);
 
    end;
 
 
 
-   procedure Set_Rotation (W : GLFW3.Window; R : out Cameras.Vector) is
+   procedure Set_Rotation (W : GLFW3.Window; R : out Maths.Vector_3) is
       use GLFW3.Windows.Keys;
       use Cameras;
+      use type Maths.Element;
    begin
 
       R (1) := 0.0;
@@ -157,7 +160,7 @@ procedure Draw is
 
 
 
-   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera) is
+   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera_CR) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
@@ -166,8 +169,9 @@ procedure Draw is
       use GL.Drawings;
       use Cameras;
       use GL.Uniforms;
-      R : Vector;
-      T : Vector;
+      use Maths;
+      R : Vector_3;
+      T : Vector_3;
       Q : Quaternion;
    begin
       loop
@@ -178,14 +182,14 @@ procedure Draw is
          Set_Translation (W, T);
          Set_Rotation (W, R);
 
-         Q := Convert (R, Degree (1.0));
+         Q := Convert (R, 0.01);
 
-         Rotate_CR (C, Q);
-         Translate_CR (C, T);
+         Rotate (C, Q);
+         Translate (C, T);
 
-         --OS_Systems.Clear_Screen;
+         OS_Systems.Clear_Screen;
          --Put_Quaternion (Q);
-         --Put (C);
+         Put (C);
          delay 0.01;
          Modify (L, Build (C)'Address);
 
@@ -227,12 +231,13 @@ begin
       use GL.Programs.Uniforms;
       use Vertices;
       use Cameras;
-      C : Camera := Create_CR;
+      use type Maths.Element;
+      C : Camera_CR := Create;
       W : constant Window := Setup_Window;
       P : constant Program := Setup_Program;
       L : constant GL.Uniforms.Location := Get (P, "transform");
    begin
-      Perspective_CR (C, 90.0, 3.0/4.0, 0.1, 80.0);
+      Perspective (C, 90.0, 3.0/4.0, 0.1, 80.0);
       Setup_Vertices;
       Setup_Vertex_Attribute;
       Set_Current (P);
