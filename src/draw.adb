@@ -116,31 +116,29 @@ procedure Draw is
 
 
 
-   procedure Set_Rotation (W : GLFW3.Window; R : out Maths.Vector_3) is
+   procedure Set_Rotation (W : GLFW3.Window; Q : in out Maths.Quaternion) is
       use GLFW3.Windows.Keys;
       use Cameras;
-      use type Maths.Element;
+      use Maths;
    begin
 
-      R (1) := 0.0;
-      R (2) := 0.0;
-      R (3) := 0.0;
-
       if Get_Key (W, Key_Up) = Key_Action_Press then
-         R (1) := R (1) + 1.0;
+         Q := Hamilton_Product (Q, Convert ((1.0, 0.0, 0.0), 0.01));
       end if;
 
       if Get_Key (W, Key_Down) = Key_Action_Press then
-         R (1) := R (1) - 1.0;
+         Q := Hamilton_Product (Q, Convert ((-1.0, 0.0, 0.0), 0.01));
       end if;
 
       if Get_Key (W, Key_Left) = Key_Action_Press then
-         R (2) := R (2) + 1.0;
+         Q := Hamilton_Product (Convert ((0.0, 1.0, 0.0), 0.01), Q);
       end if;
 
       if Get_Key (W, Key_Right) = Key_Action_Press then
-         R (2) := R (2) - 1.0;
+         Q := Hamilton_Product (Convert ((0.0, -1.0, 0.0), 0.01), Q);
       end if;
+
+      Normalize (Q);
 
    end;
 
@@ -170,9 +168,8 @@ procedure Draw is
       use Cameras;
       use GL.Uniforms;
       use Maths;
-      R : Vector_3;
       T : Vector_3;
-      Q : Quaternion;
+      Q : Quaternion := Unit;
    begin
       loop
          Poll_Events;
@@ -180,15 +177,15 @@ procedure Draw is
          Clear (Depth_Plane);
 
          Set_Translation (W, T);
-         Set_Rotation (W, R);
+         Set_Rotation (W, Q);
 
-         Q := Convert (R, 0.01);
-
-         Rotate (C, Q);
+         Set_Rotation (C, Q);
          Translate (C, T);
 
          OS_Systems.Clear_Screen;
-         --Put_Quaternion (Q);
+
+         Put (Vector (Q));
+         New_Line;
          Put (C);
          delay 0.01;
          Modify (L, Build (C)'Address);

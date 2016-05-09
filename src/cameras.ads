@@ -19,7 +19,7 @@ package Cameras is
    function Create return Camera_CR;
    procedure Put (C : Camera_CR);
    procedure Translate (C : in out Camera_CR; V : Vector_3);
-   procedure Rotate (C : in out Camera_CR; V : Quaternion);
+   procedure Set_Rotation (C : in out Camera_CR; V : Quaternion);
 
    procedure Perspective (C : in out Camera_CR; Field_Of_View, Aspect, Near, Far : Element);
 
@@ -29,7 +29,6 @@ private
       Projection : Matrix_RC_4;
       ViewRotation : Matrix_RC_4;
       ViewTranslation : Matrix_RC_4;
-      Rotation : Quaternion;
       Translation : Vector_3;
    end record;
 
@@ -37,7 +36,6 @@ private
       Projection : Matrix_CR_4;
       ViewRotation : Matrix_CR_4;
       ViewTranslation : Matrix_CR_4;
-      Rotation : Quaternion;
       Translation : Vector_3;
    end record;
 

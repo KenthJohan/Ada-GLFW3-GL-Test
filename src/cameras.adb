@@ -16,11 +16,9 @@ package body Cameras is
       C : Camera_RC;
    begin
       C.Projection := (others => (others => 0.0));
-      C.Rotation := Unit;
       C.ViewRotation := Unit;
       C.ViewTranslation := Unit;
       C.Translation := (others => 0.0);
-      Convert (C.Rotation, Matrix_4 (C.ViewRotation));
       return C;
    end;
 
@@ -39,8 +37,6 @@ package body Cameras is
       use Ada.Text_IO;
    begin
       Put (Matrix_RC (C.Projection));
-      New_Line;
-      Put (Vector (C.Rotation));
       New_Line;
       Put (Matrix_RC (C.ViewRotation));
       New_Line;
@@ -71,11 +67,9 @@ package body Cameras is
       C : Camera_CR;
    begin
       C.Projection := (others => (others => 0.0));
-      C.Rotation := Unit;
       C.ViewRotation := Unit;
       C.ViewTranslation := Unit;
       C.Translation := (others => 0.0);
-      Convert (C.Rotation, Matrix_4 (C.ViewRotation));
       return C;
    end;
 
@@ -85,10 +79,9 @@ package body Cameras is
       Make_Translation (C.ViewTranslation, C.Translation);
    end;
 
-   procedure Rotate (C : in out Camera_CR; V : Quaternion) is
+   procedure Set_Rotation (C : in out Camera_CR; V : Quaternion) is
    begin
-      C.Rotation := Hamilton_Product (C.Rotation, V);
-      Convert (C.Rotation, Matrix_4 (C.ViewRotation));
+      Convert (V, Matrix_4 (C.ViewRotation));
    end;
 
    procedure Perspective (C : in out Camera_CR; Field_Of_View, Aspect, Near, Far : Element) is
@@ -100,8 +93,6 @@ package body Cameras is
       use Ada.Text_IO;
    begin
       Put (Matrix_CR (C.Projection));
-      New_Line;
-      Put (Vector (C.Rotation));
       New_Line;
       Put (Matrix_CR (C.ViewRotation));
       New_Line;
