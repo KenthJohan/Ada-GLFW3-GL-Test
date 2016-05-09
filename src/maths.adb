@@ -21,45 +21,6 @@ package body Maths is
       return Result;
    end;
 
-   function Length2 (Item : Vector) return Element is
-      use type Element;
-      Result : Element := 0.0;
-   begin
-      for E of Item loop
-         Result := Result + (E ** 2);
-      end loop;
-      return Result;
-   end;
-
-   function Length (Item : Vector) return Element is
-      use Elementary_Functions;
-   begin
-      return Sqrt (Length2 (Item));
-   end;
-
-   procedure Scale (Item : in out Vector; Factor : Element) is
-      use type Element;
-   begin
-      for E of Item loop
-         E := Factor * E;
-      end loop;
-   end;
-
-   procedure Normalize (Item : in out Vector) is
-      use type Element;
-      Factor : constant Element := Length (Item);
-   begin
-      Scale (Item, 1.0 / Factor);
-   end;
-
-   procedure Make_Unit (Item : out Square_Matrix) is
-   begin
-      for I in Item'Range (1) loop
-         Item (I, I) := 1.0;
-      end loop;
-   end;
-
-
    procedure Convert (Axis : Vector_3; Angle : Element; Result : out Quaternion) is
       use Elementary_Functions;
       use type Element;
@@ -69,7 +30,7 @@ package body Maths is
       Result (2) := Axis (1) * Factor;
       Result (3) := Axis (2) * Factor;
       Result (4) := Axis (3) * Factor;
-      Scale (Result, 1.0 / Length2 (Result));
+      Scale (Vector (Result), 1.0 / Length (Result));
    end;
 
    function Convert (Axis : Vector_3; Angle : Element) return Quaternion is
@@ -79,7 +40,7 @@ package body Maths is
       return Result;
    end;
 
-   procedure Make_Frustum_RC (Item : out Matrix_4; Left, Right, Bottom, Top, Near, Far : Element) is
+   procedure Make_Frustum (Item : out Matrix_RC_4; Left, Right, Bottom, Top, Near, Far : Element) is
       use type Element;
    begin
       Item (1, 1) := (2.0 * Near) / (Right - Left);
@@ -91,7 +52,7 @@ package body Maths is
       Item (3, 3) := -((Far + Near) / (Far - Near));
    end;
 
-   procedure Make_Frustum_CR (Item : out Matrix_4; Left, Right, Bottom, Top, Near, Far : Element) is
+   procedure Make_Frustum (Item : out Matrix_CR_4; Left, Right, Bottom, Top, Near, Far : Element) is
       use type Element;
    begin
       Item (1, 1) := (2.0 * Near) / (Right - Left);
@@ -103,34 +64,34 @@ package body Maths is
       Item (3, 3) := -((Far + Near) / (Far - Near));
    end;
 
-   procedure Make_Perspective_CR (Item : in out Matrix_4; Field_Of_View, Aspect, Near, Far : Element) is
+   procedure Make_Perspective (Item : in out Matrix_CR_4; Field_Of_View, Aspect, Near, Far : Element) is
       use Elementary_Functions;
       use type Element;
       use Ada.Numerics;
       Top : constant Element := Near * Tan ((Pi / 180.0) * (Field_Of_View / 2.0));
       Right : constant Element := Top * Aspect;
    begin
-      Make_Frustum_CR (Item, -Right, Right, -Top, Top, Near, Far);
+      Make_Frustum (Item, -Right, Right, -Top, Top, Near, Far);
    end;
 
-   procedure Make_Perspective_RC (Item : in out Matrix_4; Field_Of_View, Aspect, Near, Far : Element) is
+   procedure Make_Perspective (Item : in out Matrix_RC_4; Field_Of_View, Aspect, Near, Far : Element) is
       use Elementary_Functions;
       use type Element;
       use Ada.Numerics;
       Top : constant Element := Near * Tan ((Pi / 180.0) * (Field_Of_View / 2.0));
       Right : constant Element := Top * Aspect;
    begin
-      Make_Frustum_RC (Item, -Right, Right, -Top, Top, Near, Far);
+      Make_Frustum (Item, -Right, Right, -Top, Top, Near, Far);
    end;
 
-   procedure Make_Translation_RC (Item : in out Matrix_4; Translation : Vector_3) is
+   procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_3) is
    begin
       Item (1, 4) := Translation (1);
       Item (2, 4) := Translation (2);
       Item (3, 4) := Translation (3);
    end;
 
-   procedure Make_Translation_CR (Item : in out Matrix_4; Translation : Vector_3) is
+   procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_3) is
    begin
       Item (4, 1) := Translation (1);
       Item (4, 2) := Translation (2);
@@ -158,46 +119,5 @@ package body Maths is
       return Result;
    end;
 
-   procedure Product (Left, Right : Matrix_4; I, J : Integer; Result : out Matrix_4) is
-      use type Element;
-   begin
-      for K in Result'Range (1) loop
-         Result (I, J) := Left (I, K) * Right (K, J);
-      end loop;
-   end;
-
-   procedure Product_IJ (Left, Right : Matrix_4; Result : out Matrix_4) is
-      use type Element;
-   begin
-      for I in Result'Range (1) loop
-         for J in Result'Range (2) loop
-            Product (Left, Right, I, J, Result);
-         end loop;
-      end loop;
-   end;
-
-   procedure Product_JI (Left, Right : Matrix_4; Result : out Matrix_4) is
-      use type Element;
-   begin
-      for I in Result'Range (1) loop
-         for J in Result'Range (2) loop
-            Product (Left, Right, J, I, Result);
-         end loop;
-      end loop;
-   end;
-
-   function Product_IJ (Left, Right : Matrix_4) return Matrix_4 is
-      Result : Matrix_4;
-   begin
-      Product_IJ (Left, Right, Result);
-      return Result;
-   end;
-
-   function Product_JI (Left, Right : Matrix_4) return Matrix_4 is
-      Result : Matrix_4;
-   begin
-      Product_JI (Left, Right, Result);
-      return Result;
-   end;
 
 end;

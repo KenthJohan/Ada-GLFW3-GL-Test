@@ -173,15 +173,15 @@ package body Cameras is
 
    procedure Rotate_RC (C : in out Camera; Q : Quaternion) is
    begin
-      --C.Rotation := Product (C.Rotation, Q);
-      C.Rotation := Product (Q, C.Rotation);
+      C.Rotation := Product (C.Rotation, Q);
+      --C.Rotation := Product (Q, C.Rotation);
       Convert (C.ViewRotation, C.Rotation);
    end;
 
    procedure Rotate_CR (C : in out Camera; Q : Quaternion) is
    begin
-      --C.Rotation := Product (C.Rotation, Q);
-      C.Rotation := Product (Q, C.Rotation);
+      C.Rotation := Product (C.Rotation, Q);
+      --C.Rotation := Product (Q, C.Rotation);
       Convert (C.ViewRotation, C.Rotation);
    end;
 
