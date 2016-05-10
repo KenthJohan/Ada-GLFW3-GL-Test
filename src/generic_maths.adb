@@ -96,54 +96,58 @@ package body Generic_Maths is
    end;
 
 
-   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix) is
+
+
+
+
+
+
+
+
+
+
+
+
+   procedure Generic_Constrained_Square_Matrix_Multiply_Accumulate_IJ (Left, Right : Matrix; I, J : Index; Result : in out Matrix) is
    begin
-      for K in Left'Range (1) loop
-         Result (I, J) := Result (I, J) + Left (I, K) * Right (K, J);
+      for K in Index loop
+         if Swapped then
+            Result (I, J) := Result (I, J) + Left (K, J) * Right (I, K);
+         else
+            Result (I, J) := Result (I, J) + Left (I, K) * Right (K, J);
+         end if;
       end loop;
    end;
 
-   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix) is
-   begin
-      for K in Left'Range (1) loop
-         Result (I, J) := Result (I, J) + Left (K, J) * Right (I, K);
-      end loop;
-   end;
-
-   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : in out Matrix) is
-      procedure Product_IJ is new Generic_Matrix_Product_IJ_RC_Constrained (Index, Element, Matrix);
+   procedure Generic_Constrained_Square_Matrix_Multiply_Accumulate (Left, Right : Matrix; Result : in out Matrix) is
    begin
       for I in Result'Range (1) loop
          for J in Result'Range (2) loop
-            Product_IJ (Left, Right, I, J, Result);
-            null;
+            for K in Index loop
+               if Swapped then
+                  Result (I, J) := Result (I, J) + Left (K, J) * Right (I, K);
+               else
+                  Result (I, J) := Result (I, J) + Left (I, K) * Right (K, J);
+               end if;
+            end loop;
          end loop;
       end loop;
    end;
 
-   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : in out Matrix) is
-      procedure Product_IJ is new Generic_Matrix_Product_IJ_CR_Constrained (Index, Element, Matrix);
+   function Generic_Constrained_Square_Matrix_Multiply (Left, Right : Matrix) return Matrix is
+      Result : Matrix := (others => (others => 0.0));
    begin
-      for I in Index loop
-         for J in Index loop
-            Product_IJ (Left, Right, I, J, Result);
+      for I in Result'Range (1) loop
+         for J in Result'Range (2) loop
+            for K in Index loop
+               if Swapped then
+                  Result (I, J) := Result (I, J) + Left (K, J) * Right (I, K);
+               else
+                  Result (I, J) := Result (I, J) + Left (I, K) * Right (K, J);
+               end if;
+            end loop;
          end loop;
       end loop;
-   end;
-
-   function Generic_Matrix_Create_Product_RC_Constrained (Left, Right : Matrix) return Matrix is
-      procedure Product is new Generic_Matrix_Product_RC_Constrained (Index, Element, Matrix);
-      Result : Matrix := (others => (others => 0.0));
-   begin
-      Product (Left, Right, Result);
-      return Result;
-   end;
-
-   function Generic_Matrix_Create_Product_CR_Constrained (Left, Right : Matrix) return Matrix is
-      procedure Product is new Generic_Matrix_Product_CR_Constrained (Index, Element, Matrix);
-      Result : Matrix := (others => (others => 0.0));
-   begin
-      Product (Left, Right, Result);
       return Result;
    end;
 

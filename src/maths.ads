@@ -65,14 +65,16 @@ package Maths is
    function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_4, Element, Matrix_RC_4);
    function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_3, Element, Matrix_CR_3);
    function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_4, Element, Matrix_CR_4);
-   procedure Product is new Generic_Matrix_Product_CR_Constrained (Dimension_3, Element, Matrix_CR_3);
-   procedure Product is new Generic_Matrix_Product_CR_Constrained (Dimension_4, Element, Matrix_CR_4);
-   procedure Product is new Generic_Matrix_Product_RC_Constrained (Dimension_3, Element, Matrix_RC_3);
-   procedure Product is new Generic_Matrix_Product_RC_Constrained (Dimension_4, Element, Matrix_RC_4);
-   function "*" is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_3, Element, Matrix_CR_3);
-   function "*" is new Generic_Matrix_Create_Product_CR_Constrained (Dimension_4, Element, Matrix_CR_4);
-   function "*" is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_3, Element, Matrix_RC_3);
-   function "*" is new Generic_Matrix_Create_Product_RC_Constrained (Dimension_4, Element, Matrix_RC_4);
+
+   function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_3, Element, Matrix_RC_3, False);
+   function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_4, Element, Matrix_RC_4, False);
+   function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_3, Element, Matrix_CR_3, True);
+   function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_4, Element, Matrix_CR_4, True);
+
+
+
+
+
    procedure Add is new Generic_Vector_Add_Unconstrained (Dimension, Element, Vector);
    procedure Add is new Generic_Vector_Add_Constrained (Dimension_3, Element, Vector_3);
    procedure Add is new Generic_Vector_Add_Constrained (Dimension_4, Element, Vector_4);

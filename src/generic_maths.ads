@@ -66,41 +66,40 @@ package Generic_Maths is
       type Matrix is array (Index, Index) of Element;
    function Generic_Create_Unit_Matrix_Constrained return Matrix;
 
-   generic
-      type Index is range <>;
-      type Element is digits <>;
-      type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_IJ_RC_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix);
+
+
+
+
+
+
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_IJ_CR_Constrained (Left, Right : Matrix; I, J : Index; Result : in out Matrix);
+      Swapped : Boolean;
+   procedure Generic_Constrained_Square_Matrix_Multiply_Accumulate_IJ (Left, Right : Matrix; I, J : Index; Result : in out Matrix);
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_RC_Constrained (Left, Right : Matrix; Result : in out Matrix);
+      Swapped : Boolean;
+   procedure Generic_Constrained_Square_Matrix_Multiply_Accumulate (Left, Right : Matrix; Result : in out Matrix);
 
    generic
       type Index is range <>;
       type Element is digits <>;
       type Matrix is array (Index, Index) of Element;
-   procedure Generic_Matrix_Product_CR_Constrained (Left, Right : Matrix; Result : in out Matrix);
+      Swapped : Boolean;
+   function Generic_Constrained_Square_Matrix_Multiply (Left, Right : Matrix) return Matrix;
 
-   generic
-      type Index is range <>;
-      type Element is digits <>;
-      type Matrix is array (Index, Index) of Element;
-   function Generic_Matrix_Create_Product_RC_Constrained (Left, Right : Matrix) return Matrix;
 
-   generic
-      type Index is range <>;
-      type Element is digits <>;
-      type Matrix is array (Index, Index) of Element;
-   function Generic_Matrix_Create_Product_CR_Constrained (Left, Right : Matrix) return Matrix;
+
+
+
+
+
 
    generic
       type Index is range <>;
