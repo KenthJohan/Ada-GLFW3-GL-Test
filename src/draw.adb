@@ -75,42 +75,37 @@ procedure Draw is
 
 
 
-   procedure Set_Translation (W : GLFW3.Window; T : out Maths.Vector_3) is
+   procedure Set_Translation (W : GLFW3.Window; T : in out Maths.Vector_3) is
       use GLFW3.Windows.Keys;
       use Cameras;
       use type Maths.Element;
       use Maths;
+      Amount : constant Element := 0.1;
    begin
 
-      T (1) := 0.0;
-      T (2) := 0.0;
-      T (3) := 0.0;
-
       if Get_Key (W, Key_W) = Key_Action_Press then
-         T (3) := T (3) + 1.0;
+         T (3) := T (3) + Amount;
       end if;
 
       if Get_Key (W, Key_S) = Key_Action_Press then
-         T (3) := T (3) - 1.0;
+         T (3) := T (3) - Amount;
       end if;
 
       if Get_Key (W, Key_Space) = Key_Action_Press then
-         T (2) := T (2) + 1.0;
+         T (2) := T (2) - Amount;
       end if;
 
       if Get_Key (W, Key_Left_Control) = Key_Action_Press then
-         T (2) := T (2) - 1.0;
+         T (2) := T (2) + Amount;
       end if;
 
       if Get_Key (W, Key_A) = Key_Action_Press then
-         T (1) := T (1) + 1.0;
+         T (1) := T (1) + Amount;
       end if;
 
       if Get_Key (W, Key_D) = Key_Action_Press then
-         T (1) := T (1) - 1.0;
+         T (1) := T (1) - Amount;
       end if;
-
-      Scale (T, 0.01);
 
    end;
 
@@ -120,22 +115,29 @@ procedure Draw is
       use GLFW3.Windows.Keys;
       use Cameras;
       use Maths;
+      Pith_Axis : constant Axis := (1.0, 0.0, 0.0);
+      Yaw_Axis : constant Axis := (0.0, 1.0, 0.0);
+      Amount : constant Degree := 1.0;
+      Pith_Up : constant Quaternion := Convert (Pith_Axis, Amount);
+      Pith_Down : constant Quaternion := Convert (Pith_Axis, -Amount);
+      Yaw_Left : constant Quaternion := Convert (Yaw_Axis, Amount);
+      Yaw_Right : constant Quaternion := Convert (Yaw_Axis, -Amount);
    begin
 
       if Get_Key (W, Key_Up) = Key_Action_Press then
-         Q := Hamilton_Product (Q, Convert ((1.0, 0.0, 0.0), 0.01));
+         Q := Hamilton_Product (Q, Pith_Up);
       end if;
 
       if Get_Key (W, Key_Down) = Key_Action_Press then
-         Q := Hamilton_Product (Q, Convert ((-1.0, 0.0, 0.0), 0.01));
+         Q := Hamilton_Product (Q, Pith_Down);
       end if;
 
       if Get_Key (W, Key_Left) = Key_Action_Press then
-         Q := Hamilton_Product (Convert ((0.0, 1.0, 0.0), 0.01), Q);
+         Q := Hamilton_Product (Yaw_Left, Q);
       end if;
 
       if Get_Key (W, Key_Right) = Key_Action_Press then
-         Q := Hamilton_Product (Convert ((0.0, -1.0, 0.0), 0.01), Q);
+         Q := Hamilton_Product (Yaw_Right, Q);
       end if;
 
       Normalize (Q);
@@ -158,7 +160,7 @@ procedure Draw is
 
 
 
-   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera_CR) is
+   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Cameras.Camera) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
@@ -168,7 +170,8 @@ procedure Draw is
       use Cameras;
       use GL.Uniforms;
       use Maths;
-      T : Vector_3;
+      T1 : Vector_3;
+      T : Vector_3 := (others => 0.0);
       Q : Quaternion := Unit;
    begin
       loop
@@ -176,11 +179,18 @@ procedure Draw is
          Clear (Color_Plane);
          Clear (Depth_Plane);
 
-         Set_Translation (W, T);
+         T1 := (others => 0.0);
+         Set_Translation (W, T1);
+
+         Multiply_Accumulate (T1 (1), Get_Right (C), T);
+         Multiply_Accumulate (T1 (2), Get_Up (C), T);
+         Multiply_Accumulate (T1 (3), Get_Forward (C), T);
+
+
          Set_Rotation (W, Q);
 
          Set_Rotation (C, Q);
-         Translate (C, T);
+         Set_Translation (C, T);
 
          OS_Systems.Clear_Screen;
 
@@ -229,12 +239,12 @@ begin
       use Vertices;
       use Cameras;
       use type Maths.Element;
-      C : Camera_CR := Create;
+      C : Camera := Create;
       W : constant Window := Setup_Window;
       P : constant Program := Setup_Program;
       L : constant GL.Uniforms.Location := Get (P, "transform");
    begin
-      Perspective (C, 90.0, 3.0/4.0, 0.1, 80.0);
+      Set_Perspective (C, 90.0, 3.0/4.0, 0.1, 80.0);
       Setup_Vertices;
       Setup_Vertex_Attribute;
       Set_Current (P);

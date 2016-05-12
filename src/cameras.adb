@@ -1,110 +1,82 @@
 with Ada.Text_IO;
-
-
+with Projections;
 
 package body Cameras is
 
-   function Build (C : Camera_RC) return Matrix_RC_4 is
+   function Build (Item : Camera) return Transformation is
    begin
-      --return C.Projection * C.ViewRotation * C.ViewTranslation;
-      --return C.Projection * C.ViewTranslation * C.ViewRotation;
-      --return C.ViewTranslation * C.ViewRotation * C.Projection;
-      return C.Projection * C.ViewTranslation;
+      return Item.Projection * Item.Rotation * Item.Translation;
    end;
 
-   function Create return Camera_RC is
-      C : Camera_RC;
+   function Create return Camera is
+      Result : Camera;
    begin
-      C.Projection := (others => (others => 0.0));
-      C.ViewRotation := Unit;
-      C.ViewTranslation := Unit;
-      C.Translation := (others => 0.0);
-      return C;
+      Result.Projection := (others => (others => 0.0));
+      Result.Rotation := Unit;
+      Result.Translation := Unit;
+      return Result;
    end;
 
-   procedure Translate (C : in out Camera_RC; V : Vector_3) is
+   procedure Set_Translation (Item : in out Camera; V : Vector_3) is
+      use Projections;
    begin
-      Add (C.Translation, V, C.Translation);
-      Make_Translation (C.ViewTranslation, C.Translation);
+      Make_Translation (Item.Translation, V);
    end;
 
-   procedure Perspective (C : in out Camera_RC; Field_Of_View, Aspect, Near, Far : Element) is
+   procedure Set_Perspective (Item : in out Camera; Field_Of_View : Degree; Aspect, Near, Far : Element) is
+      use Projections;
    begin
-      Make_Perspective (C.Projection, Field_Of_View, Aspect, Near, Far);
+      Make_Perspective (Item.Projection, Field_Of_View, Aspect, Near, Far);
    end;
 
-   procedure Put (C : Camera_RC) is
+   procedure Set_Rotation (Item : in out Camera; V : Quaternion) is
+   begin
+      Convert (V, Matrix_4 (Item.Rotation));
+   end;
+
+   procedure Put (Item : Camera) is
       use Ada.Text_IO;
    begin
-      Put (Matrix_RC (C.Projection));
+      Put_Line ("Projection");
+      Put (Matrix_CR (Item.Projection));
       New_Line;
-      Put (Matrix_RC (C.ViewRotation));
+      Put_Line ("Rotation");
+      Put (Matrix_CR (Item.Rotation));
       New_Line;
-      Put (Matrix_RC (C.ViewTranslation));
+      Put_Line ("Translation");
+      Put (Matrix_CR (Item.Translation));
       New_Line;
-      Put (Matrix_RC (Build (C)));
+      Put_Line ("Result");
+      Put (Matrix_CR (Build (Item)));
    end;
 
 
 
-
-
-
-
-
-
-
-   function Build (C : Camera_CR) return Matrix_CR_4 is
+   function Get_Forward (Item : in out Camera) return Vector_3 is
+      Result : Vector_3;
    begin
-
-      --return C.Projection * C.ViewRotation * C.ViewTranslation;
-      --return C.Projection * C.ViewTranslation * C.ViewRotation;
-      --return C.ViewTranslation * C.ViewRotation * C.Projection;
-      return C.Projection * C.ViewRotation * C.ViewTranslation;
+      Result (1) := Item.Rotation (1, 3);
+      Result (2) := Item.Rotation (2, 3);
+      Result (3) := Item.Rotation (3, 3);
+      return Result;
    end;
 
-   function Create return Camera_CR is
-      C : Camera_CR;
+   function Get_Up (Item : in out Camera) return Vector_3 is
+      Result : Vector_3;
    begin
-      C.Projection := (others => (others => 0.0));
-      C.ViewRotation := Unit;
-      C.ViewTranslation := Unit;
-      C.Translation := (others => 0.0);
-      return C;
+      Result (1) := Item.Rotation (1, 2);
+      Result (2) := Item.Rotation (2, 2);
+      Result (3) := Item.Rotation (3, 2);
+      return Result;
    end;
 
-   procedure Translate (C : in out Camera_CR; V : Vector_3) is
+   function Get_Right (Item : in out Camera) return Vector_3 is
+      Result : Vector_3;
    begin
-      Add (C.Translation, V, C.Translation);
-      Make_Translation (C.ViewTranslation, C.Translation);
+      Result (1) := Item.Rotation (1, 1);
+      Result (2) := Item.Rotation (2, 1);
+      Result (3) := Item.Rotation (3, 1);
+      return Result;
    end;
-
-   procedure Set_Rotation (C : in out Camera_CR; V : Quaternion) is
-   begin
-      Convert (V, Matrix_4 (C.ViewRotation));
-   end;
-
-   procedure Perspective (C : in out Camera_CR; Field_Of_View, Aspect, Near, Far : Element) is
-   begin
-      Make_Perspective (C.Projection, Field_Of_View, Aspect, Near, Far);
-   end;
-
-   procedure Put (C : Camera_CR) is
-      use Ada.Text_IO;
-   begin
-      Put (Matrix_CR (C.Projection));
-      New_Line;
-      Put (Matrix_CR (C.ViewRotation));
-      New_Line;
-      Put (Matrix_CR (C.ViewTranslation));
-      New_Line;
-      Put (Matrix_CR (Build (C)));
-   end;
-
-
-
-
-
-
 
 end;

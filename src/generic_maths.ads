@@ -101,11 +101,35 @@ package Generic_Maths is
 
 
 
+
+
+
+
+
+
    generic
       type Index is range <>;
       type Element is digits <>;
       type Vector is array (Index range <>) of Element;
-   procedure Generic_Vector_Add_Unconstrained (Left, Right : Vector; Result : out Vector);
+   procedure Generic_Unconstrained_Vector_Add (Left, Right : Vector; Result : out Vector);
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+   procedure Generic_Constrained_Vector_Add (Left, Right : Vector; Result : out Vector);
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+   function Generic_Constrained_Vector_Add_Return (Left, Right : Vector) return Vector;
+
+
+
+
+
+
 
 
 
@@ -116,7 +140,13 @@ package Generic_Maths is
       type Index is range <>;
       type Element is digits <>;
       type Vector is array (Index) of Element;
-   procedure Generic_Vector_Add_Constrained (Left, Right : Vector; Result : out Vector);
+   function Generic_Constrained_Vector_Vector_Hadamard_Product_Return (Left, Right : Vector) return Vector;
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+   procedure Generic_Constrained_Scalar_Vector_Multiply_Accumulate (Left : Element; Right : Vector; Result : in out Vector);
 
 
 end;

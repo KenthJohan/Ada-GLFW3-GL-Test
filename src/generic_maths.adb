@@ -152,7 +152,7 @@ package body Generic_Maths is
    end;
 
 
-   procedure Generic_Vector_Add_Unconstrained (Left, Right : Vector; Result : out Vector) is
+   procedure Generic_Unconstrained_Vector_Add (Left, Right : Vector; Result : out Vector) is
    begin
       for I in Result'Range loop
          Result (I) := Left (I) + Right (I);
@@ -160,10 +160,43 @@ package body Generic_Maths is
    end;
 
 
-   procedure Generic_Vector_Add_Constrained (Left, Right : Vector; Result : out Vector) is
+   procedure Generic_Constrained_Vector_Add (Left, Right : Vector; Result : out Vector) is
    begin
       for I in Index loop
          Result (I) := Left (I) + Right (I);
+      end loop;
+   end;
+
+
+   function Generic_Constrained_Vector_Add_Return (Left, Right : Vector) return Vector is
+      Result : Vector;
+   begin
+      for I in Index loop
+         Result (I) := Left (I) + Right (I);
+      end loop;
+      return Result;
+   end;
+
+
+
+
+
+
+   function Generic_Constrained_Vector_Vector_Hadamard_Product_Return (Left, Right : Vector) return Vector is
+      Result : Vector;
+   begin
+      for I in Index loop
+         Result (I) := Left (I) * Right (I);
+      end loop;
+      return Result;
+   end;
+
+
+
+   procedure Generic_Constrained_Scalar_Vector_Multiply_Accumulate (Left : Element; Right : Vector; Result : in out Vector) is
+   begin
+      for I in Index loop
+         Result (I) := Result (I) + Left * Right (I);
       end loop;
    end;
 
