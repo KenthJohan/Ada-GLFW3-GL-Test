@@ -74,18 +74,20 @@ package body Maths is
 
 
 
-   procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_3) is
+   procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_4) is
    begin
       Item (1, 4) := Translation (1);
       Item (2, 4) := Translation (2);
       Item (3, 4) := Translation (3);
+      Item (4, 4) := Translation (4);
    end;
 
-   procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_3) is
+   procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_4) is
    begin
       Item (4, 1) := Translation (1);
       Item (4, 2) := Translation (2);
       Item (4, 3) := Translation (3);
+      Item (4, 4) := Translation (4);
    end;
 
 

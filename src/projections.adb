@@ -3,7 +3,6 @@ with Ada.Numerics;
 
 package body Projections is
 
-
    procedure Make_Frustum (Item : out Frustum_RC; Left, Right, Bottom, Top, Near, Far : Element) is
    begin
       Item (1, 1) := (2.0 * Near) / (Right - Left);

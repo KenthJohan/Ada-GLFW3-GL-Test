@@ -75,43 +75,37 @@ procedure Draw is
 
 
 
-   procedure Set_Translation (W : GLFW3.Window; T : in out Maths.Vector_4) is
+   procedure Get_Translation_Input (W : GLFW3.Window; Translation : in out Maths.Vector_4) is
       use GLFW3.Windows.Keys;
       use Cameras;
       use type Maths.Element;
       use Maths;
       Amount : constant Element := 0.1;
    begin
-
+      Translation := (0.0, 0.0, 0.0, 0.0);
       if Get_Key (W, Key_W) = Key_Action_Press then
-         T (3) := T (3) + Amount;
+         Translation (3) := Translation (3) + Amount;
       end if;
-
       if Get_Key (W, Key_S) = Key_Action_Press then
-         T (3) := T (3) - Amount;
+         Translation (3) := Translation (3) - Amount;
       end if;
-
       if Get_Key (W, Key_Space) = Key_Action_Press then
-         T (2) := T (2) - Amount;
+         Translation (2) := Translation (2) - Amount;
       end if;
-
       if Get_Key (W, Key_Left_Control) = Key_Action_Press then
-         T (2) := T (2) + Amount;
+         Translation (2) := Translation (2) + Amount;
       end if;
-
       if Get_Key (W, Key_A) = Key_Action_Press then
-         T (1) := T (1) + Amount;
+         Translation (1) := Translation (1) + Amount;
       end if;
-
       if Get_Key (W, Key_D) = Key_Action_Press then
-         T (1) := T (1) - Amount;
+         Translation (1) := Translation (1) - Amount;
       end if;
-
    end;
 
 
 
-   procedure Set_Rotation (W : GLFW3.Window; Q : in out Maths.Quaternion) is
+   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out Maths.Quaternion) is
       use GLFW3.Windows.Keys;
       use Cameras;
       use Maths;
@@ -170,35 +164,29 @@ procedure Draw is
       use Cameras;
       use GL.Uniforms;
       use Maths;
-      T1 : Vector_4;
-      T : Vector_4 := Zero;
+      Translation_Delta : Vector_4;
+      Translation : Vector_4 := Zero;
       Q : Quaternion := Unit;
    begin
       loop
          Poll_Events;
          Clear (Color_Plane);
          Clear (Depth_Plane);
-
-         T1 := Zero;
-         Set_Translation (W, T1);
-
-         Translate_Relative (C, T1, T);
-
-         Set_Rotation (W, Q);
-
+         Get_Translation_Input (W, Translation_Delta);
+         Translate_Relative (C, Translation_Delta, Translation);
+         Get_Rotation_Input (W, Q);
          Set_Rotation (C, Q);
-         Set_Translation (C, T);
+         Modify (L, Build (C)'Address);
+         Draw (Triangle_Mode, 0, 3);
+         Swap_Buffers (W);
 
+         delay 0.01;
          OS_Systems.Clear_Screen;
-
          Put (Vector (Q));
          New_Line;
          Put (C);
-         delay 0.01;
-         Modify (L, Build (C)'Address);
 
-         Draw (Triangle_Mode, 0, 3);
-         Swap_Buffers (W);
+
          pragma Warnings (Off);
          exit when Window_Should_Close (W) = 1;
          pragma Warnings (On);

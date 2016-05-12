@@ -17,10 +17,10 @@ package body Cameras is
       return Result;
    end;
 
-   procedure Set_Translation (Item : in out Camera; V : Vector_4) is
+   procedure Set_Translation (Item : in out Camera; Translation : Vector_4) is
       use Projections;
    begin
-      Make_Translation (Item.Translation, Vector_3 (V (1 .. 3)));
+      Make_Translation (Item.Translation, Translation);
    end;
 
    procedure Set_Perspective (Item : in out Camera; Field_Of_View : Degree; Aspect, Near, Far : Element) is
@@ -29,9 +29,9 @@ package body Cameras is
       Make_Perspective (Item.Projection, Field_Of_View, Aspect, Near, Far);
    end;
 
-   procedure Set_Rotation (Item : in out Camera; V : Quaternion) is
+   procedure Set_Rotation (Item : in out Camera; Rotation : Quaternion) is
    begin
-      Convert (V, Matrix_4 (Item.Rotation));
+      Convert (Rotation, Matrix_4 (Item.Rotation));
    end;
 
    procedure Put (Item : Camera) is
@@ -50,44 +50,12 @@ package body Cameras is
       Put (Matrix_CR (Build (Item)));
    end;
 
-
-
-   function Get_Forward (Item : in out Camera) return Vector_3 is
-      Result : Vector_3;
+   procedure Translate_Relative (Item : in out Camera; Direction : Vector_4; Translation : in out Vector_4) is
    begin
-      Result (1) := Item.Rotation (1, 3);
-      Result (2) := Item.Rotation (2, 3);
-      Result (3) := Item.Rotation (3, 3);
-      return Result;
-   end;
-
-   function Get_Up (Item : in out Camera) return Vector_3 is
-      Result : Vector_3;
-   begin
-      Result (1) := Item.Rotation (1, 2);
-      Result (2) := Item.Rotation (2, 2);
-      Result (3) := Item.Rotation (3, 2);
-      return Result;
-   end;
-
-   function Get_Right (Item : in out Camera) return Vector_3 is
-      Result : Vector_3;
-   begin
-      Result (1) := Item.Rotation (1, 1);
-      Result (2) := Item.Rotation (2, 1);
-      Result (3) := Item.Rotation (3, 1);
-      return Result;
-   end;
-
-   function Get_Rotation (Item : in out Camera) return Transformation is
-   begin
-      return Item.Rotation;
-   end;
-
-
-   procedure Translate_Relative (Item : Camera; Direction : Vector_4; Translation : out Vector_4) is
-   begin
+      -- t + d*R -> t
       Multiply_Accumulate (Direction, Item.Rotation, Translation);
+      Translation (4) := 1.0; --What to do with this direction?
+      Set_Translation (Item, Translation);
    end;
 
 

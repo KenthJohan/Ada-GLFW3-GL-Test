@@ -86,9 +86,7 @@ package Maths is
 
    function Unit return Quaternion is (1.0, 0.0, 0.0, 0.0);
 
-   procedure Convert (Revolve : Axis; Angle : Radian; Result : out Quaternion);
-   function Convert (Revolve : Axis; Angle : Radian) return Quaternion;
-   function Convert (Revolve : Axis; Angle : Degree) return Quaternion;
+
 
    function Convert (Angle : Radian) return Degree;
    function Convert (Angle : Degree) return Radian;
@@ -99,13 +97,15 @@ package Maths is
 
    function Hadamard_Product is new Generic_Constrained_Vector_Vector_Hadamard_Product_Return (Dimension_3, Element, Vector_3);
 
-
+   procedure Convert (Revolve : Axis; Angle : Radian; Result : out Quaternion);
+   function Convert (Revolve : Axis; Angle : Radian) return Quaternion;
+   function Convert (Revolve : Axis; Angle : Degree) return Quaternion;
    procedure Convert (Item : Quaternion; Result : out Matrix_4);
    function Convert (Item : Quaternion) return Matrix_4;
 
 
-   procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_3);
-   procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_3);
+   procedure Make_Translation (Item : in out Matrix_RC_4; Translation : Vector_4);
+   procedure Make_Translation (Item : in out Matrix_CR_4; Translation : Vector_4);
 
    procedure Put (Item : Matrix_CR);
    procedure Put (Item : Matrix_RC);
