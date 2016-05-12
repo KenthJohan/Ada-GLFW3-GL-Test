@@ -17,10 +17,10 @@ package body Cameras is
       return Result;
    end;
 
-   procedure Set_Translation (Item : in out Camera; V : Vector_3) is
+   procedure Set_Translation (Item : in out Camera; V : Vector_4) is
       use Projections;
    begin
-      Make_Translation (Item.Translation, V);
+      Make_Translation (Item.Translation, Vector_3 (V (1 .. 3)));
    end;
 
    procedure Set_Perspective (Item : in out Camera; Field_Of_View : Degree; Aspect, Near, Far : Element) is
@@ -78,5 +78,17 @@ package body Cameras is
       Result (3) := Item.Rotation (3, 1);
       return Result;
    end;
+
+   function Get_Rotation (Item : in out Camera) return Transformation is
+   begin
+      return Item.Rotation;
+   end;
+
+
+   procedure Translate_Relative (Item : Camera; Direction : Vector_4; Translation : out Vector_4) is
+   begin
+      Multiply_Accumulate (Direction, Item.Rotation, Translation);
+   end;
+
 
 end;

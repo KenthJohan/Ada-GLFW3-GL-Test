@@ -201,5 +201,50 @@ package body Generic_Maths is
    end;
 
 
+   function Generic_Constrained_Vector_Matrix_Multiply_Return (Left : Vector; Right : Matrix) return Vector is
+      Result : Vector := (others => 0.0);
+   begin
+      for I in Index loop
+         for K in Index loop
+            if Swapped then
+               Result (I) := Result (I) + Left (K) * Right (I, K);
+            else
+               Result (I) := Result (I) + Left (K) * Right (K, I);
+            end if;
+         end loop;
+      end loop;
+      return Result;
+   end;
+
+   procedure Generic_Constrained_Vector_Matrix_Multiply_Accumulate (Left : Vector; Right : Matrix; Result : in out Vector) is
+   begin
+      for I in Index loop
+         for K in Index loop
+            if Swapped then
+               Result (I) := Result (I) + Left (K) * Right (I, K);
+            else
+               Result (I) := Result (I) + Left (K) * Right (K, I);
+            end if;
+         end loop;
+      end loop;
+   end;
+
+
+   function Generic_Constrained_Vector_Init_Return return Vector is
+      Result : constant Vector := (others => Value);
+   begin
+      return Result;
+   end;
+
+
+   function Generic_Constrained_Vector_Init_Diagonal_Return return Matrix is
+      Result : Matrix := (others => (others => 0.0));
+   begin
+      for I in Index loop
+         Result (I, I) := Value;
+      end loop;
+      return Result;
+   end;
+
 
 end;

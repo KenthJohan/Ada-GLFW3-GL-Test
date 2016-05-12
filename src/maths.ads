@@ -20,17 +20,14 @@ package Maths is
    type Quaternion is new Vector (Dimension_Quaternion);
 
    type Matrix is array (Dimension range <>, Dimension range <>) of Element;
-   type Matrix_Square is new Matrix;-- with Dynamic_Predicate => Matrix_Square'Length (1) = Matrix_Square'Length (2);
-   type Matrix_3 is new Matrix_Square (Dimension_3, Dimension_3);
-   type Matrix_4 is new Matrix_Square (Dimension_4, Dimension_4);
+   type Matrix_3 is new Matrix (Dimension_3, Dimension_3);
+   type Matrix_4 is new Matrix (Dimension_4, Dimension_4);
 
    type Matrix_RC is new Matrix;
-   type Matrix_RC_Square is new Matrix_Square;
    type Matrix_RC_3 is new Matrix_3;
    type Matrix_RC_4 is new Matrix_4;
 
    type Matrix_CR is new Matrix;
-   type Matrix_CR_Square is new Matrix_Square;
    type Matrix_CR_3 is new Matrix_3;
    type Matrix_CR_4 is new Matrix_4;
 
@@ -56,25 +53,22 @@ package Maths is
    procedure Normalize is new Generic_Normalize_Constrained (Dimension_4, Element, Vector_4);
    procedure Normalize is new Generic_Normalize_Constrained (Dimension_Quaternion, Element, Quaternion);
 
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix);
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix_Square);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_3, Element, Matrix_3);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_4, Element, Matrix_4);
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix_RC);
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix_RC_Square);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_3, Element, Matrix_RC_3);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_4, Element, Matrix_RC_4);
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix_CR);
-   procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Unconstrained (Dimension, Element, Matrix_CR_Square);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_3, Element, Matrix_CR_3);
    procedure Set_Diagonal is new Generic_Set_Diagonal_Square_Matrix_Constrained (Dimension_4, Element, Matrix_CR_4);
 
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_3, Element, Matrix_3);
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_4, Element, Matrix_4);
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_3, Element, Matrix_RC_3);
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_4, Element, Matrix_RC_4);
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_3, Element, Matrix_CR_3);
-   function Unit is new Generic_Create_Unit_Matrix_Constrained (Dimension_4, Element, Matrix_CR_4);
+
+   function Unit is new Generic_Constrained_Vector_Init_Diagonal_Return (Dimension_3, Element, Matrix_RC_3, 1.0);
+   function Unit is new Generic_Constrained_Vector_Init_Diagonal_Return (Dimension_4, Element, Matrix_RC_4, 1.0);
+   function Unit is new Generic_Constrained_Vector_Init_Diagonal_Return (Dimension_3, Element, Matrix_CR_3, 1.0);
+   function Unit is new Generic_Constrained_Vector_Init_Diagonal_Return (Dimension_4, Element, Matrix_CR_4, 1.0);
+
+   function Zero is new Generic_Constrained_Vector_Init_Return (Dimension_3, Element, Vector_3, 0.0);
+   function Zero is new Generic_Constrained_Vector_Init_Return (Dimension_4, Element, Vector_4, 0.0);
+
 
    function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_3, Element, Matrix_RC_3, False);
    function "*" is new Generic_Constrained_Square_Matrix_Multiply (Dimension_4, Element, Matrix_RC_4, False);
@@ -86,6 +80,8 @@ package Maths is
    function "+" is new Generic_Constrained_Vector_Add_Return (Dimension_4, Element, Vector_4);
    function "+" is new Generic_Constrained_Vector_Add_Return (Dimension_Quaternion, Element, Quaternion);
 
+   function "*" is new Generic_Constrained_Vector_Matrix_Multiply_Return (Dimension_4, Element, Vector_4, Matrix_CR_4, True);
+   procedure Multiply_Accumulate is new Generic_Constrained_Vector_Matrix_Multiply_Accumulate (Dimension_4, Element, Vector_4, Matrix_CR_4, True);
    procedure Multiply_Accumulate is new Generic_Constrained_Scalar_Vector_Multiply_Accumulate (Dimension_3, Element, Vector_3);
 
    function Unit return Quaternion is (1.0, 0.0, 0.0, 0.0);

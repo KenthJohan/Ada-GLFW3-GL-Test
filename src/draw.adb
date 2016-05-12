@@ -75,7 +75,7 @@ procedure Draw is
 
 
 
-   procedure Set_Translation (W : GLFW3.Window; T : in out Maths.Vector_3) is
+   procedure Set_Translation (W : GLFW3.Window; T : in out Maths.Vector_4) is
       use GLFW3.Windows.Keys;
       use Cameras;
       use type Maths.Element;
@@ -170,8 +170,8 @@ procedure Draw is
       use Cameras;
       use GL.Uniforms;
       use Maths;
-      T1 : Vector_3;
-      T : Vector_3 := (others => 0.0);
+      T1 : Vector_4;
+      T : Vector_4 := Zero;
       Q : Quaternion := Unit;
    begin
       loop
@@ -179,13 +179,10 @@ procedure Draw is
          Clear (Color_Plane);
          Clear (Depth_Plane);
 
-         T1 := (others => 0.0);
+         T1 := Zero;
          Set_Translation (W, T1);
 
-         Multiply_Accumulate (T1 (1), Get_Right (C), T);
-         Multiply_Accumulate (T1 (2), Get_Up (C), T);
-         Multiply_Accumulate (T1 (3), Get_Forward (C), T);
-
+         Translate_Relative (C, T1, T);
 
          Set_Rotation (W, Q);
 

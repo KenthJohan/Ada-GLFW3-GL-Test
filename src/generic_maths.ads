@@ -149,4 +149,39 @@ package Generic_Maths is
    procedure Generic_Constrained_Scalar_Vector_Multiply_Accumulate (Left : Element; Right : Vector; Result : in out Vector);
 
 
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+      type Matrix is array (Index, Index) of Element;
+      Swapped : Boolean;
+   function Generic_Constrained_Vector_Matrix_Multiply_Return (Left : Vector; Right : Matrix) return Vector;
+
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+      type Matrix is array (Index, Index) of Element;
+      Swapped : Boolean;
+   procedure Generic_Constrained_Vector_Matrix_Multiply_Accumulate (Left : Vector; Right : Matrix; Result : in out Vector);
+
+
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Vector is array (Index) of Element;
+      Value : Element;
+   function Generic_Constrained_Vector_Init_Return return Vector;
+
+
+   generic
+      type Index is range <>;
+      type Element is digits <>;
+      type Matrix is array (Index, Index) of Element;
+      Value : Element;
+   function Generic_Constrained_Vector_Init_Diagonal_Return return Matrix;
+
+
 end;
