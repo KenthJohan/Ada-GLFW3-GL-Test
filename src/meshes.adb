@@ -1,21 +1,20 @@
-with GL.Drawings;
-
 package body Meshes is
 
    procedure Setup (Item : in out Mesh) is
+      use GL;
       use GL.Buffers;
       use GL.Vertex_Attributes;
       Pos_Loc_Index : constant Location := Use_Index (0);
       Col_Loc_Index : constant Location := Use_Index (1);
    begin
       Item.VBO := Generate;
-      Item.VAO := GL.Vertex_Attributes.Generate;
+      Item.VAO := Generate;
       Bind (Item.VAO);
       Bind (Array_Slot, Item.VBO);
-      Set (Pos_Loc_Index, Vector_3'Length, Float_Type, False, GL.Vertex_Attributes.Bit_Unit (Vertex_Array'Component_Size), GL.Vertex_Attributes.Bit_Unit (0));
-      Set (Col_Loc_Index, Vector_4'Length, Float_Type, False, GL.Vertex_Attributes.Bit_Unit (Vertex_Array'Component_Size), GL.Vertex_Attributes.Bit_Unit (Vector_3'Size));
-      GL.Vertex_Attributes.Enable (Pos_Loc_Index);
-      GL.Vertex_Attributes.Enable (Col_Loc_Index);
+      Set (Pos_Loc_Index, Vector_3'Length, Float_Type, False, Bit_Unit (Vertex_Array'Component_Size), Bit_Unit (0));
+      Set (Col_Loc_Index, Vector_4'Length, Float_Type, False, Bit_Unit (Vertex_Array'Component_Size), Bit_Unit (Vector_3'Size));
+      Enable (Pos_Loc_Index);
+      Enable (Col_Loc_Index);
    end;
 
 
@@ -28,6 +27,7 @@ package body Meshes is
 
 
    procedure Make_Triangle (Item : in out Mesh) is
+      use GL;
       use GL.Buffers;
       use type GL.C.GLfloat;
    begin
@@ -46,6 +46,7 @@ package body Meshes is
    end;
 
    procedure Make_Grid_Lines (Item : in out Mesh) is
+      use GL;
       use GL.Buffers;
       use type GL.C.GLfloat;
       --D : GL.C.GLfloat := 0.1;

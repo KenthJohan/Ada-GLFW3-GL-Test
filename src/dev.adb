@@ -19,7 +19,6 @@ with GLFW3.Windows.Keys;
 with Ada.Text_IO;
 
 with OpenGL_Loader_Test;
-with Vertices;
 with OS_Systems;
 
 with Matpack;
@@ -251,23 +250,6 @@ procedure Dev is
       end loop;
    end;
 
-   procedure Setup_Vertices is
-      use GL.Buffers;
-      use type GL.C.GLfloat;
-      use Vertices;
-      B : constant Buffer := Generate;
-      V : Vertex_Array (1 .. 3);
-   begin
-      V (1).Pos := (0.5, -0.5, 0.0);
-      V (1).Col := (1.0, 0.0, 0.0, 1.0);
-      V (2).Pos := (-0.5, -0.5, 0.0);
-      V (2).Col := (0.0, 1.0, 0.0, 1.0);
-      V (3).Pos := (0.0,  0.5, 0.0);
-      V (3).Col := (0.0, 0.0, 1.0, 1.0);
-      Bind (Array_Slot, B);
-      Allocate (Array_Slot, Bit_Unit (V'Size), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (V'Size), V'Address);
-   end;
 
 begin
 
@@ -279,7 +261,6 @@ begin
       use GL.Programs;
       use GL.Buffers;
       use GL.Programs.Uniforms;
-      use Vertices;
       C : Camera;
       W : constant Window := Setup_Window;
       P : constant Program := Setup_Program;
@@ -290,8 +271,6 @@ begin
       Matpack.Set_Diagonal (C.Result, 1.0);
       C.Projection := (others => (others => 0.0));
       Matpack.Projections.Make_Perspective (C.Projection, 1.57079632679, 3.0/4.0, 0.1, 80.0);
-      --Setup_Vertices;
-      --Setup_Vertex_Attribute;
       Set_Current (P);
       Render_Loop (W, L, C);
       Destroy_Window (W);
