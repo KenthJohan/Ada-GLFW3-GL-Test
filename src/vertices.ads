@@ -1,10 +1,10 @@
 with GL.C;
-with GL.Vertex_Attributes;
+
 
 package Vertices is
 
    use GL.C;
-   use GL.Vertex_Attributes;
+
 
    type Vector is array (Integer range <>) of GLfloat;
 

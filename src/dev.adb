@@ -9,6 +9,8 @@ with GL.Programs.Uniforms;
 with GL.C;
 with GL.Uniforms;
 
+with Meshes;
+
 
 with GLFW3;
 with GLFW3.Windows;
@@ -110,7 +112,7 @@ procedure Dev is
       use Matpack;
       use Matpack.Quaternions;
       use Matpack.Projections;
-      Translation_Delta : Matpack.Vector_4 := (others => 0.0);
+      Translation_Delta : Vector_4 := (others => 0.0);
    begin
       Get_Rotation_Input (W, C.Rotation_Quaternion);
       Quaternion_To_Matrix_4 (C.Rotation_Quaternion, C.Rotation);
@@ -211,7 +213,15 @@ procedure Dev is
       use GL.Drawings;
       use GL.Uniforms;
       use Matpack;
+      use Meshes;
+      M1 : Mesh;
+      M2 : Mesh;
    begin
+      Setup (M1);
+      Make_Grid_Lines (M1);
+      Setup (M2);
+      Make_Triangle (M2);
+
       loop
          GLFW3.Poll_Events;
          GL.Buffers.Clear (Color_Plane);
@@ -219,7 +229,9 @@ procedure Dev is
          Get_Camera_Input (W, C);
          Update_Camera (C);
          GL.Uniforms.Modify (L, C.Result'Address);
-         Draw (Triangle_Mode, 0, 3);
+         --Draw (Triangle_Mode, 0, 3);
+         Draw (M1);
+         Draw (M2);
          GLFW3.Windows.Swap_Buffers (W);
 
          Matpack.Put (C.Projection);
@@ -253,8 +265,8 @@ procedure Dev is
       V (3).Pos := (0.0,  0.5, 0.0);
       V (3).Col := (0.0, 0.0, 1.0, 1.0);
       Bind (Array_Slot, B);
-      Allocate (Array_Slot, Bit (V'Size), Static_Usage);
-      Redefine (Array_Slot, 0, Bit (V'Size), V'Address);
+      Allocate (Array_Slot, Bit_Unit (V'Size), Static_Usage);
+      Redefine (Array_Slot, 0, Bit_Unit (V'Size), V'Address);
    end;
 
 begin
@@ -278,8 +290,8 @@ begin
       Matpack.Set_Diagonal (C.Result, 1.0);
       C.Projection := (others => (others => 0.0));
       Matpack.Projections.Make_Perspective (C.Projection, 1.57079632679, 3.0/4.0, 0.1, 80.0);
-      Setup_Vertices;
-      Setup_Vertex_Attribute;
+      --Setup_Vertices;
+      --Setup_Vertex_Attribute;
       Set_Current (P);
       Render_Loop (W, L, C);
       Destroy_Window (W);
