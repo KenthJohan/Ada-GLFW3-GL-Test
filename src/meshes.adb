@@ -53,16 +53,19 @@ package body Meshes is
    begin
       Item.Draw_Mode := GL.Drawings.Line_Mode;
       Item.First := 0;
-      Item.Count := 4;
-      Item.Data (1).Pos := (0.0, 0.0, 0.0);
-      Item.Data (1).Col := (0.0, 0.0, 1.0, 1.0);
-      Item.Data (2).Pos := (10000.0, 0.0, 0.0);
-      Item.Data (2).Col := (0.0, 0.0, 1.0, 1.0);
+      Item.Count := 40;
+      for I in 1 .. 10 loop
+         Item.Data ((I * 4) - 3).Pos := (0.0, 0.0, GL.C.GLfloat (I));
+         Item.Data ((I * 4) - 3).Col := (0.0, 0.0, 1.0, 1.0);
+         Item.Data ((I * 4) - 2).Pos := (10.0, 0.0, GL.C.GLfloat (I));
+         Item.Data ((I * 4) - 2).Col := (0.0, 0.0, 1.0, 1.0);
 
-      Item.Data (3).Pos := (0.0, 1.0, 0.0);
-      Item.Data (3).Col := (0.0, 0.0, 1.0, 1.0);
-      Item.Data (4).Pos := (10000.0, 1.0, 0.0);
-      Item.Data (4).Col := (0.0, 0.0, 1.0, 1.0);
+         Item.Data ((I * 4) - 1).Pos := (GL.C.GLfloat (I), 0.0, 0.0);
+         Item.Data ((I * 4) - 1).Col := (0.0, 0.0, 1.0, 1.0);
+         Item.Data ((I * 4) - 0).Pos := (GL.C.GLfloat (I), 0.0, 10.0);
+         Item.Data ((I * 4) - 0).Col := (0.0, 0.0, 1.0, 1.0);
+      end loop;
+
 
       Bind (Array_Slot, Item.VBO);
       Allocate (Array_Slot, Bit_Unit (Item.Data'Size), Static_Usage);
