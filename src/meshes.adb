@@ -1,4 +1,35 @@
+with Ada.Text_IO;
+with Ada.Float_Text_IO;
+
 package body Meshes is
+
+   procedure Put (Item : Vector) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for E of Item loop
+         Put (Float (E), 3, 3, 0);
+      end loop;
+   end;
+
+   procedure Put (Item : Vertex) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      Put (Item.Pos);
+      Put (" : ");
+      Put (Item.Col);
+   end;
+
+   procedure Put (Item : Vertex_Array) is
+      use Ada.Text_IO;
+      use Ada.Float_Text_IO;
+   begin
+      for E of Item loop
+         Put (E);
+         New_Line;
+      end loop;
+   end;
 
    procedure Setup (Item : in out Mesh) is
       use GL;
@@ -21,7 +52,7 @@ package body Meshes is
    procedure Draw (Item : Mesh) is
    begin
       GL.Vertex_Attributes.Bind (Item.VAO);
-      GL.Drawings.Draw (Item.Draw_Mode, Item.First, Item.Count);
+      GL.Drawings.Draw (Item.Draw_Mode, 0, Integer (Item.Data.Last));
       null;
    end;
 
@@ -30,60 +61,41 @@ package body Meshes is
       use GL;
       use GL.Buffers;
       use type GL.C.GLfloat;
+      use Vertex_Vectors;
    begin
       Item.Draw_Mode := GL.Drawings.Triangle_Mode;
-      Item.First := 0;
-      Item.Count := 3;
-      Item.Data (1).Pos := (0.5, -0.5, 0.0);
-      Item.Data (1).Col := (1.0, 0.0, 0.0, 1.0);
-      Item.Data (2).Pos := (-0.5, -0.5, 0.0);
-      Item.Data (2).Col := (0.0, 1.0, 0.0, 1.0);
-      Item.Data (3).Pos := (0.0,  0.5, 0.0);
-      Item.Data (3).Col := (0.0, 0.0, 1.0, 1.0);
+      Append (Item.Data, Vertex'((0.5, -0.5, 0.0), (1.0, 0.0, 0.0, 1.0)));
+      Append (Item.Data, Vertex'((-0.5, -0.5, 0.0), (0.0, 1.0, 0.0, 1.0)));
+      Append (Item.Data, Vertex'((0.0,  0.5, 0.0), (0.0, 0.0, 1.0, 1.0)));
       Bind (Array_Slot, Item.VBO);
-      Allocate (Array_Slot, Bit_Unit (Item.Data'Size), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (Item.Data'Size), Item.Data'Address);
+      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
+      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
+--        declare
+--           X : Vertex_Array (1 .. Integer (Item.Data.Length)) with Address => Item.Data'Address;
+--        begin
+--           Put (X);
+--        end;
    end;
 
    procedure Make_Grid_Lines (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
-      use type GL.C.GLfloat;
-      --D : GL.C.GLfloat := 0.1;
+      use GL.C;
+      use Vertex_Vectors;
+      D : constant GLfloat := 10.0;
    begin
       Item.Draw_Mode := GL.Drawings.Line_Mode;
-      Item.First := 0;
-      Item.Count := 40;
       for I in 1 .. 10 loop
-         Item.Data ((I * 4) - 3).Pos := (0.0, 0.0, GL.C.GLfloat (I));
-         Item.Data ((I * 4) - 3).Col := (0.0, 0.0, 1.0, 1.0);
-         Item.Data ((I * 4) - 2).Pos := (10.0, 0.0, GL.C.GLfloat (I));
-         Item.Data ((I * 4) - 2).Col := (0.0, 0.0, 1.0, 1.0);
-
-         Item.Data ((I * 4) - 1).Pos := (GL.C.GLfloat (I), 0.0, 0.0);
-         Item.Data ((I * 4) - 1).Col := (0.0, 0.0, 1.0, 1.0);
-         Item.Data ((I * 4) - 0).Pos := (GL.C.GLfloat (I), 0.0, 10.0);
-         Item.Data ((I * 4) - 0).Col := (0.0, 0.0, 1.0, 1.0);
+         Append (Item.Data, Vertex'((0.0, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));
+         Append (Item.Data, Vertex'((D, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));
+         Append (Item.Data, Vertex'((GLfloat (I), 0.0, 0.0), (0.0, 0.0, 1.0, 1.0)));
+         Append (Item.Data, Vertex'((GLfloat (I), 0.0, D), (0.0, 0.0, 1.0, 1.0)));
       end loop;
 
 
       Bind (Array_Slot, Item.VBO);
-      Allocate (Array_Slot, Bit_Unit (Item.Data'Size), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (Item.Data'Size), Item.Data'Address);
-
---        for I in 1 .. 20 loop
---           declare
---              X : GL.C.GLfloat := GL.C.GLfloat (I) / 10.0;
---              Y : GL.C.GLfloat := GL.C.GLfloat (I mod 10);
---           begin
---              Item.Data (I + 0).Col := (1.0, 0.0, 0.0, 1.0);
---              Item.Data (I + 1).Col := (1.0, 0.2, 0.0, 1.0);
---              Item.Data (I + 2).Col := (1.0, 0.2, 0.0, 1.0);
---              Item.Data (I + 0).Pos := (X + D, Y + D, 0.8);
---              Item.Data (I + 1).Pos := (X + D, Y - D, 0.8);
---              Item.Data (I + 2).Pos := (X - D, Y + D, 0.8);
---           end;
---        end loop;
+      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
+      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
    end;
 
 end;

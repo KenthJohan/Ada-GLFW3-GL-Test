@@ -213,13 +213,15 @@ procedure Dev is
       use GL.Uniforms;
       use Matpack;
       use Meshes;
-      M1 : Mesh;
-      M2 : Mesh;
+      M1 : Mesh (40);
+      M2 : Mesh (40);
+      K : Character;
    begin
       Setup (M1);
       Make_Grid_Lines (M1);
       Setup (M2);
       Make_Triangle (M2);
+      Get_Immediate (K);
 
       loop
          GLFW3.Poll_Events;
@@ -228,9 +230,10 @@ procedure Dev is
          Get_Camera_Input (W, C);
          Update_Camera (C);
          GL.Uniforms.Modify (L, C.Result'Address);
-         --Draw (Triangle_Mode, 0, 3);
+
          Draw (M1);
          Draw (M2);
+
          GLFW3.Windows.Swap_Buffers (W);
 
          Matpack.Put (C.Projection);

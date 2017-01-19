@@ -2,6 +2,7 @@ with GL.C;
 with GL.Buffers;
 with GL.Vertex_Attributes;
 with GL.Drawings;
+with Generic_Vectors;
 
 package Meshes is
 
@@ -15,14 +16,15 @@ package Meshes is
       Col : Vector_4 := (0.0, 0.0, 0.0, 0.0);
    end record;
 
-   type Vertex_Array is array (Integer range <>) of Vertex;
+   type Vertex_Array is array (Positive range <>) of Vertex;
 
-   type Mesh is record
+   package Vertex_Vectors is new Generic_Vectors (Positive, Vertex);
+   subtype Vertex_Vector is Vertex_Vectors.Vector;
+
+   type Mesh (Count : Natural) is record
       VBO : GL.Buffers.Buffer;
       VAO : GL.Vertex_Attributes.Config;
-      Data : Vertex_Array (1 .. 2000);
-      First : Natural := 0;
-      Count : Natural := 0;
+      Data : Vertex_Vector (2000);
       Draw_Mode : GL.Drawings.Mode;
    end record;
 
