@@ -215,12 +215,15 @@ procedure Dev is
       use Meshes;
       M1 : Mesh (40);
       M2 : Mesh (40);
+      M3 : Mesh (40);
       K : Character;
    begin
       Setup (M1);
       Make_Grid_Lines (M1);
       Setup (M2);
       Make_Triangle (M2);
+      Setup (M3);
+      Make_Sin (M3);
       Get_Immediate (K);
 
       loop
@@ -233,6 +236,7 @@ procedure Dev is
 
          Draw (M1);
          Draw (M2);
+         Draw (M3);
 
          GLFW3.Windows.Swap_Buffers (W);
 

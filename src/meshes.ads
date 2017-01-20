@@ -32,5 +32,7 @@ package Meshes is
    procedure Draw (Item : Mesh);
    procedure Make_Grid_Lines (Item : in out Mesh);
    procedure Make_Triangle (Item : in out Mesh);
+   procedure Make_Sin (Item : in out Mesh);
+   procedure Put (Item : Vertex_Array);
 
 end;

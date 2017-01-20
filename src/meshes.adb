@@ -1,7 +1,12 @@
 with Ada.Text_IO;
 with Ada.Float_Text_IO;
+with Ada.Numerics.Elementary_Functions;
+--with Ada.Numerics.Generic_Elementary_Functions;
+with Ada.Numerics;
 
 package body Meshes is
+
+   --package Elementary_Functions is new Ada.Numerics.Generic_Elementary_Functions (GL.C.GLfloat);
 
    procedure Put (Item : Vector) is
       use Ada.Text_IO;
@@ -63,7 +68,7 @@ package body Meshes is
       use type GL.C.GLfloat;
       use Vertex_Vectors;
    begin
-      Item.Draw_Mode := GL.Drawings.Triangle_Mode;
+      Item.Draw_Mode := GL.Drawings.Triangles_Mode;
       Append (Item.Data, Vertex'((0.5, -0.5, 0.0), (1.0, 0.0, 0.0, 1.0)));
       Append (Item.Data, Vertex'((-0.5, -0.5, 0.0), (0.0, 1.0, 0.0, 1.0)));
       Append (Item.Data, Vertex'((0.0,  0.5, 0.0), (0.0, 0.0, 1.0, 1.0)));
@@ -84,7 +89,7 @@ package body Meshes is
       use Vertex_Vectors;
       D : constant GLfloat := 10.0;
    begin
-      Item.Draw_Mode := GL.Drawings.Line_Mode;
+      Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
       for I in 1 .. 10 loop
          Append (Item.Data, Vertex'((0.0, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));
          Append (Item.Data, Vertex'((D, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));
@@ -92,6 +97,25 @@ package body Meshes is
          Append (Item.Data, Vertex'((GLfloat (I), 0.0, D), (0.0, 0.0, 1.0, 1.0)));
       end loop;
 
+
+      Bind (Array_Slot, Item.VBO);
+      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
+      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
+   end;
+
+
+   procedure Make_Sin (Item : in out Mesh) is
+      use GL;
+      use GL.Buffers;
+      use GL.C;
+      use Vertex_Vectors;
+      use Ada.Numerics.Elementary_Functions;
+      use Ada.Numerics;
+   begin
+      Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
+      for I in 1 .. 40 loop
+         Append (Item.Data, Vertex'((0.0, GLfloat (Sin (Float (I))), GLfloat (I)), (0.0, 1.0, 1.0, 1.0)));
+      end loop;
 
       Bind (Array_Slot, Item.VBO);
       Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
