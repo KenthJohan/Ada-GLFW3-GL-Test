@@ -17,6 +17,7 @@ with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 
 with Ada.Text_IO;
+--with Ada.Numerics.Elementary_Functions;
 
 with OpenGL_Loader_Test;
 with OS_Systems;
@@ -203,7 +204,7 @@ procedure Dev is
 
 
 
-   procedure Render_Loop (W : GLFW3.Window; L : GL.Uniforms.Location; C : in out Camera) is
+   procedure Render_Loop (W : GLFW3.Window; C : in out Camera) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
@@ -213,11 +214,18 @@ procedure Dev is
       use GL.Uniforms;
       use Matpack;
       use Meshes;
+      use GL.Programs.Uniforms;
+      use GL.Programs;
+      --use Ada.Numerics.Elementary_Functions;
+      P : constant Program := Setup_Program;
+      Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
+      Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");
       M1 : Mesh (40);
       M2 : Mesh (40);
       M3 : Mesh (40);
       K : Character;
    begin
+      Set_Current (P);
       Setup (M1);
       Make_Grid_Lines (M1);
       Setup (M2);
@@ -232,8 +240,8 @@ procedure Dev is
          GL.Buffers.Clear (Depth_Plane);
          Get_Camera_Input (W, C);
          Update_Camera (C);
-         GL.Uniforms.Modify (L, C.Result'Address);
-
+         GL.Uniforms.Modify_Matrix_4f (Transform_Location, C.Result'Address);
+         GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
          Draw (M1);
          Draw (M2);
          Draw (M3);
@@ -265,21 +273,16 @@ begin
    declare
       use GLFW3;
       use GLFW3.Windows;
-      use GL.Programs;
       use GL.Buffers;
-      use GL.Programs.Uniforms;
       C : Camera;
       W : constant Window := Setup_Window;
-      P : constant Program := Setup_Program;
-      L : constant GL.Uniforms.Location := Get (P, "transform");
    begin
       Matpack.Set_Diagonal (C.Translation, 1.0);
       Matpack.Set_Diagonal (C.Rotation, 1.0);
       Matpack.Set_Diagonal (C.Result, 1.0);
       C.Projection := (others => (others => 0.0));
       Matpack.Projections.Make_Perspective (C.Projection, 1.57079632679, 3.0/4.0, 0.1, 80.0);
-      Set_Current (P);
-      Render_Loop (W, L, C);
+      Render_Loop (W, C);
       Destroy_Window (W);
    end;
 

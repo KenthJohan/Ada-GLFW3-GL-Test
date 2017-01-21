@@ -5,12 +5,14 @@ layout (location = 1) in vec4 color;
 
 layout (location = 5) uniform mat4 transform;
 
+uniform float u_time;
 
 out vec4 vcolor;
 
 void main()
 {
     gl_Position = transform * vec4(position, 1.0);
+	gl_Position.x += sin (u_time + gl_VertexID);
     //gl_Position = vec4(position, 1.0);
-    vcolor = color;
+    vcolor = color * vec4 (1.0, abs (sin (u_time)), 1.0, 1.0);
 }
