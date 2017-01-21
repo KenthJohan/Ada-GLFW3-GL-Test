@@ -94,6 +94,8 @@ package body Matpack is
       end loop;
    end;
 
+
+
    function "*" (A, B : Matrix) return Matrix is
       R : Matrix (A'Range (1), B'Range (2)) := (others => (others => 0.0));
    begin

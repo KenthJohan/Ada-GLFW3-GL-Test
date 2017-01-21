@@ -9,15 +9,18 @@ package Matpack is
    type Vector is array (Integer range <>) of Float;
    type Matrix is array (Integer range <>, Integer range <>) of Float;
 
+   subtype Index_3 is Integer range 1 .. 3;
+   subtype Index_4 is Integer range 1 .. 4;
+
    subtype Vector_1 is Vector (1 .. 1);
    subtype Vector_2 is Vector (1 .. 2);
-   subtype Vector_3 is Vector (1 .. 3);
-   subtype Vector_4 is Vector (1 .. 4);
+   subtype Vector_3 is Vector (Index_3);
+   subtype Vector_4 is Vector (Index_4);
 
    subtype Matrix_1 is Matrix (1 .. 1, 1 .. 1);
    subtype Matrix_2 is Matrix (1 .. 2, 1 .. 2);
    subtype Matrix_3 is Matrix (1 .. 3, 1 .. 3);
-   subtype Matrix_4 is Matrix (1 .. 4, 1 .. 4);
+   subtype Matrix_4 is Matrix (Index_4, Index_4);
 
 
    type Axis is new Vector_3;
@@ -49,6 +52,7 @@ package Matpack is
 
    -- y -> A^T x + y
    procedure Multiply_Accumulate_Transpose (Left_Transpose : Matrix; Right : Vector; Result : in out Vector);
+
 
 
 

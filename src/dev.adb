@@ -17,10 +17,14 @@ with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 
 with Ada.Text_IO;
---with Ada.Numerics.Elementary_Functions;
+with Ada.Numerics.Elementary_Functions;
 
 with OpenGL_Loader_Test;
 with OS_Systems;
+
+with Generic_Matpack;
+with Generic_Matpack.Quaternions;
+with Generic_Matpack.Projections;
 
 with Matpack;
 with Matpack.Projections;
@@ -54,47 +58,70 @@ procedure Dev is
    end;
 
    procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out Matpack.Quaternions.Quaternion) is
-      use Matpack.Quaternions;
+      --use Matpack.Quaternions;
       use GLFW3.Windows.Keys;
-      use Matpack;
-      Pith_Axis : constant Axis := (1.0, 0.0, 0.0);
-      Yaw_Axis : constant Axis := (0.0, 1.0, 0.0);
-      Amount : constant Radian := 0.1;
-      Pith_Up : constant Quaternion := Convert_Axis_Angle_To_Quaterion (Pith_Axis, Amount);
-      Pith_Down : constant Quaternion := Convert_Axis_Angle_To_Quaterion (Pith_Axis, -Amount);
-      Yaw_Left : constant Quaternion := Convert_Axis_Angle_To_Quaterion (Yaw_Axis, Amount);
-      Yaw_Right : constant Quaternion := Convert_Axis_Angle_To_Quaterion (Yaw_Axis, -Amount);
+      --use Matpack;
+      use type Matpack.Radian;
+
+      function Convert is new Generic_Matpack.Quaternions.Axis_Quaternion_Conversion_Function (Matpack.Index_4, Matpack.Index_3, Float, Matpack.Quaternions.Quaternion, Matpack.Axis, 2.0, Ada.Numerics.Elementary_Functions.Sin, Ada.Numerics.Elementary_Functions.Cos);
+
+      Pith_Axis : constant Matpack.Axis := (1.0, 0.0, 0.0);
+      Yaw_Axis : constant Matpack.Axis := (0.0, 1.0, 0.0);
+      Roll_Axis : constant Matpack.Axis := (0.0, 0.0, 1.0);
+      Amount : constant Float := 0.1;
+      Pith_Up : constant Matpack.Quaternions.Quaternion := Convert (Pith_Axis, Amount);
+      Pith_Down : constant Matpack.Quaternions.Quaternion := Convert (Pith_Axis, -Amount);
+      Yaw_Left : constant Matpack.Quaternions.Quaternion := Convert (Yaw_Axis, Amount);
+      Yaw_Right : constant Matpack.Quaternions.Quaternion := Convert (Yaw_Axis, -Amount);
+      Roll_Left : constant Matpack.Quaternions.Quaternion := Convert (Roll_Axis, Amount);
+      Roll_Right : constant Matpack.Quaternions.Quaternion := Convert (Roll_Axis, -Amount);
+      function "*" is new Generic_Matpack.Quaternions.Quaternion_Quaternion_Hamilton_Product (Matpack.Index_4, Float, Matpack.Quaternions.Quaternion, 0.0);
+
    begin
 
       if Get_Key (W, Key_Up) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Up");
-         Q := Hamilton_Product (Q, Pith_Up);
+         Q := Q * Pith_Up;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Down) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Down");
-         Q := Hamilton_Product (Q, Pith_Down);
+         Q := Q * Pith_Down;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Left) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Left");
-         Q := Hamilton_Product (Yaw_Left, Q);
+         Q := Yaw_Left * Q;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Right) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Right");
-         Q := Hamilton_Product (Yaw_Right, Q);
+         Q := Yaw_Right * Q;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
 
-      Normalize (Vector (Q));
+      if Get_Key (W, Key_Q) = Key_Action_Press then
+         Ada.Text_IO.Put_Line ("Key_Q");
+         Q := Q * Roll_Left;
+      else
+         Ada.Text_IO.Put_Line ("");
+      end if;
+
+      if Get_Key (W, Key_E) = Key_Action_Press then
+         Ada.Text_IO.Put_Line ("Key_E");
+         Q := Q * Roll_Right;
+      else
+         Ada.Text_IO.Put_Line ("");
+      end if;
+
+      Matpack.Normalize (Matpack.Vector (Q));
 
    end;
 
@@ -113,17 +140,21 @@ procedure Dev is
       use Matpack.Quaternions;
       use Matpack.Projections;
       Translation_Delta : Vector_4 := (others => 0.0);
+      procedure Mul_T is new Generic_Matpack.Matrix_T1_Vector_Product (Integer, Float, Matrix, Vector);
+      procedure Convert is new Generic_Matpack.Projections.Vector_Matrix_Translation_Conversion (Matpack.Index_4, Float, Matpack.Vector_4, Matpack.Matrix_4);
+      procedure Convert is new Generic_Matpack.Quaternions.Quaternion_Matrix_4_Conversion (Matpack.Index_4, Float, Matpack.Quaternions.Quaternion, Matpack.Matrix_4, 2.0);
    begin
       Get_Rotation_Input (W, C.Rotation_Quaternion);
-      Quaternion_To_Matrix_4 (C.Rotation_Quaternion, C.Rotation);
+      Convert (C.Rotation_Quaternion, C.Rotation);
       Get_Translation_Input (W, Translation_Delta);
-      --Accumulate (Translation_Delta, C.Position);
-      Multiply_Accumulate_Transpose (C.Rotation, Translation_Delta, C.Position);
-      Make_Translation (C.Translation, C.Position);
+      Mul_T (C.Rotation, Translation_Delta, C.Position);
+      Matpack.Make_Identity (C.Translation);
+      Convert (C.Position, C.Translation);
    end;
 
    procedure Update_Camera (Item : in out Camera) is
-      use Matpack;
+      --use Matpack;
+      function "*" is new Generic_Matpack.Matrix_Matrix_Product_IKJ (Integer, Float, Matpack.Matrix, 0.0);
    begin
       Item.Result := Item.Projection * Item.Rotation * Item.Translation;
       --Item.Result := Item.Translation * Item.Projection;
