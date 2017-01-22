@@ -13,17 +13,11 @@ package body Cameras is
       Make_Matrix_Identity (Result.Result_Matrix);
    end;
 
-   procedure Setup_Perspective (Field_Of_View, Aspect, Near, Far : GLfloat; Result : out Camera) is
-      use Maths;
-   begin
-      Make_Perspective_Matrix (Field_Of_View, Aspect, Near, Far, Result.Projection_Matrix);
-   end;
-
-
 
    procedure Update (Result : in out Camera) is
       use Maths;
    begin
+      Make_Perspective_Matrix (Result.FOV, Result.Aspect, Result.Near, Result.Far, Result.Projection_Matrix);
       Mul_T1 (Result.Rotation_Matrix, Result.Translation_Velocity, Result.Position);
       Make_Translation_Matrix (Result.Position, Result.Translation_Matrix);
       Make_Rotation_Matrix (Result.Rotation, Result.Rotation_Matrix);

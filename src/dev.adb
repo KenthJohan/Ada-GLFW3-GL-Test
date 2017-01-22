@@ -136,7 +136,6 @@ procedure Dev is
          C.FOV := C.FOV - 0.001;
       end if;
 
-      Cameras.Setup_Perspective (C.FOV, 3.0/4.0, 0.1, 80.0, C);
       Normalize (Q);
 
    end;
@@ -221,7 +220,6 @@ procedure Dev is
       M3 : Mesh (40);
    begin
       Cameras.Init (C);
-      Cameras.Setup_Perspective (1.57079632679, 3.0/4.0, 0.1, 80.0, C);
       Set_Current (P);
       Setup (M1);
       Make_Grid_Lines (M1);
@@ -336,11 +334,8 @@ begin
       end;
 
    begin
-      Cameras.Init (C);
-      Cameras.Setup_Perspective (1.57079632679, 3.0/4.0, 0.1, 80.0, C);
       Render_Task.Start;
       Info_Task.Start;
-
       null;
    end;
 
