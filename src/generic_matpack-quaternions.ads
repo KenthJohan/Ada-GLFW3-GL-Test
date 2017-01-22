@@ -7,7 +7,7 @@ package Generic_Matpack.Quaternions is
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "+" (Left : Element; Right : Element) return Element is <>;
       with function "-" (Left : Element; Right : Element) return Element is <>;
-   procedure Quaternion_Quaternion_Hamilton_Product_Procedure (Left, Right : Quaternion; Result : out Quaternion);
+   procedure Generic_Quaternion_Quaternion_Hamilton_Product_Procedure (Left, Right : Quaternion; Result : out Quaternion);
 
    generic
       type Index is (<>);
@@ -17,7 +17,7 @@ package Generic_Matpack.Quaternions is
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "+" (Left : Element; Right : Element) return Element is <>;
       with function "-" (Left : Element; Right : Element) return Element is <>;
-   function Quaternion_Quaternion_Hamilton_Product (Left, Right : Quaternion) return Quaternion;
+   function Generic_Quaternion_Quaternion_Hamilton_Product (Left, Right : Quaternion) return Quaternion;
 
    generic
       type Index is (<>);
@@ -29,7 +29,7 @@ package Generic_Matpack.Quaternions is
       with function "+" (Left : Element; Right : Element) return Element is <>;
       with function "-" (Left : Element; Right : Element) return Element is <>;
       with function "**" (Left : Element; Right : Integer) return Element is <>;
-   procedure Quaternion_Matrix_4_Conversion (Item : Quaternion; Result : out Matrix_4);
+   procedure Generic_Quaternion_Matrix_4_Conversion (Item : Quaternion; Result : out Matrix_4);
 
    generic
       type Quaternion_Index is (<>);
@@ -42,7 +42,7 @@ package Generic_Matpack.Quaternions is
       with function Cos (Left : Element) return Element is <>;
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "/" (Left : Element; Right : Element) return Element is <>;
-   procedure Axis_Quaternion_Conversion_Procedure (Item : Axis; Amount : Element; Result : out Quaternion);
+   procedure Generic_Axis_Quaternion_Conversion_Procedure (Item : Axis; Amount : Element; Result : out Quaternion);
 
    generic
       type Quaternion_Index is (<>);
@@ -55,7 +55,7 @@ package Generic_Matpack.Quaternions is
       with function Cos (Left : Element) return Element is <>;
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "/" (Left : Element; Right : Element) return Element is <>;
-   function Axis_Quaternion_Conversion_Function (Item : Axis; Amount : Element) return Quaternion;
+   function Generic_Axis_Quaternion_Conversion_Function (Item : Axis; Amount : Element) return Quaternion;
 
 --
 end;

@@ -3,7 +3,7 @@ with Ada.Text_IO;
 package body Generic_Matpack is
 
 
-   procedure Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
+   procedure Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
    begin
       for J in Left'Range (2) loop
          for I in Left'Range (1) loop
@@ -12,7 +12,7 @@ package body Generic_Matpack is
       end loop;
    end;
 
-   procedure Matrix_T1_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
+   procedure Generic_Matrix_T1_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
    begin
       for J in Result'Range loop
          for I in Right'Range loop
@@ -21,7 +21,7 @@ package body Generic_Matpack is
       end loop;
    end;
 
-   procedure Matrix_Matrix_Product_Accumulate_IJK (Left : Matrix; Right : Matrix; Result : in out Matrix) is
+   procedure Generic_Matrix_Matrix_Product_Accumulate_IJK (Left : Matrix; Right : Matrix; Result : in out Matrix) is
    begin
       for I in Result'Range (1) loop
          for J in Result'Range (2) loop
@@ -32,7 +32,7 @@ package body Generic_Matpack is
       end loop;
    end;
 
-   procedure Matrix_Matrix_Product_Accumulate_IKJ (Left : Matrix; Right : Matrix; Result : in out Matrix) is
+   procedure Generic_Matrix_Matrix_Product_Accumulate_IKJ (Left : Matrix; Right : Matrix; Result : in out Matrix) is
    begin
       for I in Result'Range (1) loop
          for K in Left'Range (1) loop
@@ -43,23 +43,23 @@ package body Generic_Matpack is
       end loop;
    end;
 
-   function Matrix_Matrix_Product_IJK (Left : Matrix; Right : Matrix) return Matrix is
-      procedure Matrix_Matrix_Product_Accumulate is new Matrix_Matrix_Product_Accumulate_IKJ (Index, Element, Matrix, "*", "+");
+   function Generic_Matrix_Matrix_Product_IJK (Left : Matrix; Right : Matrix) return Matrix is
+      procedure Matrix_Matrix_Product_Accumulate is new Generic_Matrix_Matrix_Product_Accumulate_IKJ (Index, Element, Matrix, "*", "+");
       Result : Matrix (Right'Range (1), Left'Range (2)) := (others => (others => Zero));
    begin
       Matrix_Matrix_Product_Accumulate (Left, Right, Result);
       return Result;
    end;
 
-   function Matrix_Matrix_Product_IKJ (Left : Matrix; Right : Matrix) return Matrix is
-      procedure Matrix_Matrix_Product_Accumulate is new Matrix_Matrix_Product_Accumulate_IKJ (Index, Element, Matrix, "*", "+");
+   function Generic_Matrix_Matrix_Product_IKJ (Left : Matrix; Right : Matrix) return Matrix is
+      procedure Matrix_Matrix_Product_Accumulate is new Generic_Matrix_Matrix_Product_Accumulate_IKJ (Index, Element, Matrix, "*", "+");
       Result : Matrix (Right'Range (1), Left'Range (2)) := (others => (others => Zero));
    begin
       Matrix_Matrix_Product_Accumulate (Left, Right, Result);
       return Result;
    end;
 
-   procedure Make_Matrix_Identity (Result : out Matrix) is
+   procedure Generic_Make_Matrix_Identity (Result : out Matrix) is
    begin
       for I in Result'Range (1) loop
          for J in Result'Range (2) loop
@@ -73,7 +73,7 @@ package body Generic_Matpack is
    end;
 
 
-   procedure Normalize (Result : in out Vector) is
+   procedure Generic_Normalize (Result : in out Vector) is
       Factor : Element := Zero;
    begin
       for E of Result loop
@@ -87,7 +87,7 @@ package body Generic_Matpack is
    end;
 
 
-   procedure Put (Item : Matrix) is
+   procedure Generic_Put (Item : Matrix) is
       package IO is new Ada.Text_IO.Float_IO (Element);
       use IO;
       use Ada.Text_IO;

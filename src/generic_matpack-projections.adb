@@ -1,6 +1,6 @@
 package body Generic_Matpack.Projections is
 
-   procedure Matrix_Frustum_Conversion (Left, Right, Bottom, Top, Near, Far : Element; Result : out Perspective_Matrix_4) is
+   procedure Generic_Matrix_Frustum_Conversion (Left, Right, Bottom, Top, Near, Far : Element; Result : out Perspective_Matrix_4) is
       I1 : constant Index_4 := Index_4'First;
       I2 : constant Index_4 := Index_4'Succ (Index_4'First);
       I3 : constant Index_4 := Index_4'Succ (Index_4'Succ (Index_4'First));
@@ -15,8 +15,8 @@ package body Generic_Matpack.Projections is
       Result (I3, I2) := (Top + Bottom) / (Top - Bottom);
    end;
 
-   procedure Matrix_Perspective_Conversion (Field_Of_View, Aspect, Near, Far : Element; Result : in out Perspective_Matrix_4) is
-      procedure Convert is new Matrix_Frustum_Conversion (Index_4, Element, Perspective_Matrix_4, One, Two, "*", "/", "-", "+", "-");
+   procedure Generic_Matrix_Perspective_Conversion (Field_Of_View, Aspect, Near, Far : Element; Result : in out Perspective_Matrix_4) is
+      procedure Convert is new Generic_Matrix_Frustum_Conversion (Index_4, Element, Perspective_Matrix_4, One, Two, "*", "/", "-", "+", "-");
       Top : constant Element := Near * Tan (Field_Of_View / Two);
       Right : constant Element := Top * Aspect;
    begin
@@ -29,7 +29,7 @@ package body Generic_Matpack.Projections is
    -- | 0  0  1  T3 |
    -- | 0  0  0  1  |
    -- Matrix (Column, Row)
-   procedure Vector_Matrix_Translation_Conversion (Item : Translation_Vector_4; Result : out Translation_Matrix_4) is
+   procedure Generic_Vector_Matrix_Translation_Conversion (Item : Translation_Vector_4; Result : out Translation_Matrix_4) is
       I1 : constant Index_4 := Index_4'First;
       I2 : constant Index_4 := Index_4'Succ (Index_4'First);
       I3 : constant Index_4 := Index_4'Succ (Index_4'Succ (Index_4'First));

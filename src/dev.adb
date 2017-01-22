@@ -21,8 +21,6 @@ with Ada.Text_IO;
 with OpenGL_Loader_Test;
 with OS_Systems;
 
-with Generic_Matpack.Quaternions;
-
 with GL.Math;
 with Maths;
 with Meshes;
@@ -63,20 +61,18 @@ procedure Dev is
       use GL.C;
       use GL.Math;
       use GLFW3.Windows.Keys;
+      use Maths;
       use type GLfloat;
-      function Convert is new Generic_Matpack.Quaternions.Axis_Quaternion_Conversion_Function (Dimension_4, Dimension_3, GLfloat, Vector_4, Vector_3, 2.0, Elementary_Functions.Sin, Elementary_Functions.Cos);
-      function "*" is new Generic_Matpack.Quaternions.Quaternion_Quaternion_Hamilton_Product (Dimension_4, GLfloat, Vector_4, 0.0);
-      procedure Normalize is new Generic_Matpack.Normalize (Dimension, GLfloat, Vector, 0.0, 1.0, Elementary_Functions.Sqrt);
       Amount : constant GLfloat := 0.01;
       Pith_Axis : constant Vector_3 := (1.0, 0.0, 0.0);
       Yaw_Axis : constant Vector_3 := (0.0, 1.0, 0.0);
       Roll_Axis : constant Vector_3 := (0.0, 0.0, 1.0);
-      Pith_Up : constant Vector_4 := Convert (Pith_Axis, Amount);
-      Pith_Down : constant Vector_4 := Convert (Pith_Axis, -Amount);
-      Yaw_Left : constant Vector_4 := Convert (Yaw_Axis, Amount);
-      Yaw_Right : constant Vector_4 := Convert (Yaw_Axis, -Amount);
-      Roll_Left : constant Vector_4 := Convert (Roll_Axis, Amount);
-      Roll_Right : constant Vector_4 := Convert (Roll_Axis, -Amount);
+      Pith_Up : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
+      Pith_Down : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
+      Yaw_Left : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
+      Yaw_Right : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
+      Roll_Left : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
+      Roll_Right : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
    begin
 
       if Get_Key (W, Key_Up) = Key_Action_Press then
