@@ -24,7 +24,7 @@ with OS_Systems;
 with Generic_Matpack.Quaternions;
 
 with GL.Math;
-
+with Maths;
 with Meshes;
 with Cameras;
 
@@ -312,7 +312,7 @@ begin
       end;
 
       task body Info_Task is
-         procedure Put is new Generic_Matpack.Put (Dimension, GLfloat, Matrix);
+         use Maths;
       begin
          accept Start;
          loop

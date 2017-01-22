@@ -1,8 +1,6 @@
 with Ada.Text_IO;
 with Ada.Float_Text_IO;
-with Ada.Numerics.Elementary_Functions;
---with Ada.Numerics.Generic_Elementary_Functions;
-with Ada.Numerics;
+with GL.C;
 
 package body Meshes is
 
@@ -110,12 +108,10 @@ package body Meshes is
       use GL.Buffers;
       use GL.C;
       use Vertex_Vectors;
-      use Ada.Numerics.Elementary_Functions;
-      use Ada.Numerics;
    begin
       Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
       for I in 1 .. 40 loop
-         Append (Item.Data, Vertex'((0.0, GLfloat (Sin (Float (I))), GLfloat (I)), (0.0, 1.0, 1.0, 1.0)));
+         Append (Item.Data, Vertex'((0.0, Elementary_Functions.Sin (GLfloat (I)), GLfloat (I)), (0.0, 1.0, 1.0, 1.0)));
       end loop;
 
       Bind (Array_Slot, Item.VBO);

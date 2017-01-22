@@ -1,4 +1,3 @@
-with GL.C;
 with GL.Buffers;
 with GL.Vertex_Attributes;
 with GL.Drawings;
