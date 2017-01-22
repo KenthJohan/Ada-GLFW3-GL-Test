@@ -7,6 +7,7 @@ package Cameras is
    use GL.C;
 
    type Camera is record
+      FOV : GLfloat := 1.57079632679;
       Translation_Velocity : Vector_4;
       Position : Vector_4;
       Rotation : Vector_4;

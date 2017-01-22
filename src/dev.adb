@@ -30,6 +30,8 @@ with Cameras;
 
 procedure Dev is
 
+   C : Cameras.Camera;
+
    procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Vector_4) is
       use GL.C;
       use type GL.C.GLfloat;
@@ -75,52 +77,66 @@ procedure Dev is
       Yaw_Right : constant Vector_4 := Convert (Yaw_Axis, -Amount);
       Roll_Left : constant Vector_4 := Convert (Roll_Axis, Amount);
       Roll_Right : constant Vector_4 := Convert (Roll_Axis, -Amount);
-
    begin
 
       if Get_Key (W, Key_Up) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_Up");
+         --Ada.Text_IO.Put_Line ("Key_Up");
          Q := Q * Pith_Up;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Down) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_Down");
+         --Ada.Text_IO.Put_Line ("Key_Down");
          Q := Q * Pith_Down;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
 
       if Get_Key (W, Key_Left) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_Left");
+         --Ada.Text_IO.Put_Line ("Key_Left");
          Q := Q * Yaw_Left;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Right) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_Right");
+         --Ada.Text_IO.Put_Line ("Key_Right");
          Q := Q * Yaw_Right;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Q) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_Q");
+         --Ada.Text_IO.Put_Line ("Key_Q");
          Q := Q * Roll_Left;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_E) = Key_Action_Press then
-         Ada.Text_IO.Put_Line ("Key_E");
+         --Ada.Text_IO.Put_Line ("Key_E");
          Q := Q * Roll_Right;
       else
-         Ada.Text_IO.Put_Line ("");
+         null;
+         --Ada.Text_IO.Put_Line ("");
       end if;
 
+      if Get_Key (W, Key_O) = Key_Action_Press then
+         C.FOV := C.FOV + 0.001;
+      end if;
+
+      if Get_Key (W, Key_L) = Key_Action_Press then
+         C.FOV := C.FOV - 0.001;
+      end if;
+
+      Cameras.Setup_Perspective (C.FOV, 3.0/4.0, 0.1, 80.0, C);
       Normalize (Q);
 
    end;
@@ -184,30 +200,10 @@ procedure Dev is
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
    procedure Render_Loop (W : GLFW3.Window) is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
-      use Ada.Text_IO;
       use GL.Buffers;
       use GL.Drawings;
       use GL.Uniforms;
@@ -217,15 +213,12 @@ procedure Dev is
       use GL.C;
       use GL.Math;
       use type GLfloat;
-      procedure Put is new Generic_Matpack.Put (Dimension, GLfloat, Matrix);
-      C : Cameras.Camera;
       P : constant Program := Setup_Program;
       Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
       Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");
       M1 : Mesh (40);
       M2 : Mesh (40);
       M3 : Mesh (40);
-      K : Character;
    begin
       Cameras.Init (C);
       Cameras.Setup_Perspective (1.57079632679, 3.0/4.0, 0.1, 80.0, C);
@@ -236,7 +229,6 @@ procedure Dev is
       Make_Triangle (M2);
       Setup (M3);
       Make_Sin (M3);
-      Get_Immediate (K);
 
       loop
          GLFW3.Poll_Events;
@@ -257,17 +249,7 @@ procedure Dev is
 
          GLFW3.Windows.Swap_Buffers (W);
 
-         Put (C.Projection_Matrix);
-         Ada.Text_IO.New_Line;
-         Put (C.Rotation_Matrix);
-         Ada.Text_IO.New_Line;
-         Put (C.Translation_Matrix);
-         Ada.Text_IO.New_Line;
-         Put (C.Result_Matrix);
-
          delay 0.01;
-         OS_Systems.Clear_Screen;
-
 
          pragma Warnings (Off);
          exit when GLFW3.Windows.Window_Should_Close (W) = 1;
@@ -276,18 +258,90 @@ procedure Dev is
    end;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 begin
 
    GLFW3.Initialize;
 
+
    declare
       use GLFW3;
       use GLFW3.Windows;
+      use GLFW3.Windows.Keys;
+      use Ada.Text_IO;
       use GL.Buffers;
-      W : constant Window := Setup_Window;
+      use GL.Drawings;
+      use GL.Uniforms;
+      use Meshes;
+      use GL.Programs.Uniforms;
+      use GL.Programs;
+      use GL.C;
+      use GL.Math;
+      use type GLfloat;
+
+      task Render_Task is
+         entry Start;
+      end;
+      task Info_Task is
+         entry Start;
+         entry Stop;
+      end;
+
+      task body Render_Task is
+         W : constant Window := Setup_Window;
+      begin
+         accept Start;
+         Render_Loop (W);
+         Destroy_Window (W);
+         Info_Task.Stop;
+      end;
+
+      task body Info_Task is
+         procedure Put is new Generic_Matpack.Put (Dimension, GLfloat, Matrix);
+      begin
+         accept Start;
+         loop
+            select
+               accept Stop;
+               exit;
+            else
+
+               delay 0.1;
+               OS_Systems.Clear_Screen;
+
+               Put (C.Projection_Matrix);
+               Ada.Text_IO.New_Line;
+               Put (C.Rotation_Matrix);
+               Ada.Text_IO.New_Line;
+               Put (C.Translation_Matrix);
+               Ada.Text_IO.New_Line;
+               Put (C.Result_Matrix);
+            end select;
+         end loop;
+      end;
+
    begin
-      Render_Loop (W);
-      Destroy_Window (W);
+      Cameras.Init (C);
+      Cameras.Setup_Perspective (1.57079632679, 3.0/4.0, 0.1, 80.0, C);
+      Render_Task.Start;
+      Info_Task.Start;
+
+      null;
    end;
 
 
