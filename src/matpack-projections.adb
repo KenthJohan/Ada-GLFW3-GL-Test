@@ -1,4 +1,4 @@
-package body Generic_Matpack.Projections is
+package body Matpack.Projections is
 
    procedure Generic_Matrix_Frustum_Conversion (Left, Right, Bottom, Top, Near, Far : Element; Result : out Perspective_Matrix_4) is
       I1 : constant Index_4 := Index_4'First;

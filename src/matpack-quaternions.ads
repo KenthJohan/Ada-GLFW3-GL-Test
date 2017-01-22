@@ -1,4 +1,4 @@
-package Generic_Matpack.Quaternions is
+package Matpack.Quaternions is
 
    generic
       type Index is (<>);

@@ -1,4 +1,4 @@
-package body Generic_Matpack.Quaternions is
+package body Matpack.Quaternions is
 
 
    procedure Generic_Quaternion_Quaternion_Hamilton_Product_Procedure (Left, Right : Quaternion; Result : out Quaternion) is

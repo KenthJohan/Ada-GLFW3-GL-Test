@@ -1,6 +1,6 @@
 with Ada.Text_IO;
 
-package body Generic_Matpack is
+package body Matpack is
 
 
    procedure Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is

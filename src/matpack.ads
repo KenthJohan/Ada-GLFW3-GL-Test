@@ -1,4 +1,4 @@
-package Generic_Matpack is
+package Matpack is
 
    generic
       type Index is (<>);

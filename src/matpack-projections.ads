@@ -1,4 +1,4 @@
-package Generic_Matpack.Projections is
+package Matpack.Projections is
 
 
    generic
