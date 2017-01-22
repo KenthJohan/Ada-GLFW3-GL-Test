@@ -89,7 +89,8 @@ package body Meshes is
       use Vertex_Vectors;
       D : constant GLfloat := 10.0;
    begin
-      Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
+      --Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
+      Item.Draw_Mode := GL.Drawings.Lines_Mode;
       for I in 1 .. 10 loop
          Append (Item.Data, Vertex'((0.0, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));
          Append (Item.Data, Vertex'((D, 0.0, GLfloat (I)), (0.0, 0.0, 1.0, 1.0)));

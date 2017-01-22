@@ -92,16 +92,17 @@ procedure Dev is
          Ada.Text_IO.Put_Line ("");
       end if;
 
+
       if Get_Key (W, Key_Left) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Left");
-         Q := Yaw_Left * Q;
+         Q := Q * Yaw_Left;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
 
       if Get_Key (W, Key_Right) = Key_Action_Press then
          Ada.Text_IO.Put_Line ("Key_Right");
-         Q := Yaw_Right * Q;
+         Q := Q * Yaw_Right;
       else
          Ada.Text_IO.Put_Line ("");
       end if;
@@ -134,9 +135,9 @@ procedure Dev is
       use GLFW3.Windows;
       use GL.C.Initializations;
       use GL.Drawings;
-      W : constant Window := Create_Window_Ada (400, 400, "Hello");
+      W : constant Window := Create_Window_Ada (1024, 1024, "Hello");
    begin
-      Viewport (0, 0, 400, 400);
+      Viewport (0, 0, 1024, 1024);
       Make_Context_Current (W);
       Initialize (OpenGL_Loader_Test'Unrestricted_Access);
       return W;
@@ -247,9 +248,10 @@ procedure Dev is
          Cameras.Update (C);
 
          GL.Uniforms.Modify_Matrix_4f (Transform_Location, C.Result_Matrix'Address);
-         GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
 
+         GL.Uniforms.Modify_1f (Time_Location, 0.0);
          Draw (M1);
+         GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
          Draw (M2);
          Draw (M3);
 
