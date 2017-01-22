@@ -2,14 +2,12 @@ with GL.C;
 with GL.Buffers;
 with GL.Vertex_Attributes;
 with GL.Drawings;
+with GL.Math;
 with Generic_Vectors;
 
 package Meshes is
 
-   type Vector is array (Integer range <>) of GL.C.GLfloat;
-
-   subtype Vector_3 is Vector (1 .. 3);
-   subtype Vector_4 is Vector (1 .. 4);
+   use GL.Math;
 
    type Vertex is record
       Pos : Vector_3 := (0.0, 0.0, 0.0);

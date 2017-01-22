@@ -1,3 +1,5 @@
+with Ada.Text_IO;
+
 package body Generic_Matpack is
 
 
@@ -55,6 +57,47 @@ package body Generic_Matpack is
    begin
       Matrix_Matrix_Product_Accumulate (Left, Right, Result);
       return Result;
+   end;
+
+   procedure Make_Matrix_Identity (Result : out Matrix) is
+   begin
+      for I in Result'Range (1) loop
+         for J in Result'Range (2) loop
+            if I = J then
+               Result (I, J) := One;
+            else
+               Result (I, J) := Zero;
+            end if;
+         end loop;
+      end loop;
+   end;
+
+
+   procedure Normalize (Result : in out Vector) is
+      Factor : Element := Zero;
+   begin
+      for E of Result loop
+         Factor := Factor + E ** 2;
+      end loop;
+      Factor := Sqrt (Factor);
+      Factor := One / Factor;
+      for E of Result loop
+         E := E * Factor;
+      end loop;
+   end;
+
+
+   procedure Put (Item : Matrix) is
+      package IO is new Ada.Text_IO.Float_IO (Element);
+      use IO;
+      use Ada.Text_IO;
+   begin
+      for I in Item'Range (1) loop
+         for J in Item'Range (1) loop
+            Put (Item (J, I), 3, 3, 0);
+         end loop;
+         New_Line;
+      end loop;
    end;
 
 end;

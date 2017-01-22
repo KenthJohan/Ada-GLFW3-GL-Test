@@ -52,4 +52,32 @@ package Generic_Matpack is
       with function "+" (Left : Element; Right : Element) return Element is <>;
    function Matrix_Matrix_Product_IKJ (Left : Matrix; Right : Matrix) return Matrix;
 
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Matrix is array (Index range <>, Index range <>) of Element;
+      Zero : Element;
+      One : Element;
+   procedure Make_Matrix_Identity (Result : out Matrix);
+
+
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Vector is array (Index range <>) of Element;
+      Zero : Element;
+      One : Element;
+      with function Sqrt (Left : Element) return Element is <>;
+      with function "**" (Left : Element; Right : Integer) return Element is <>;
+      with function "*" (Left : Element; Right : Element) return Element is <>;
+      with function "+" (Left : Element; Right : Element) return Element is <>;
+      with function "/" (Left : Element; Right : Element) return Element is <>;
+   procedure Normalize (Result : in out Vector);
+
+   generic
+      type Index is (<>);
+      type Element is digits <>;
+      type Matrix is array (Index range <>, Index range <>) of Element;
+   procedure Put (Item : Matrix);
+
 end;
