@@ -28,6 +28,11 @@ package Matpack.Projections is
       with function "-" (Left : Element) return Element is <>;
    procedure Generic_Matrix_Perspective_Conversion (Field_Of_View, Aspect, Near, Far : Element; Result : in out Perspective_Matrix_4);
 
+
+   -- | 1  0  0  T1 |
+   -- | 0  1  0  T2 |
+   -- | 0  0  1  T3 |
+   -- | 0  0  0  1  |
    generic
       type Index_4 is (<>);
       type Element is private;

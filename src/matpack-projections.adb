@@ -16,11 +16,11 @@ package body Matpack.Projections is
    end;
 
    procedure Generic_Matrix_Perspective_Conversion (Field_Of_View, Aspect, Near, Far : Element; Result : in out Perspective_Matrix_4) is
-      procedure Convert is new Generic_Matrix_Frustum_Conversion (Index_4, Element, Perspective_Matrix_4, One, Two, "*", "/", "-", "+", "-");
+      procedure Matrix_Frustum_Conversion is new Generic_Matrix_Frustum_Conversion (Index_4, Element, Perspective_Matrix_4, One, Two, "*", "/", "-", "+", "-");
       Top : constant Element := Near * Tan (Field_Of_View / Two);
       Right : constant Element := Top * Aspect;
    begin
-      Convert (-Right, Right, -Top, Top, Near, Far, Result);
+      Matrix_Frustum_Conversion (-Right, Right, -Top, Top, Near, Far, Result);
    end;
 
 

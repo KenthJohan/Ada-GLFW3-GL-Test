@@ -9,6 +9,8 @@ package Matpack is
       with function "+" (Left : Element; Right : Element) return Element is <>;
    procedure Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector);
 
+
+   -- A^T x
    generic
       type Index is (<>);
       type Element is private;

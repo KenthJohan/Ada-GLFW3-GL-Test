@@ -25,6 +25,7 @@ with GL.Math;
 with Maths;
 with Meshes;
 with Cameras;
+with Inputs;
 
 procedure Dev is
 
@@ -287,6 +288,7 @@ begin
       use GL.C;
       use GL.Math;
       use type GLfloat;
+      W : Window := Null_Window;
 
       task Render_Task is
          entry Start;
@@ -297,8 +299,9 @@ begin
       end;
 
       task body Render_Task is
-         W : constant Window := Setup_Window;
       begin
+
+         W := Setup_Window;
          accept Start;
          Render_Loop (W);
          Destroy_Window (W);
@@ -325,6 +328,9 @@ begin
                Put (C.Translation_Matrix);
                Ada.Text_IO.New_Line;
                Put (C.Result_Matrix);
+               Ada.Text_IO.New_Line;
+
+               Inputs.Put_State (W, Inputs.Config_1);
             end select;
          end loop;
       end;
