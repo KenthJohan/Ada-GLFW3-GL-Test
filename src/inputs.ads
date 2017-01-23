@@ -12,25 +12,27 @@ package Inputs is
 
    type Binding_Array is array (Action) of GLFW3.Windows.Keys.Key;
 
-   Config_1 : Binding_Array :=
-     (
-      Pith_Up => Keys.Key_Up,
-      Pith_Down => Keys.Key_Down,
-      Yaw_Left => Keys.Key_Left,
-      Yaw_Right => Keys.Key_Right,
-      Roll_Left => Keys.Key_Q,
-      Roll_Right => Keys.Key_E,
-      Go_Forward => Keys.Key_W,
-      Go_Backward => Keys.Key_S,
-      Go_Left => Keys.Key_A,
-      Go_Right => Keys.Key_D,
-      Go_Up => Keys.Key_Space,
-      Go_Down => Keys.Key_Left_Control,
-      Increase_FOV => Keys.Key_P,
-      Decrease_FOV => Keys.Key_O,
-      others => <>
-     );
+
 
    procedure Put_State (W : Window; Item : Binding_Array);
+
+      Config_1 : constant Binding_Array :=
+        (
+         Pith_Up => Keys.Key_Up,
+         Pith_Down => Keys.Key_Down,
+         Yaw_Left => Keys.Key_Left,
+         Yaw_Right => Keys.Key_Right,
+         Roll_Left => Keys.Key_Q,
+         Roll_Right => Keys.Key_E,
+         Go_Forward => Keys.Key_W,
+         Go_Backward => Keys.Key_S,
+         Go_Left => Keys.Key_A,
+         Go_Right => Keys.Key_D,
+         Go_Up => Keys.Key_Space,
+         Go_Down => Keys.Key_Left_Control,
+         Increase_FOV => Keys.Key_P,
+         Decrease_FOV => Keys.Key_O,
+         others => <>
+        );
 
 end;

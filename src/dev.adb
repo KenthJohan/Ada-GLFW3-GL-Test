@@ -29,6 +29,7 @@ with Inputs;
 
 procedure Dev is
 
+
    C : Cameras.Camera;
 
    procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Vector_4) is
@@ -75,85 +76,34 @@ procedure Dev is
       Roll_Left : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
       Roll_Right : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
    begin
-
       if Get_Key (W, Key_Up) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_Up");
          Q := Q * Pith_Up;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
       if Get_Key (W, Key_Down) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_Down");
          Q := Q * Pith_Down;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
-
       if Get_Key (W, Key_Left) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_Left");
          Q := Q * Yaw_Left;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
       if Get_Key (W, Key_Right) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_Right");
          Q := Q * Yaw_Right;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
       if Get_Key (W, Key_Q) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_Q");
          Q := Q * Roll_Left;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
       if Get_Key (W, Key_E) = Key_Action_Press then
-         --Ada.Text_IO.Put_Line ("Key_E");
          Q := Q * Roll_Right;
-      else
-         null;
-         --Ada.Text_IO.Put_Line ("");
       end if;
-
       if Get_Key (W, Key_O) = Key_Action_Press then
          C.FOV := C.FOV + 0.001;
       end if;
-
       if Get_Key (W, Key_L) = Key_Action_Press then
          C.FOV := C.FOV - 0.001;
       end if;
-
       Normalize (Q);
-
    end;
 
 
-
-
-
-
-   function Setup_Window return GLFW3.Window is
-      use GLFW3;
-      use GLFW3.Windows;
-      use GL.C.Initializations;
-      use GL.Drawings;
-      W : constant Window := Create_Window_Ada (1024, 1024, "Hello");
-   begin
-      Viewport (0, 0, 1024, 1024);
-      Make_Context_Current (W);
-      Initialize (OpenGL_Loader_Test'Unrestricted_Access);
-      return W;
-   end;
 
 
    function Setup_Shader (Name : String; Stage : GL.Shaders.Shader_Stage) return GL.Shaders.Shader is
@@ -190,10 +140,6 @@ procedure Dev is
          Put_Line (GL.Programs.Get_Link_Log (Item));
          return Item;
    end;
-
-
-
-
 
 
    procedure Render_Loop (W : GLFW3.Window) is
@@ -253,93 +199,64 @@ procedure Dev is
    end;
 
 
+   task Render_Task is
+      entry Start;
+   end;
+   task Info_Task is
+      entry Start (Arg : GLFW3.Window);
+      entry Stop;
+   end;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-begin
-
-   GLFW3.Initialize;
-
-
-   declare
+   task body Render_Task is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
-      use Ada.Text_IO;
-      use GL.Buffers;
       use GL.Drawings;
-      use GL.Uniforms;
-      use Meshes;
-      use GL.Programs.Uniforms;
-      use GL.Programs;
-      use GL.C;
-      use GL.Math;
-      use type GLfloat;
       W : Window := Null_Window;
-
-      task Render_Task is
-         entry Start;
-      end;
-      task Info_Task is
-         entry Start;
-         entry Stop;
-      end;
-
-      task body Render_Task is
-      begin
-
-         W := Setup_Window;
-         accept Start;
-         Render_Loop (W);
-         Destroy_Window (W);
-         Info_Task.Stop;
-      end;
-
-      task body Info_Task is
-         use Maths;
-      begin
-         accept Start;
-         loop
-            select
-               accept Stop;
-               exit;
-            else
-
-               delay 0.1;
-               OS_Systems.Clear_Screen;
-
-               Put (C.Projection_Matrix);
-               Ada.Text_IO.New_Line;
-               Put (C.Rotation_Matrix);
-               Ada.Text_IO.New_Line;
-               Put (C.Translation_Matrix);
-               Ada.Text_IO.New_Line;
-               Put (C.Result_Matrix);
-               Ada.Text_IO.New_Line;
-
-               Inputs.Put_State (W, Inputs.Config_1);
-            end select;
-         end loop;
-      end;
-
    begin
-      Render_Task.Start;
-      Info_Task.Start;
-      null;
+      accept Start;
+      W := Create_Window_Ada (1024, 1024, "Hello");
+      Viewport (0, 0, 1024, 1024);
+      Make_Context_Current (W);
+      GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
+      Info_Task.Start (W);
+      Render_Loop (W);
+      Destroy_Window (W);
+      Info_Task.Stop;
+   end;
+
+   task body Info_Task is
+      use GLFW3;
+      use Maths;
+      use Ada.Text_IO;
+      W : Window := Null_Window;
+   begin
+      accept Start (Arg : Window) do
+         W := Arg;
+      end;
+      loop
+         select
+            accept Stop;
+            exit;
+         else
+            delay 0.1;
+            Put_Line ("Info_Task");
+            OS_Systems.Clear_Screen;
+            Put (C.Projection_Matrix);
+            New_Line;
+            Put (C.Rotation_Matrix);
+            New_Line;
+            Put (C.Translation_Matrix);
+            New_Line;
+            Put (C.Result_Matrix);
+            New_Line;
+            Inputs.Put_State (W, Inputs.Config_1);
+         end select;
+      end loop;
    end;
 
 
+begin
+   GLFW3.Initialize;
+   Render_Task.Start;
 end;
