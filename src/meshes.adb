@@ -71,8 +71,8 @@ package body Meshes is
       Append (Item.Data, Vertex'((-0.5, -0.5, 0.0), (0.0, 1.0, 0.0, 1.0)));
       Append (Item.Data, Vertex'((0.0,  0.5, 0.0), (0.0, 0.0, 1.0, 1.0)));
       Bind (Array_Slot, Item.VBO);
-      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
+      Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
+      Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
 --        declare
 --           X : Vertex_Array (1 .. Integer (Item.Data.Length)) with Address => Item.Data'Address;
 --        begin
@@ -98,8 +98,8 @@ package body Meshes is
 
 
       Bind (Array_Slot, Item.VBO);
-      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
+      Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
+      Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
    end;
 
 
@@ -115,8 +115,8 @@ package body Meshes is
       end loop;
 
       Bind (Array_Slot, Item.VBO);
-      Allocate (Array_Slot, Bit_Unit (Data_Size (Item.Data)), Static_Usage);
-      Redefine (Array_Slot, 0, Bit_Unit (Data_Size (Item.Data)), Data_Address (Item.Data));
+      Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
+      Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
    end;
 
 end;
