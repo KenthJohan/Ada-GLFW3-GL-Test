@@ -76,18 +76,25 @@ package body Matpack is
    procedure Generic_Normalize (Result : in out Vector) is
       Factor : Element := Zero;
    begin
+      -- Calculate vector length squared.
       for E of Result loop
          Factor := Factor + E ** 2;
       end loop;
+
+      -- Calculate vector length.
       Factor := Sqrt (Factor);
+
+      -- Optimization?
       Factor := One / Factor;
+
+      -- Scale each vector components.
       for E of Result loop
          E := E * Factor;
       end loop;
    end;
 
 
-   procedure Generic_Put (Item : Matrix) is
+   procedure Generic_Put_Matrix (Item : Matrix) is
       package IO is new Ada.Text_IO.Float_IO (Element);
       use IO;
       use Ada.Text_IO;
@@ -100,4 +107,14 @@ package body Matpack is
       end loop;
    end;
 
+
+   procedure Generic_Put_Vector (Item : Vector) is
+      package IO is new Ada.Text_IO.Float_IO (Element);
+      use IO;
+      use Ada.Text_IO;
+   begin
+      for E of Item loop
+         Put (E, 3, 3, 0);
+      end loop;
+   end;
 end;

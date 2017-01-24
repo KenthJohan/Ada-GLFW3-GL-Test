@@ -6,7 +6,6 @@ with GL.Shaders.Files;
 with GL.Buffers;
 with GL.Drawings;
 with GL.Programs.Uniforms;
-with GL.C;
 with GL.Uniforms;
 
 
@@ -32,7 +31,7 @@ procedure Dev is
 
    C : Cameras.Camera;
 
-   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Vector_4) is
+   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
       use GL.C;
       use type GL.C.GLfloat;
       use GLFW3.Windows.Keys;
@@ -59,22 +58,21 @@ procedure Dev is
       end if;
    end;
 
-   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Vector_4) is
-      use GL.C;
+   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Float_Vector4) is
       use GL.Math;
+      use type GL.Math.GLfloat;
       use GLFW3.Windows.Keys;
       use Maths;
-      use type GLfloat;
       Amount : constant GLfloat := 0.01;
-      Pith_Axis : constant Vector_3 := (1.0, 0.0, 0.0);
-      Yaw_Axis : constant Vector_3 := (0.0, 1.0, 0.0);
-      Roll_Axis : constant Vector_3 := (0.0, 0.0, 1.0);
-      Pith_Up : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
-      Pith_Down : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
-      Yaw_Left : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
-      Yaw_Right : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
-      Roll_Left : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
-      Roll_Right : constant Vector_4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
+      Pith_Axis : constant Float_Vector3 := (1.0, 0.0, 0.0);
+      Yaw_Axis : constant Float_Vector3 := (0.0, 1.0, 0.0);
+      Roll_Axis : constant Float_Vector3 := (0.0, 0.0, 1.0);
+      Pith_Up : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
+      Pith_Down : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
+      Yaw_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
+      Yaw_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
+      Roll_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
+      Roll_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
    begin
       if Get_Key (W, Key_Up) = Key_Action_Press then
          Q := Q * Pith_Up;
@@ -154,7 +152,6 @@ procedure Dev is
       use GL.Programs;
       use GL.C;
       use GL.Math;
-      use type GLfloat;
       P : constant Program := Setup_Program;
       Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
       Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");

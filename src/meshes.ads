@@ -1,5 +1,5 @@
 with GL.Buffers;
-with GL.Vertex_Attributes;
+with GL.Vertex_Array_Objects;
 with GL.Drawings;
 with GL.Math;
 with Generic_Vectors;
@@ -9,8 +9,8 @@ package Meshes is
    use GL.Math;
 
    type Vertex is record
-      Pos : Vector_3 := (0.0, 0.0, 0.0);
-      Col : Vector_4 := (0.0, 0.0, 0.0, 0.0);
+      Pos : Float_Vector3 := (0.0, 0.0, 0.0);
+      Col : Float_Vector4 := (0.0, 0.0, 0.0, 0.0);
    end record;
 
    type Vertex_Array is array (Positive range <>) of Vertex;
@@ -19,10 +19,11 @@ package Meshes is
    subtype Vertex_Vector is Vertex_Vectors.Vector;
 
    type Mesh (Count : Natural) is record
-      VBO : GL.Buffers.Buffer;
-      VAO : GL.Vertex_Attributes.Config;
+      Vertex_Array_Name : GL.Vertex_Array_Objects.Name := GL.Vertex_Array_Objects.Generate;
+      Buffer_Name : GL.Buffers.Buffer := GL.Buffers.Generate;
       Data : Vertex_Vector (2000);
       Draw_Mode : GL.Drawings.Mode;
+      Dummy : Boolean;
    end record;
 
    procedure Setup (Item : in out Mesh);
@@ -30,6 +31,6 @@ package Meshes is
    procedure Make_Grid_Lines (Item : in out Mesh);
    procedure Make_Triangle (Item : in out Mesh);
    procedure Make_Sin (Item : in out Mesh);
-   procedure Put (Item : Vertex_Array);
+
 
 end;

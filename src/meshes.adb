@@ -1,62 +1,34 @@
-with Ada.Text_IO;
-with Ada.Float_Text_IO;
+with GL.Vertex_Attributes;
+with System;
 with GL.C;
 
 package body Meshes is
 
-   --package Elementary_Functions is new Ada.Numerics.Generic_Elementary_Functions (GL.C.GLfloat);
-
-   procedure Put (Item : Vector) is
-      use Ada.Text_IO;
-      use Ada.Float_Text_IO;
-   begin
-      for E of Item loop
-         Put (Float (E), 3, 3, 0);
-      end loop;
-   end;
-
-   procedure Put (Item : Vertex) is
-      use Ada.Text_IO;
-      use Ada.Float_Text_IO;
-   begin
-      Put (Item.Pos);
-      Put (" : ");
-      Put (Item.Col);
-   end;
-
-   procedure Put (Item : Vertex_Array) is
-      use Ada.Text_IO;
-      use Ada.Float_Text_IO;
-   begin
-      for E of Item loop
-         Put (E);
-         New_Line;
-      end loop;
-   end;
-
    procedure Setup (Item : in out Mesh) is
       use GL;
-      use GL.Buffers;
+      use GL.Vertex_Array_Objects;
       use GL.Vertex_Attributes;
-      Pos_Loc_Index : constant Location := Use_Index (0);
-      Col_Loc_Index : constant Location := Use_Index (1);
+      use System;
+      use GL.Buffers;
+      Pos_Loc_Index : constant Vertex_Attributes.Index := Create_Index (0);
+      Col_Loc_Index : constant Vertex_Attributes.Index := Create_Index (1);
+      Stride : constant Natural := Vertex_Array'Component_Size / Storage_Unit;
    begin
-      Item.VBO := Generate;
-      Item.VAO := Generate;
-      Bind (Item.VAO);
-      Bind (Array_Slot, Item.VBO);
-      Set (Pos_Loc_Index, Vector_3'Length, Float_Type, False, Bit_Unit (Vertex_Array'Component_Size), Bit_Unit (0));
-      Set (Col_Loc_Index, Vector_4'Length, Float_Type, False, Bit_Unit (Vertex_Array'Component_Size), Bit_Unit (Vector_3'Size));
+      Bind (Buffers.Array_Slot, Item.Buffer_Name);
+      Bind (Item.Vertex_Array_Name);
+      Set_Memory_Layout (Pos_Loc_Index, Float_Vector3'Length, Float_Type, False, Stride, 0);
+      Set_Memory_Layout (Col_Loc_Index, Float_Vector4'Length, Float_Type, False, Stride, Float_Vector3'Size / Storage_Unit);
       Enable (Pos_Loc_Index);
       Enable (Col_Loc_Index);
+      Item.Dummy := True;
    end;
 
 
    procedure Draw (Item : Mesh) is
+      use GL.Vertex_Array_Objects;
    begin
-      GL.Vertex_Attributes.Bind (Item.VAO);
+      Bind (Item.Vertex_Array_Name);
       GL.Drawings.Draw (Item.Draw_Mode, 0, Integer (Item.Data.Last));
-      null;
    end;
 
 
@@ -70,7 +42,7 @@ package body Meshes is
       Append (Item.Data, Vertex'((0.5, -0.5, 0.0), (1.0, 0.0, 0.0, 1.0)));
       Append (Item.Data, Vertex'((-0.5, -0.5, 0.0), (0.0, 1.0, 0.0, 1.0)));
       Append (Item.Data, Vertex'((0.0,  0.5, 0.0), (0.0, 0.0, 1.0, 1.0)));
-      Bind (Array_Slot, Item.VBO);
+      Bind (Array_Slot, Item.Buffer_Name);
       Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
       Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
 --        declare
@@ -83,7 +55,6 @@ package body Meshes is
    procedure Make_Grid_Lines (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
-      use GL.C;
       use Vertex_Vectors;
       D : constant GLfloat := 10.0;
    begin
@@ -97,7 +68,7 @@ package body Meshes is
       end loop;
 
 
-      Bind (Array_Slot, Item.VBO);
+      Bind (Array_Slot, Item.Buffer_Name);
       Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
       Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
    end;
@@ -106,7 +77,6 @@ package body Meshes is
    procedure Make_Sin (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
-      use GL.C;
       use Vertex_Vectors;
    begin
       Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
@@ -114,7 +84,7 @@ package body Meshes is
          Append (Item.Data, Vertex'((0.0, Elementary_Functions.Sin (GLfloat (I)), GLfloat (I)), (0.0, 1.0, 1.0, 1.0)));
       end loop;
 
-      Bind (Array_Slot, Item.VBO);
+      Bind (Array_Slot, Item.Buffer_Name);
       Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
       Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
    end;

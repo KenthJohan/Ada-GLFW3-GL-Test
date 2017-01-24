@@ -80,6 +80,12 @@ package Matpack is
       type Index is (<>);
       type Element is digits <>;
       type Matrix is array (Index range <>, Index range <>) of Element;
-   procedure Generic_Put (Item : Matrix);
+   procedure Generic_Put_Matrix (Item : Matrix);
+
+   generic
+      type Index is (<>);
+      type Element is digits <>;
+      type Vector is array (Index range <>) of Element;
+   procedure Generic_Put_Vector (Item : Vector);
 
 end;
