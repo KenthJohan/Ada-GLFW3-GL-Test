@@ -1,26 +1,9 @@
-with GL.Vertex_Attributes;
 with System;
 with GL.C;
 with GL.C.Complete;
 
 package body Meshes is
 
-   procedure Setup_2 (Item : in out Mesh) is
-      use GL;
-      use GL.Vertex_Array_Objects;
-      use GL.Vertex_Attributes;
-      use System;
-      use GL.Buffers;
-      Stride : constant Natural := Vertex_Array'Component_Size / Storage_Unit;
-   begin
-      Bind (Buffers.Array_Slot, Item.Buffer_Name);
-      Bind (Item.Vertex_Array_Name);
-      Set_Memory_Layout (0, Float_Vector3'Length, Float_Type, False, Stride, 0);
-      Set_Memory_Layout (1, Float_Vector4'Length, Float_Type, False, Stride, Float_Vector3'Size / Storage_Unit);
-      Enable (0);
-      Enable (1);
-      Item.Dummy := True;
-   end;
 
    procedure Setup (Item : in out Mesh) is
       use System;
@@ -28,26 +11,22 @@ package body Meshes is
       use GL.C;
       use GL.C.Complete;
       use GL.Vertex_Array_Objects;
-      use GL.Vertex_Attributes;
       use GL.Buffers;
       use type GL.C.GLuint;
       use type GL.C.GLsizei;
       Stride : constant GLsizei := Vertex_Array'Component_Size / Storage_Unit;
    begin
 
-      glEnableVertexArrayAttrib (GLuint (Item.Vertex_Array_Name), 0);
-      glEnableVertexArrayAttrib (GLuint (Item.Vertex_Array_Name), 1);
+      Set_Attribute_Enable (Item.Vertex_Array_Name, 0);
+      Set_Attribute_Enable (Item.Vertex_Array_Name, 1);
+      Set_Attribute_Memory_Layout (Item.Vertex_Array_Name, 0, Float_Vector3'Length, Float_Type, False, 0);
+      Set_Attribute_Memory_Layout (Item.Vertex_Array_Name, 1, Float_Vector4'Length, Float_Type, False, Float_Vector3'Size / Storage_Unit);
 
 
+      glVertexArrayAttribBinding (GLuint (Item.Vertex_Array_Name), 0, 0);
+      glVertexArrayAttribBinding (GLuint (Item.Vertex_Array_Name), 1, 0);
 
-
-      glVertexArrayAttribFormat (GLuint (Item.Vertex_Array_Name), 0, Float_Vector3'Length, GL_FLOAT, GL_FALSE, 0);
-      glVertexArrayAttribFormat (GLuint (Item.Vertex_Array_Name), 1, Float_Vector4'Length, GL_FLOAT, GL_FALSE, Float_Vector3'Size / Storage_Unit);
-
-      glVertexArrayAttribBinding(GLuint (Item.Vertex_Array_Name), 0, 0);
-      glVertexArrayAttribBinding(GLuint (Item.Vertex_Array_Name), 1, 0);
-
-      glVertexArrayVertexBuffer(GLuint (Item.Vertex_Array_Name), 0, GLuint (Item.Buffer_Name), 0, Stride);
+      glVertexArrayVertexBuffer (GLuint (Item.Vertex_Array_Name), 0, GLuint (Item.Buffer_Name), 0, Stride);
 
 
 
