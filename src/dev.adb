@@ -212,7 +212,7 @@ procedure Dev is
       W : Window := Null_Window;
    begin
       accept Start;
-      W := Create_Window_Ada (1024, 1024, "Hello");
+      W := Create_Window_Ada (1024, 1024, "Hello123");
       Viewport (0, 0, 1024, 1024);
       Make_Context_Current (W);
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);

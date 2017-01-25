@@ -1,27 +1,60 @@
 with GL.Vertex_Attributes;
 with System;
 with GL.C;
+with GL.C.Complete;
 
 package body Meshes is
 
-   procedure Setup (Item : in out Mesh) is
+   procedure Setup_2 (Item : in out Mesh) is
       use GL;
       use GL.Vertex_Array_Objects;
       use GL.Vertex_Attributes;
       use System;
       use GL.Buffers;
-      Pos_Loc_Index : constant Vertex_Attributes.Index := Create_Index (0);
-      Col_Loc_Index : constant Vertex_Attributes.Index := Create_Index (1);
       Stride : constant Natural := Vertex_Array'Component_Size / Storage_Unit;
    begin
       Bind (Buffers.Array_Slot, Item.Buffer_Name);
       Bind (Item.Vertex_Array_Name);
-      Set_Memory_Layout (Pos_Loc_Index, Float_Vector3'Length, Float_Type, False, Stride, 0);
-      Set_Memory_Layout (Col_Loc_Index, Float_Vector4'Length, Float_Type, False, Stride, Float_Vector3'Size / Storage_Unit);
-      Enable (Pos_Loc_Index);
-      Enable (Col_Loc_Index);
+      Set_Memory_Layout (0, Float_Vector3'Length, Float_Type, False, Stride, 0);
+      Set_Memory_Layout (1, Float_Vector4'Length, Float_Type, False, Stride, Float_Vector3'Size / Storage_Unit);
+      Enable (0);
+      Enable (1);
       Item.Dummy := True;
    end;
+
+   procedure Setup (Item : in out Mesh) is
+      use System;
+      use GL;
+      use GL.C;
+      use GL.C.Complete;
+      use GL.Vertex_Array_Objects;
+      use GL.Vertex_Attributes;
+      use GL.Buffers;
+      use type GL.C.GLuint;
+      use type GL.C.GLsizei;
+      Stride : constant GLsizei := Vertex_Array'Component_Size / Storage_Unit;
+   begin
+
+      glEnableVertexArrayAttrib (GLuint (Item.Vertex_Array_Name), 0);
+      glEnableVertexArrayAttrib (GLuint (Item.Vertex_Array_Name), 1);
+
+
+
+
+      glVertexArrayAttribFormat (GLuint (Item.Vertex_Array_Name), 0, Float_Vector3'Length, GL_FLOAT, GL_FALSE, 0);
+      glVertexArrayAttribFormat (GLuint (Item.Vertex_Array_Name), 1, Float_Vector4'Length, GL_FLOAT, GL_FALSE, Float_Vector3'Size / Storage_Unit);
+
+      glVertexArrayAttribBinding(GLuint (Item.Vertex_Array_Name), 0, 0);
+      glVertexArrayAttribBinding(GLuint (Item.Vertex_Array_Name), 1, 0);
+
+      glVertexArrayVertexBuffer(GLuint (Item.Vertex_Array_Name), 0, GLuint (Item.Buffer_Name), 0, Stride);
+
+
+
+      Item.Dummy := True;
+   end;
+
+
 
 
    procedure Draw (Item : Mesh) is
