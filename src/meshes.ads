@@ -19,7 +19,7 @@ package Meshes is
    subtype Vertex_Vector is Vertex_Vectors.Vector;
 
    type Mesh (Count : Natural) is record
-      Vertex_Array_Name : GL.Vertex_Array_Objects.Vertex_Array_Object := GL.Vertex_Array_Objects.Create;
+      Vertex_Array_Name : GL.Vertex_Array_Objects.Vertex_Array_Object := GL.Vertex_Array_Objects.Create_Attribute;
       Buffer_Name : GL.Buffers.Buffer := GL.Buffers.Generate;
       Data : Vertex_Vector (2000);
       Draw_Mode : GL.Drawings.Mode;

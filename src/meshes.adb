@@ -19,6 +19,7 @@ package body Meshes is
 
       Set_Attribute_Enable (Item.Vertex_Array_Name, 0);
       Set_Attribute_Enable (Item.Vertex_Array_Name, 1);
+
       Set_Attribute_Memory_Layout (Item.Vertex_Array_Name, 0, Float_Vector3'Length, Float_Type, False, 0);
       Set_Attribute_Memory_Layout (Item.Vertex_Array_Name, 1, Float_Vector4'Length, Float_Type, False, Float_Vector3'Size / Storage_Unit);
 

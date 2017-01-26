@@ -2,7 +2,7 @@
 gprbuild -p main.gpr
 pause
 cd bin
-dev_mat.exe
+dev_drop_test.exe
 cd ..
 pause
 goto loop
