@@ -23,13 +23,17 @@ with OS_Systems;
 with GL.Math;
 with Maths;
 with Meshes;
+with Parse_Handler;
 with Cameras;
 with Inputs;
+with GLFW3.Windows.Drops;
 
 procedure Dev is
 
-
+   Main_Window : GLFW3.Window := GLFW3.Null_Window;
    C : Cameras.Camera;
+
+
 
    procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
       use GL.C;
@@ -155,18 +159,13 @@ procedure Dev is
       P : constant Program := Setup_Program;
       Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
       Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");
-      M1 : Mesh (40);
-      M2 : Mesh (40);
-      M3 : Mesh (40);
+      M : Meshes.Mesh_Vectors.Vector := Meshes.Mesh_Vectors.To_Vector (3);
    begin
       Cameras.Init (C);
       Set_Current (P);
-      Setup (M1);
-      Make_Grid_Lines (M1);
-      Setup (M2);
-      Make_Triangle (M2);
-      Setup (M3);
-      Make_Sin (M3);
+      Make_Grid_Lines (M (1));
+      Make_Triangle (M (2));
+      Make_Sin (M (3));
 
       loop
          GLFW3.Poll_Events;
@@ -180,10 +179,9 @@ procedure Dev is
          GL.Uniforms.Modify_Matrix_4f (Transform_Location, C.Result_Matrix'Address);
 
          GL.Uniforms.Modify_1f (Time_Location, 0.0);
-         Draw (M1);
-         GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
-         Draw (M2);
-         Draw (M3);
+         --GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
+         Update (M);
+         Update (Parse_Handler.Mesh_List);
 
          GLFW3.Windows.Swap_Buffers (W);
 
@@ -209,16 +207,16 @@ procedure Dev is
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
       use GL.Drawings;
-      W : Window := Null_Window;
    begin
       accept Start;
-      W := Create_Window_Ada (1024, 1024, "Hello123");
+      Main_Window := Create_Window_Ada (1024, 1024, "Hello123");
       Viewport (0, 0, 1024, 1024);
-      Make_Context_Current (W);
+      Make_Context_Current (Main_Window);
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
-      Info_Task.Start (W);
-      Render_Loop (W);
-      Destroy_Window (W);
+      GLFW3.Windows.Drops.Set_Drop_Callback (Main_Window, Parse_Handler.drop_callback'Unrestricted_Access);
+      Render_Loop (Main_Window);
+      Destroy_Window (Main_Window);
+      Parse_Handler.Parse_Task.Quit;
       Info_Task.Stop;
    end;
 
@@ -226,11 +224,7 @@ procedure Dev is
       use GLFW3;
       use Maths;
       use Ada.Text_IO;
-      W : Window := Null_Window;
    begin
-      accept Start (Arg : Window) do
-         W := Arg;
-      end;
       loop
          select
             accept Stop;
@@ -247,9 +241,10 @@ procedure Dev is
             New_Line;
             Put (C.Result_Matrix);
             New_Line;
-            Inputs.Put_State (W, Inputs.Config_1);
+            Inputs.Put_State (Main_Window, Inputs.Config_1);
          end select;
       end loop;
+      Put_Line ("Info_Task complete");
    end;
 
 
