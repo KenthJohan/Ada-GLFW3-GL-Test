@@ -209,7 +209,7 @@ procedure Dev is
       use GL.Drawings;
    begin
       accept Start;
-      Main_Window := Create_Window_Ada (1024, 1024, "Hello123");
+      Main_Window := Create_Window_Ada (1024, 1024, "Hello123##");
       Viewport (0, 0, 1024, 1024);
       Make_Context_Current (Main_Window);
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);

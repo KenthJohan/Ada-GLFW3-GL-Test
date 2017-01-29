@@ -21,7 +21,7 @@ package body Meshes is
             null;
          when GPU_Setup_Status =>
             Item.Vertex_Array_Name := Create_Attribute;
-            Item.Buffer_Name := Generate;
+            Item.Buffer_Name := Create_Buffer;
             Set_Attribute_Enable (Item.Vertex_Array_Name, 0);
             Set_Attribute_Enable (Item.Vertex_Array_Name, 1);
             Set_Attribute_Memory_Layout (Item.Vertex_Array_Name, 0, Float_Vector3'Length, Float_Type, False, 0);
@@ -29,9 +29,7 @@ package body Meshes is
             glVertexArrayAttribBinding (GLuint (Item.Vertex_Array_Name), 0, 0);
             glVertexArrayAttribBinding (GLuint (Item.Vertex_Array_Name), 1, 0);
             glVertexArrayVertexBuffer (GLuint (Item.Vertex_Array_Name), 0, GLuint (Item.Buffer_Name), 0, Stride);
-            Bind (Array_Slot, Item.Buffer_Name);
-            Allocate_Uninitialized_Bits (Array_Slot, Data_Size (Item.Data), Static_Usage);
-            Redefine_Bits (Array_Slot, 0, Data_Size (Item.Data), Data_Address (Item.Data));
+            Create_New_Storage (Item.Buffer_Name, Data_Size (Item.Data) / Storage_Unit, Data_Address (Item.Data), Static_Usage);
             Item.Status := GPU_Render_Status;
          when GPU_Render_Status =>
             Bind (Item.Vertex_Array_Name);
