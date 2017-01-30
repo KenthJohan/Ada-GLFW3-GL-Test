@@ -198,7 +198,7 @@ procedure Dev is
       entry Start;
    end;
    task Info_Task is
-      entry Start (Arg : GLFW3.Window);
+      entry Start;
       entry Stop;
    end;
 
@@ -225,6 +225,7 @@ procedure Dev is
       use Maths;
       use Ada.Text_IO;
    begin
+      accept Start;
       loop
          select
             accept Stop;

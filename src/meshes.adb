@@ -91,6 +91,8 @@ package body Meshes is
          Item.Data.Last_Element.Pos := (GLfloat (I), 0.0, D);
          Item.Data.Last_Element.Col := (0.0, 0.0, 1.0, 1.0);
       end loop;
+
+      Vertices.Make_1 (Item.Data, 1.0, 50);
    end;
 
 

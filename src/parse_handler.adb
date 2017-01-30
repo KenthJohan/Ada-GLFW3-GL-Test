@@ -9,7 +9,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
 with Vertices;
-
+with GL.Colors;
 
 
 package body Parse_Handler is
@@ -53,6 +53,7 @@ package body Parse_Handler is
       use Mode_Text_IO;
       use Vertices;
       use GL.Math;
+      use GL.Colors;
       M : GL.Drawings.Mode;
       F : File_Type;
       Me : Meshes.Mesh;
@@ -62,13 +63,8 @@ package body Parse_Handler is
          Put_Line ("Get");
          Me.Data.Append;
          Get (F, M);
-         Get (F, Me.Data.Last_Element.Pos (1));
-         Get (F, Me.Data.Last_Element.Pos (2));
-         Get (F, Me.Data.Last_Element.Pos (3));
-         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Red_Index));
-         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Green_Index));
-         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Blue_Index));
-         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Alpha_Index));
+         Get (F, Me.Data.Last_Element.Pos);
+         Colors_RGBA.Get (F, Me.Data.Last_Element.Col);
          Skip_Line (F);
 --           Put (M);
 --           Put (V.Pos (1));

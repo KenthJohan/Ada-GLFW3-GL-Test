@@ -27,7 +27,7 @@ package Generic_Vectors is
 
    function First_Index (C : Vector) return Index;
    function First_Element (C : in out Vector) return Accessor;
-   function First_Element (C : Vector) return Element;
+   function First_Element1 (C : Vector) return Element;
 
    function Last_Index (C : Vector) return Index;
    function Last_Element (C : in out Vector) return Accessor;

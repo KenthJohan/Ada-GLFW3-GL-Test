@@ -1,11 +1,11 @@
 with GL.Math;
 with Generic_Vectors;
-
+with GL.Colors;
 
 package Vertices is
 
    use GL.Math;
-   use GL.Math.Colors_RGBA;
+   use GL.Colors.Colors_RGBA;
 
    type Vertex is record
       Pos : Float_Vector3 := (0.0, 0.0, 0.0);
@@ -19,6 +19,6 @@ package Vertices is
 
    procedure Set_Random_Color (Item : out Vertex);
 
-   procedure Make_1 (V : in out Vertex_Vector);
+   procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural);
 
 end;

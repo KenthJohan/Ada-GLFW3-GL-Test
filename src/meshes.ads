@@ -14,12 +14,13 @@ package Meshes is
    type Mesh is record
       VAO : GL.Vertex_Array_Objects.Vertex_Array_Object;
       VBO : GL.Buffers.Buffer;
-      Data : Vertices.Vertex_Vector (2000);
+      Data : Vertices.Vertex_Vector (10000);
       Draw_Mode : GL.Drawings.Mode;
       State : Mesh_State := Setup_Mesh_State;
    end record;
 
    package Mesh_Vectors is new Ada.Containers.Vectors (Positive, Meshes.Mesh, Meshes."=");
+   subtype Mesh_Vector is Mesh_Vectors.Vector;
 
    procedure Update (List : in out Mesh_Vectors.Vector);
    procedure Draw (List : in out Mesh_Vectors.Vector);

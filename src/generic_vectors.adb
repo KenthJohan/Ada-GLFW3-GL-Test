@@ -31,7 +31,7 @@ package body Generic_Vectors is
       return Accessor'(Data => C.Data (C.Data'First)'Access);
    end;
 
-   function First_Element (C : Vector) return Element is
+   function First_Element1 (C : Vector) return Element is
    begin
       return C.Data (C.Data'First);
    end;
