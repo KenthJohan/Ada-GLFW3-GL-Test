@@ -8,6 +8,7 @@ with Ada.Exceptions;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
+with Vertices;
 
 
 
@@ -50,33 +51,34 @@ package body Parse_Handler is
       use Ada.Text_IO;
       use GL.Math.GLfloat_IO;
       use Mode_Text_IO;
+      use Vertices;
+      use GL.Math;
       M : GL.Drawings.Mode;
       F : File_Type;
       Me : Meshes.Mesh;
-      V : Meshes.Vertex;
    begin
       Open (F, In_File, File_Name);
       while not End_Of_File (F) loop
          Put_Line ("Get");
+         Me.Data.Append;
          Get (F, M);
-         Get (F, V.Pos (1));
-         Get (F, V.Pos (2));
-         Get (F, V.Pos (3));
-         Get (F, V.Col (1));
-         Get (F, V.Col (2));
-         Get (F, V.Col (3));
-         Get (F, V.Col (4));
+         Get (F, Me.Data.Last_Element.Pos (1));
+         Get (F, Me.Data.Last_Element.Pos (2));
+         Get (F, Me.Data.Last_Element.Pos (3));
+         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Red_Index));
+         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Green_Index));
+         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Blue_Index));
+         Get (F, Me.Data.Last_Element.Col (Colors_RGBA.Alpha_Index));
          Skip_Line (F);
-         Put (M);
-         Put (V.Pos (1));
-         Put (V.Pos (2));
-         Put (V.Pos (3));
-         Put (V.Col (1));
-         Put (V.Col (2));
-         Put (V.Col (3));
-         Put (V.Col (4));
-         New_Line;
-         Meshes.Vertex_Vectors.Append (Me.Data, V);
+--           Put (M);
+--           Put (V.Pos (1));
+--           Put (V.Pos (2));
+--           Put (V.Pos (3));
+--           Put (V.Col (1));
+--           Put (V.Col (2));
+--           Put (V.Col (3));
+--           Put (V.Col (4));
+--           New_Line;
       end loop;
       Close (F);
 

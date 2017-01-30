@@ -3,7 +3,6 @@ with GL.Programs;
 with GL.Programs.Shaders;
 with GL.Shaders;
 with GL.Shaders.Files;
-with GL.Buffers;
 with GL.Drawings;
 with GL.Programs.Uniforms;
 with GL.Uniforms;
@@ -148,7 +147,6 @@ procedure Dev is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
-      use GL.Buffers;
       use GL.Drawings;
       use GL.Uniforms;
       use Meshes;
@@ -169,8 +167,8 @@ procedure Dev is
 
       loop
          GLFW3.Poll_Events;
-         GL.Buffers.Clear (Color_Plane);
-         GL.Buffers.Clear (Depth_Plane);
+         GL.Drawings.Clear (Color_Plane);
+         GL.Drawings.Clear (Depth_Plane);
 
          Get_Rotation_Input (W, C.Rotation);
          Get_Translation_Input (W, C.Translation_Velocity);
@@ -182,6 +180,8 @@ procedure Dev is
          --GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
          Update (M);
          Update (Parse_Handler.Mesh_List);
+         Draw (M);
+         Draw (Parse_Handler.Mesh_List);
 
          GLFW3.Windows.Swap_Buffers (W);
 

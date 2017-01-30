@@ -2,38 +2,27 @@ with GL.Buffers;
 with GL.Vertex_Array_Objects;
 with GL.Drawings;
 with GL.Math;
-with Generic_Vectors;
 with Ada.Containers.Vectors;
+with Vertices;
 
 package Meshes is
 
    use GL.Math;
 
-   type Vertex is record
-      Pos : Float_Vector3 := (0.0, 0.0, 0.0);
-      Col : Float_Vector4 := (0.0, 0.0, 0.0, 0.0);
-   end record;
-
-   type Vertex_Array is array (Positive range <>) of Vertex;
-
-   package Vertex_Vectors is new Generic_Vectors (Positive, Vertex);
-   subtype Vertex_Vector is Vertex_Vectors.Vector;
-
-   type Mesh_Status is (Under_Construction_Status, GPU_Setup_Status, GPU_Render_Status);
+   type Mesh_State is (Setup_Mesh_State, Draw_Mesh_State);
 
    type Mesh is record
-      Vertex_Array_Name : GL.Vertex_Array_Objects.Vertex_Array_Object;
-      Buffer_Name : GL.Buffers.Buffer;
-      Data : Vertex_Vector (2000);
+      VAO : GL.Vertex_Array_Objects.Vertex_Array_Object;
+      VBO : GL.Buffers.Buffer;
+      Data : Vertices.Vertex_Vector (2000);
       Draw_Mode : GL.Drawings.Mode;
-      Dummy : Boolean;
-      Status : Mesh_Status := GPU_Setup_Status;
+      State : Mesh_State := Setup_Mesh_State;
    end record;
 
    package Mesh_Vectors is new Ada.Containers.Vectors (Positive, Meshes.Mesh, Meshes."=");
 
-   procedure Update (Item : in out Mesh);
    procedure Update (List : in out Mesh_Vectors.Vector);
+   procedure Draw (List : in out Mesh_Vectors.Vector);
 
 
    procedure Make_Grid_Lines (Item : in out Mesh);
