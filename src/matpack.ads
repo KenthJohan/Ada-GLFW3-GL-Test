@@ -4,10 +4,37 @@ package Matpack is
       type Index is (<>);
       type Element is private;
       type Vector is array (Index range <>) of Element;
+      with function "+" (Left : Element; Right : Element) return Element is <>;
+   function Generic_Vector_Vector_Addition (Left : Vector; Right : Vector) return Vector;
+
+   generic
+      type Index is (<>);
+      type Element is private;
       type Matrix is array (Index range <>, Index range <>) of Element;
+      type Vector is array (Index range <>) of Element;      Zero : Element;
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "+" (Left : Element; Right : Element) return Element is <>;
-   procedure Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector);
+   function Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector) return Vector;
+
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Matrix is array (Index range <>, Index range <>) of Element;
+      type Vector is array (Index range <>) of Element;
+      Zero : Element;
+      with function "*" (Left : Element; Right : Element) return Element is <>;
+      with function "+" (Left : Element; Right : Element) return Element is <>;
+   function Generic_Matrix_T1_Vector_Product (Left : Matrix; Right : Vector) return Vector;
+
+
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Matrix is array (Index range <>, Index range <>) of Element;
+      type Vector is array (Index range <>) of Element;
+      with function "*" (Left : Element; Right : Element) return Element is <>;
+      with function "+" (Left : Element; Right : Element) return Element is <>;
+   procedure Generic_Matrix_T0_Vector_Product_Accumulate (Left : Matrix; Right : Vector; Result : in out Vector);
 
 
    -- A^T x
@@ -18,7 +45,7 @@ package Matpack is
       type Vector is array (Index range <>) of Element;
       with function "*" (Left : Element; Right : Element) return Element is <>;
       with function "+" (Left : Element; Right : Element) return Element is <>;
-   procedure Generic_Matrix_T1_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector);
+   procedure Generic_Matrix_T1_Vector_Product_Accumulate (Left : Matrix; Right : Vector; Result : in out Vector);
 
    generic
       type Index is (<>);
@@ -58,10 +85,21 @@ package Matpack is
       type Index is (<>);
       type Element is private;
       type Matrix is array (Index range <>, Index range <>) of Element;
+   procedure Generic_Make_Matrix_Diagonal (Remaining : Element; Diagonal : Element; Result : out Matrix);
+
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Matrix is array (Index, Index) of Element;
+   function Generic_Create_Matrix_Diagonal (Remaining : Element; Diagonal : Element) return Matrix;
+
+   generic
+      type Index is (<>);
+      type Element is private;
+      type Matrix is array (Index, Index) of Element;
       Zero : Element;
       One : Element;
-   procedure Generic_Make_Matrix_Identity (Result : out Matrix);
-
+   function Generic_Create_Matrix_Identidy return Matrix;
 
    generic
       type Index is (<>);

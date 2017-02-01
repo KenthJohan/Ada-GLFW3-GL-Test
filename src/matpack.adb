@@ -3,7 +3,38 @@ with Ada.Text_IO;
 package body Matpack is
 
 
-   procedure Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
+   function Generic_Vector_Vector_Addition (Left : Vector; Right : Vector) return Vector is
+      Result : Vector (Left'Range);
+   begin
+      for I in Left'Range loop
+         Result (I) := Left (I) + Right (I);
+      end loop;
+      return Result;
+   end;
+
+   function Generic_Matrix_T0_Vector_Product (Left : Matrix; Right : Vector) return Vector  is
+      Result : Vector (Left'Range (1)) := (others => Zero);
+   begin
+      for J in Left'Range (2) loop
+         for I in Left'Range (1) loop
+            Result (J) := Result (J) + Left (I, J) * Right (I);
+         end loop;
+      end loop;
+      return Result;
+   end;
+
+   function Generic_Matrix_T1_Vector_Product (Left : Matrix; Right : Vector) return Vector is
+      Result : Vector (Left'Range) := (others => Zero);
+   begin
+      for J in Left'Range (1) loop
+         for I in Left'Range (2) loop
+            Result (J) := Result (J) + Left (J, I) * Right (I);
+         end loop;
+      end loop;
+      return Result;
+   end;
+
+   procedure Generic_Matrix_T0_Vector_Product_Accumulate (Left : Matrix; Right : Vector; Result : in out Vector) is
    begin
       for J in Left'Range (2) loop
          for I in Left'Range (1) loop
@@ -12,10 +43,10 @@ package body Matpack is
       end loop;
    end;
 
-   procedure Generic_Matrix_T1_Vector_Product (Left : Matrix; Right : Vector; Result : in out Vector) is
+   procedure Generic_Matrix_T1_Vector_Product_Accumulate (Left : Matrix; Right : Vector; Result : in out Vector) is
    begin
-      for J in Result'Range loop
-         for I in Right'Range loop
+      for J in Left'Range (1) loop
+         for I in Left'Range (2) loop
             Result (J) := Result (J) + Left (J, I) * Right (I);
          end loop;
       end loop;
@@ -59,7 +90,9 @@ package body Matpack is
       return Result;
    end;
 
-   procedure Generic_Make_Matrix_Identity (Result : out Matrix) is
+
+   function Generic_Create_Matrix_Identidy return Matrix is
+      Result : Matrix;
    begin
       for I in Result'Range (1) loop
          for J in Result'Range (2) loop
@@ -67,6 +100,35 @@ package body Matpack is
                Result (I, J) := One;
             else
                Result (I, J) := Zero;
+            end if;
+         end loop;
+      end loop;
+      return Result;
+   end;
+
+   function Generic_Create_Matrix_Diagonal (Remaining : Element; Diagonal : Element) return Matrix is
+      Result : Matrix;
+   begin
+      for I in Result'Range (1) loop
+         for J in Result'Range (2) loop
+            if I = J then
+               Result (I, J) := Diagonal;
+            else
+               Result (I, J) := Remaining;
+            end if;
+         end loop;
+      end loop;
+      return Result;
+   end;
+
+   procedure Generic_Make_Matrix_Diagonal (Remaining : Element; Diagonal : Element; Result : out Matrix) is
+   begin
+      for I in Result'Range (1) loop
+         for J in Result'Range (2) loop
+            if I = J then
+               Result (I, J) := Diagonal;
+            else
+               Result (I, J) := Remaining;
             end if;
          end loop;
       end loop;

@@ -8,9 +8,8 @@ package body Cameras is
       Result.Rotation := (1.0, 0.0, 0.0, 0.0);
       Result.Position := (0.0, 0.0, 0.0, 0.0);
       Result.Projection_Matrix := (others => (others => 0.0));
-      Make_Matrix_Identity (Result.Rotation_Matrix);
-      Make_Matrix_Identity (Result.Translation_Matrix);
-      Make_Matrix_Identity (Result.Result_Matrix);
+      Result.Rotation_Matrix := Identity;
+      Result.Translation_Matrix := Identity;
    end;
 
 
@@ -18,7 +17,7 @@ package body Cameras is
       use Maths;
    begin
       Make_Perspective_Matrix (Result.FOV, Result.Aspect, Result.Near, Result.Far, Result.Projection_Matrix);
-      Mul_T1 (Result.Rotation_Matrix, Result.Translation_Velocity, Result.Position);
+      Product_Transpose_Accumulate (Result.Rotation_Matrix, Result.Translation_Velocity, Result.Position);
       Make_Translation_Matrix (Result.Position, Result.Translation_Matrix);
       Make_Rotation_Matrix (Result.Rotation, Result.Rotation_Matrix);
       Result.Result_Matrix := Result.Projection_Matrix * Result.Rotation_Matrix * Result.Translation_Matrix;

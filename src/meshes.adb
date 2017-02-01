@@ -95,7 +95,6 @@ package body Meshes is
       Vertices.Make_1 (Item.Data, 1.0, 50);
    end;
 
-
    procedure Make_Sin (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
@@ -107,8 +106,6 @@ package body Meshes is
          Item.Data.Last_Element.Col := (0.0, 1.0, 1.0, 1.0);
       end loop;
    end;
-
-
 
 
 end;

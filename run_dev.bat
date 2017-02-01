@@ -1,4 +1,5 @@
 :loop
+del /s /q bin\dev.exe
 gprbuild -p main.gpr
 pause
 cd bin

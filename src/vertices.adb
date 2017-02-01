@@ -20,6 +20,15 @@ package body Vertices is
       Set_Random (Item.Col);
    end;
 
+   procedure Translate (V : in out Vertex_Vector; T : Float_Vector3) is
+      use Maths;
+   begin
+      for I in V.First_Index .. V.Last_Index loop
+         V (I).Pos := V (I).Pos + T;
+      end loop;
+   end;
+
+
    procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural) is
       use type GL.C.GLfloat;
       use GL.Colors;
