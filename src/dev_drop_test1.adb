@@ -1,12 +1,10 @@
 with Ada.Text_IO;
-with Ada.Float_Text_IO;
 with Ada.Exceptions;
 with Interfaces.C;
 with Interfaces.C.Strings;
 with GLFW3;
 with GLFW3.Windows;
 with GLFW3.Windows.Drops;
-with GL.Drawings;
 with File_Name_List;
 with Ada.Strings;
 with Ada.Strings.Unbounded;

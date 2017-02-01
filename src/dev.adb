@@ -199,6 +199,7 @@ procedure Dev is
    end;
    task Info_Task is
       entry Start;
+      pragma Unreferenced (Start);
       entry Stop;
    end;
 
@@ -215,9 +216,10 @@ procedure Dev is
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Main_Window, Parse_Handler.drop_callback'Unrestricted_Access);
       Render_Loop (Main_Window);
-      Destroy_Window (Main_Window);
       Parse_Handler.Parse_Task.Quit;
-      Info_Task.Stop;
+      Destroy_Window (Main_Window);
+
+      --Info_Task.Stop;
    end;
 
    task body Info_Task is
