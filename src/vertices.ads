@@ -1,7 +1,6 @@
 with GL.Math;
 with Generic_Vectors;
 with GL.Colors;
-with Maths;
 
 package Vertices is
 
@@ -23,5 +22,6 @@ package Vertices is
    procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural);
 
    procedure Translate (V : in out Vertex_Vector; T : Float_Vector3);
+   procedure Transform (V : in out Vertex_Vector; T : Float_Matrix3);
 
 end;

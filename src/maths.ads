@@ -68,6 +68,15 @@ package Maths is
    procedure Make_Rotation_Matrix is new
      Generic_Quaternion_Matrix_4_Conversion (Dimension4, GLfloat, Float_Vector4, Float_Matrix4, 2.0);
 
+   -- f : R^4 -> R^(4x4)
+   function Make_Rotation_Matrix4 is new
+     Generic_Quaternion_Matrix4_Conversion_Function (Dimension4, GLfloat, Float_Vector4, Float_Matrix4, 0.0, 1.0, 2.0);
+
+   -- f : R^4 -> R^(4x4)
+   function Make_Rotation_Matrix3 is new
+     Generic_Quaternion_Matrix3_Conversion_Function (Dimension3, Dimension4, GLfloat, Float_Vector4, Float_Matrix3, 0.0);
+
+
    procedure Put is new
      Generic_Put_Matrix (Dimension, GLfloat, Float_Matrix);
 

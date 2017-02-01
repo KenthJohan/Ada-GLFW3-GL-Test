@@ -18,9 +18,6 @@ package body Parse_Handler is
 
    Name_List : Unbounded_String_Vectors.Vector;
 
-
-
-
    procedure drop_callback (W : GLFW3.Window; Count : Interfaces.C.int; Paths : GLFW3.Windows.Drops.File_Path_List) is
       pragma Unreferenced (W);
       use Interfaces.C;
@@ -49,7 +46,6 @@ package body Parse_Handler is
    procedure Parse (File_Name : String) is
       package Mode_Text_IO is new Ada.Text_IO.Enumeration_IO (GL.Drawings.Mode);
       use Ada.Text_IO;
-      use GL.Math.GLfloat_IO;
       use Mode_Text_IO;
       use Vertices;
       use GL.Math;

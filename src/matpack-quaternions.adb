@@ -39,6 +39,52 @@ package body Matpack.Quaternions is
       Result (I3, I2) := (Two * Item (I3) * Item (I4)) + (Two * Item (I1) * Item (I2));
    end;
 
+   function Generic_Quaternion_Matrix4_Conversion_Function (Item : Quaternion) return Matrix4 is
+      I1 : constant Index := Index'Val (Index'Pos (Index'First) + 0);
+      I2 : constant Index := Index'Val (Index'Pos (Index'First) + 1);
+      I3 : constant Index := Index'Val (Index'Pos (Index'First) + 2);
+      I4 : constant Index := Index'Val (Index'Pos (Index'First) + 3);
+      Q1 : Element renames Item (Index'Val (Index'Pos (Index'First) + 0));
+      Q2 : Element renames Item (Index'Val (Index'Pos (Index'First) + 1));
+      Q3 : Element renames Item (Index'Val (Index'Pos (Index'First) + 2));
+      Q4 : Element renames Item (Index'Val (Index'Pos (Index'First) + 3));
+      Result : Matrix4 := (others => (others => Zero));
+   begin
+      Result (I1, I1) := (Q1 ** 2) + (Q2 ** 2) - (Q3 ** 2) - (Q4 ** 2);
+      Result (I2, I2) := (Q1 ** 2) - (Q2 ** 2) + (Q3 ** 2) - (Q4 ** 2);
+      Result (I3, I3) := (Q1 ** 2) - (Q2 ** 2) - (Q3 ** 2) + (Q4 ** 2);
+      Result (I1, I2) := (Two * Q2 * Q3) - (Two * Q1 * Q4);
+      Result (I2, I1) := (Two * Q2 * Q3) + (Two * Q1 * Q4);
+      Result (I1, I3) := (Two * Q2 * Q4) + (Two * Q1 * Q3);
+      Result (I3, I1) := (Two * Q2 * Q4) - (Two * Q1 * Q3);
+      Result (I2, I3) := (Two * Q3 * Q4) - (Two * Q1 * Q2);
+      Result (I3, I2) := (Two * Q3 * Q4) + (Two * Q1 * Q2);
+      Result (I4, I4) := One;
+      return Result;
+   end;
+
+   function Generic_Quaternion_Matrix3_Conversion_Function (Item : Quaternion) return Matrix3 is
+      I1 : constant Matrix3_Index := Matrix3_Index'First;
+      I2 : constant Matrix3_Index := Matrix3_Index'Succ (Matrix3_Index'First);
+      I3 : constant Matrix3_Index := Matrix3_Index'Succ (Matrix3_Index'Succ (Matrix3_Index'First));
+      Q1 : Element renames Item (Quaternion_Index'First);
+      Q2 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'First));
+      Q3 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'First)));
+      Q4 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'First))));
+      Result : Matrix3;
+   begin
+      Result (I1, I1) := (Q1 ** 2) + (Q2 ** 2) - (Q3 ** 2) - (Q4 ** 2);
+      Result (I2, I2) := (Q1 ** 2) - (Q2 ** 2) + (Q3 ** 2) - (Q4 ** 2);
+      Result (I3, I3) := (Q1 ** 2) - (Q2 ** 2) - (Q3 ** 2) + (Q4 ** 2);
+      Result (I1, I2) := (Two * Q2 * Q3) - (Two * Q1 * Q4);
+      Result (I2, I1) := (Two * Q2 * Q3) + (Two * Q1 * Q4);
+      Result (I1, I3) := (Two * Q2 * Q4) + (Two * Q1 * Q3);
+      Result (I3, I1) := (Two * Q2 * Q4) - (Two * Q1 * Q3);
+      Result (I2, I3) := (Two * Q3 * Q4) - (Two * Q1 * Q2);
+      Result (I3, I2) := (Two * Q3 * Q4) + (Two * Q1 * Q2);
+      return Result;
+   end;
+
    procedure Generic_Axis_Quaternion_Conversion_Procedure (Item : Axis; Amount : Element; Result : out Quaternion) is
       R1 : Element renames Result (Quaternion'First);
       R2 : Element renames Result (Quaternion_Index'Succ (Quaternion'First));

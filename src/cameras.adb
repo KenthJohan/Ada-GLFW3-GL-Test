@@ -19,7 +19,8 @@ package body Cameras is
       Make_Perspective_Matrix (Result.FOV, Result.Aspect, Result.Near, Result.Far, Result.Projection_Matrix);
       Product_Transpose_Accumulate (Result.Rotation_Matrix, Result.Translation_Velocity, Result.Position);
       Make_Translation_Matrix (Result.Position, Result.Translation_Matrix);
-      Make_Rotation_Matrix (Result.Rotation, Result.Rotation_Matrix);
+      --Make_Rotation_Matrix (Result.Rotation, Result.Rotation_Matrix);
+      Result.Rotation_Matrix := Make_Rotation_Matrix4 (Result.Rotation);
       Result.Result_Matrix := Result.Projection_Matrix * Result.Rotation_Matrix * Result.Translation_Matrix;
    end;
 
