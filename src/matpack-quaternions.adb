@@ -2,7 +2,7 @@ package body Matpack.Quaternions is
 
 
    procedure Generic_Quaternion_Quaternion_Hamilton_Product_Procedure (Left, Right : Quaternion; Result : out Quaternion) is
-      --Left_Q1 : Element renames Left (Left'First);
+      --Left_Q (I1) : Element renames Left (Left'First);
       I1 : constant Index := Index'First;
       I2 : constant Index := Index'Succ (Index'First);
       I3 : constant Index := Index'Succ (Index'Succ (Index'First));
@@ -39,50 +39,46 @@ package body Matpack.Quaternions is
       Result (I3, I2) := (Two * Item (I3) * Item (I4)) + (Two * Item (I1) * Item (I2));
    end;
 
-   function Generic_Quaternion_Matrix4_Conversion_Function (Item : Quaternion) return Matrix4 is
-      I1 : constant Index := Index'Val (Index'Pos (Index'First) + 0);
-      I2 : constant Index := Index'Val (Index'Pos (Index'First) + 1);
-      I3 : constant Index := Index'Val (Index'Pos (Index'First) + 2);
-      I4 : constant Index := Index'Val (Index'Pos (Index'First) + 3);
-      Q1 : Element renames Item (Index'Val (Index'Pos (Index'First) + 0));
-      Q2 : Element renames Item (Index'Val (Index'Pos (Index'First) + 1));
-      Q3 : Element renames Item (Index'Val (Index'Pos (Index'First) + 2));
-      Q4 : Element renames Item (Index'Val (Index'Pos (Index'First) + 3));
-      Result : Matrix4 := (others => (others => Zero));
+   function Generic_Quaternion_Matrix4_Conversion_Function (Q : Quaternion) return Matrix4 is
+      I1 : constant Index := Index'First + 0;
+      I2 : constant Index := Index'First + 1;
+      I3 : constant Index := Index'First + 2;
+      I4 : constant Index := Index'First + 3;
+      R : Matrix4 := (others => (others => 0.0));
    begin
-      Result (I1, I1) := (Q1 ** 2) + (Q2 ** 2) - (Q3 ** 2) - (Q4 ** 2);
-      Result (I2, I2) := (Q1 ** 2) - (Q2 ** 2) + (Q3 ** 2) - (Q4 ** 2);
-      Result (I3, I3) := (Q1 ** 2) - (Q2 ** 2) - (Q3 ** 2) + (Q4 ** 2);
-      Result (I1, I2) := (Two * Q2 * Q3) - (Two * Q1 * Q4);
-      Result (I2, I1) := (Two * Q2 * Q3) + (Two * Q1 * Q4);
-      Result (I1, I3) := (Two * Q2 * Q4) + (Two * Q1 * Q3);
-      Result (I3, I1) := (Two * Q2 * Q4) - (Two * Q1 * Q3);
-      Result (I2, I3) := (Two * Q3 * Q4) - (Two * Q1 * Q2);
-      Result (I3, I2) := (Two * Q3 * Q4) + (Two * Q1 * Q2);
-      Result (I4, I4) := One;
-      return Result;
+      R (I1, I1) := (Q (I1) ** 2) + (Q (I2) ** 2) - (Q (I3) ** 2) - (Q (I4) ** 2);
+      R (I2, I2) := (Q (I1) ** 2) - (Q (I2) ** 2) + (Q (I3) ** 2) - (Q (I4) ** 2);
+      R (I3, I3) := (Q (I1) ** 2) - (Q (I2) ** 2) - (Q (I3) ** 2) + (Q (I4) ** 2);
+      R (I1, I2) := (2.0 * Q (I2) * Q (I3)) - (2.0 * Q (I1) * Q (I4));
+      R (I2, I1) := (2.0 * Q (I2) * Q (I3)) + (2.0 * Q (I1) * Q (I4));
+      R (I1, I3) := (2.0 * Q (I2) * Q (I4)) + (2.0 * Q (I1) * Q (I3));
+      R (I3, I1) := (2.0 * Q (I2) * Q (I4)) - (2.0 * Q (I1) * Q (I3));
+      R (I2, I3) := (2.0 * Q (I3) * Q (I4)) - (2.0 * Q (I1) * Q (I2));
+      R (I3, I2) := (2.0 * Q (I3) * Q (I4)) + (2.0 * Q (I1) * Q (I2));
+      R (I4, I4) := 1.0;
+      return R;
    end;
 
-   function Generic_Quaternion_Matrix3_Conversion_Function (Item : Quaternion) return Matrix3 is
-      I1 : constant Matrix3_Index := Matrix3_Index'First;
-      I2 : constant Matrix3_Index := Matrix3_Index'Succ (Matrix3_Index'First);
-      I3 : constant Matrix3_Index := Matrix3_Index'Succ (Matrix3_Index'Succ (Matrix3_Index'First));
-      Q1 : Element renames Item (Quaternion_Index'First);
-      Q2 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'First));
-      Q3 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'First)));
-      Q4 : Element renames Item (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'Succ (Quaternion_Index'First))));
-      Result : Matrix3;
+   function Generic_Quaternion_Matrix3_Conversion_Function (Q : Quaternion) return Matrix3 is
+      R1 : constant Matrix3_Index := Matrix3_Index'First + 0;
+      R2 : constant Matrix3_Index := Matrix3_Index'First + 1;
+      R3 : constant Matrix3_Index := Matrix3_Index'First + 2;
+      Q1 : constant Quaternion_Index := Quaternion_Index'First + 0;
+      Q2 : constant Quaternion_Index := Quaternion_Index'First + 1;
+      Q3 : constant Quaternion_Index := Quaternion_Index'First + 2;
+      Q4 : constant Quaternion_Index := Quaternion_Index'First + 3;
+      R : Matrix3;
    begin
-      Result (I1, I1) := (Q1 ** 2) + (Q2 ** 2) - (Q3 ** 2) - (Q4 ** 2);
-      Result (I2, I2) := (Q1 ** 2) - (Q2 ** 2) + (Q3 ** 2) - (Q4 ** 2);
-      Result (I3, I3) := (Q1 ** 2) - (Q2 ** 2) - (Q3 ** 2) + (Q4 ** 2);
-      Result (I1, I2) := (Two * Q2 * Q3) - (Two * Q1 * Q4);
-      Result (I2, I1) := (Two * Q2 * Q3) + (Two * Q1 * Q4);
-      Result (I1, I3) := (Two * Q2 * Q4) + (Two * Q1 * Q3);
-      Result (I3, I1) := (Two * Q2 * Q4) - (Two * Q1 * Q3);
-      Result (I2, I3) := (Two * Q3 * Q4) - (Two * Q1 * Q2);
-      Result (I3, I2) := (Two * Q3 * Q4) + (Two * Q1 * Q2);
-      return Result;
+      R (R1, R1) := (Q (Q1) ** 2) + (Q (Q2) ** 2) - (Q (Q3) ** 2) - (Q (Q4) ** 2);
+      R (R2, R2) := (Q (Q1) ** 2) - (Q (Q2) ** 2) + (Q (Q3) ** 2) - (Q (Q4) ** 2);
+      R (R3, R3) := (Q (Q1) ** 2) - (Q (Q2) ** 2) - (Q (Q3) ** 2) + (Q (Q4) ** 2);
+      R (R1, R2) := (2.0 * Q (Q2) * Q (Q3)) - (2.0 * Q (Q1) * Q (Q4));
+      R (R2, R1) := (2.0 * Q (Q2) * Q (Q3)) + (2.0 * Q (Q1) * Q (Q4));
+      R (R1, R3) := (2.0 * Q (Q2) * Q (Q4)) + (2.0 * Q (Q1) * Q (Q3));
+      R (R3, R1) := (2.0 * Q (Q2) * Q (Q4)) - (2.0 * Q (Q1) * Q (Q3));
+      R (R2, R3) := (2.0 * Q (Q3) * Q (Q4)) - (2.0 * Q (Q1) * Q (Q2));
+      R (R3, R2) := (2.0 * Q (Q3) * Q (Q4)) + (2.0 * Q (Q1) * Q (Q2));
+      return R;
    end;
 
    procedure Generic_Axis_Quaternion_Conversion_Procedure (Item : Axis; Amount : Element; Result : out Quaternion) is

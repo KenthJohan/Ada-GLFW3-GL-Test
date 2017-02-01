@@ -216,12 +216,12 @@ procedure Dev is
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Main_Window, Parse_Handler.drop_callback'Unrestricted_Access);
 
-      Info_Task.Start;
+      --Info_Task.Start;
       Render_Loop (Main_Window);
       Parse_Handler.Parse_Task.Quit;
       Destroy_Window (Main_Window);
 
-      Info_Task.Stop;
+      --Info_Task.Stop;
    end;
 
    task body Info_Task is

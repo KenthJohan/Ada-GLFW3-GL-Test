@@ -1,6 +1,7 @@
 with Ada.Numerics.Float_Random;
 with GL.C;
 with Maths;
+with Ada.Numerics; use Ada.Numerics;
 
 package body Vertices is
 
@@ -37,36 +38,53 @@ package body Vertices is
    end;
 
 
-
-
-   procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural) is
+   procedure Make_2 (V : in out Vertex_Vector; D : GLfloat; Count : Natural; R : Float_Matrix3; T : Float_Vector3) is
       use type GL.C.GLfloat;
       use GL.Colors;
-      T : GLfloat;
+      procedure Set_Pos (P : Float_Vector3) is
+         use Maths;
+      begin
+         V.Last_Element.Pos := R * P + T;
+      end;
+      U : GLfloat;
    begin
       V.Append;
-      V.Last_Element.Pos := (0.0, 0.0, 0.0);
+      Set_Pos ((0.0, 0.0, 0.0));
       V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
       V.Append;
-      V.Last_Element.Pos := (D * GLfloat (Count), 0.0, 0.0);
+      Set_Pos ((D * GLfloat (Count), 0.0, 0.0));
       V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
 
       for I in 0 .. Count - 1 loop
          if I mod 10 = 0 then
-            T := 0.4;
+            U := 0.4;
          elsif I mod 5 = 0 then
-            T := 0.2;
+            U := 0.2;
          else
-            T := 0.1;
+            U := 0.1;
          end if;
          V.Append;
-         V.Last_Element.Pos := (D * GLfloat (I), -1.0 * T, 0.0);
+         Set_Pos ((D * GLfloat (I), -1.0 * U, 0.0));
          V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
          V.Append;
-         V.Last_Element.Pos := (D * GLfloat (I), 1.0 * T, 0.0);
+         Set_Pos ((D * GLfloat (I), 1.0 * U, 0.0));
          V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
       end loop;
+   end;
 
+   procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural) is
+      use Maths;
+      use type GL.Math.GLfloat;
+      Q : Float_Vector4;
+      R : Float_Matrix3;
+   begin
+      Q := Convert_Axis_Angle_To_Quaternion ((0.0, 0.0, 1.0), 0.0);
+      R := Make_Rotation_Matrix3 (Q);
+      Make_2 (V, D, Count, R, (0.0, 0.0, 0.0));
+      Q := Convert_Axis_Angle_To_Quaternion ((0.0, 0.0, 1.0), - (Pi / 2.0));
+      R := Make_Rotation_Matrix3 (Q);
+      Make_2 (V, D, Count, R, (0.0, 0.0, 0.0));
+      null;
    end;
 
 end;
