@@ -14,17 +14,18 @@ package Maths is
    use Matpack.Projections;
    use Matpack.Quaternions;
    use Matpack.Text_IO;
-
+   use Matpack.Additions;
+   use Matpack.Products;
 
 
    function "+" is new
-     Matpack.Additions.Generic_CVecN_CVecN_Addition (Dimension3, GLfloat, Float_Vector3);
+     Generic_CVecN_CVecN_Addition (Dimension3, GLfloat, Float_Vector3);
 
    function "*" is new
-     Matpack.Products.Generic_CMatNxN_CVecN_Product (Dimension3, GLfloat, Float_Matrix3, Float_Vector3);
+     Generic_Constrained_Square_Matrix_Vector_Product (Dimension3, GLfloat, Float_Matrix3, Float_Vector3);
 
    function "*" is new
-     Matpack.Products.Generic_CMatNxN_CMatNxN_Product_IKJ (Dimension4, GLfloat, Float_Matrix4);
+     Generic_Constrained_Square_Matrix_Matrix_Product_IKJ (Dimension4, GLfloat, Float_Matrix4);
 
 
 
@@ -66,7 +67,7 @@ package Maths is
 
    -- A^T x + x -> x
    procedure Product_Transpose_Accumulate is new
-     Matpack.Products.Generic_CMatNxN_CMatNxN_CVecN_Transpose_Product_Accumulate
+     Generic_Constrianed_Square_Matrix_Vector_Transpose_Product_Accumulate
        (Dimension4, GLfloat, Float_Matrix4, Float_Vector4);
 
    -- A^T x = y

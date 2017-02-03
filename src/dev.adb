@@ -17,21 +17,48 @@ with GLFW3.Windows.Keys;
 with Ada.Text_IO;
 
 with OpenGL_Loader_Test;
-with OS_Systems;
+--with OS_Systems;
 
 with GL.Math;
 with Maths;
 with Meshes;
 with Parse_Handler;
 with Cameras;
-with Inputs;
+--with Inputs;
 with GLFW3.Windows.Drops;
+with Interfaces.C;
 
 procedure Dev is
 
    Main_Window : GLFW3.Window := GLFW3.Null_Window;
    C : Cameras.Camera;
 
+   procedure Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) with Convention => C;
+   procedure Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
+      pragma Unreferenced (Mods, Scancode, W);
+      use GLFW3.Windows.Keys;
+   begin
+      if A = Key_Action_Press then
+         case K is
+         when Key_Kp_0 =>
+            Parse_Handler.Hide (0);
+         when Key_Kp_1 =>
+            Parse_Handler.Hide (1);
+         when Key_Kp_2 =>
+            Parse_Handler.Hide (2);
+         when Key_Kp_3 =>
+            Parse_Handler.Hide (3);
+         when Key_Kp_4 =>
+            Parse_Handler.Hide (4);
+         when Key_Kp_5 =>
+            Parse_Handler.Hide (5);
+         when Key_Kp_6 =>
+            Parse_Handler.Hide (6);
+         when others =>
+            null;
+         end case;
+      end if;
+   end;
 
 
    procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
@@ -157,13 +184,17 @@ procedure Dev is
       P : constant Program := Setup_Program;
       Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
       Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");
-      M : Meshes.Mesh_Vectors.Vector := Meshes.Mesh_Vectors.To_Vector (3);
+      M : Meshes.Mesh_Vectors.Vector (3);
    begin
       Cameras.Init (C);
       Set_Current (P);
-      Make_Grid_Lines (M (1));
-      Make_Triangle (M (2));
-      Make_Sin (M (3));
+
+      M.Append;
+      Make_Grid_Lines (M.Last_Element);
+      M.Append;
+      Make_Triangle (M.Last_Element);
+      M.Append;
+      Make_Sin (M.Last_Element);
 
       loop
          GLFW3.Poll_Events;
@@ -178,10 +209,16 @@ procedure Dev is
 
          GL.Uniforms.Modify_1f (Time_Location, 0.0);
          --GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
+
+
+
          Update (M);
          Update (Parse_Handler.Mesh_List);
          Draw (M);
          Draw (Parse_Handler.Mesh_List);
+
+
+
 
          GLFW3.Windows.Swap_Buffers (W);
 
@@ -197,11 +234,12 @@ procedure Dev is
    task Render_Task is
       entry Start;
    end;
-   task Info_Task is
-      entry Start;
-      pragma Unreferenced (Start);
-      entry Stop;
-   end;
+--     task Info_Task is
+--        entry Start;
+--        pragma Unreferenced (Start);
+--        entry Stop;
+--        pragma Unreferenced (Stop);
+--     end;
 
    task body Render_Task is
       use GLFW3;
@@ -213,6 +251,7 @@ procedure Dev is
       Main_Window := Create_Window_Ada (1024, 1024, "Hello123##");
       Viewport (0, 0, 1024, 1024);
       Make_Context_Current (Main_Window);
+      Set_Key_Callback_Procedure (Main_Window, Key_Callback'Unrestricted_Access);
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Main_Window, Parse_Handler.drop_callback'Unrestricted_Access);
 
@@ -224,33 +263,33 @@ procedure Dev is
       --Info_Task.Stop;
    end;
 
-   task body Info_Task is
-      use GLFW3;
-      use Maths;
-      use Ada.Text_IO;
-   begin
-      accept Start;
-      loop
-         select
-            accept Stop;
-            exit;
-         else
-            delay 0.1;
-            Put_Line ("Info_Task");
-            OS_Systems.Clear_Screen;
-            Put (C.Projection_Matrix);
-            New_Line;
-            Put (C.Rotation_Matrix);
-            New_Line;
-            Put (C.Translation_Matrix);
-            New_Line;
-            Put (C.Result_Matrix);
-            New_Line;
-            Inputs.Put_State (Main_Window, Inputs.Config_1);
-         end select;
-      end loop;
-      Put_Line ("Info_Task complete");
-   end;
+--     task body Info_Task is
+--        use GLFW3;
+--        use Maths;
+--        use Ada.Text_IO;
+--     begin
+--        accept Start;
+--        loop
+--           select
+--              accept Stop;
+--              exit;
+--           else
+--              delay 0.1;
+--              Put_Line ("Info_Task");
+--              OS_Systems.Clear_Screen;
+--              Put (C.Projection_Matrix);
+--              New_Line;
+--              Put (C.Rotation_Matrix);
+--              New_Line;
+--              Put (C.Translation_Matrix);
+--              New_Line;
+--              Put (C.Result_Matrix);
+--              New_Line;
+--              Inputs.Put_State (Main_Window, Inputs.Config_1);
+--           end select;
+--        end loop;
+--        Put_Line ("Info_Task complete");
+--     end;
 
 
 begin

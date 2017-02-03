@@ -18,6 +18,8 @@ package body Parse_Handler is
 
    Name_List : Unbounded_String_Vectors.Vector;
 
+   Key_Pad_List_Current : Natural range Key_Pad_List'Range:= Key_Pad_List'First;
+
    procedure drop_callback (W : GLFW3.Window; Count : Interfaces.C.int; Paths : GLFW3.Windows.Drops.File_Path_List) is
       pragma Unreferenced (W);
       use Interfaces.C;
@@ -76,7 +78,8 @@ package body Parse_Handler is
 
       Me.Draw_Mode := GL.Drawings.Line_Strip_Mode;
       Meshes.Mesh_Vectors.Append (Mesh_List, Me);
-
+      Key_Pad_List (Key_Pad_List_Current) := Mesh_List.Last_Index;
+      Key_Pad_List_Current := Key_Pad_List_Current + 1;
    exception
       when E : others =>
          Put_Line (Ada.Exceptions.Exception_Message (E));
@@ -102,13 +105,24 @@ package body Parse_Handler is
          or
 
             accept Quit;
-            Put_Line ("Parse_Task Quit: ");
             exit;
 
          end select;
       end loop;
+      Put_Line ("Parse_Task Quit: ");
    end;
 
 
+   procedure Hide (I : Natural) is
+      use Meshes;
+   begin
+      if Parse_Handler.Mesh_List.Exists (Parse_Handler.Key_Pad_List (I)) then
+         if Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Draw_Mesh_State then
+            Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Hide_Mesh_State;
+         elsif Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Hide_Mesh_State then
+            Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Draw_Mesh_State;
+         end if;
+      end if;
+   end;
 
 end;

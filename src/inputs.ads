@@ -12,8 +12,6 @@ package Inputs is
 
    type Binding_Array is array (Action) of GLFW3.Windows.Keys.Key;
 
-
-
    procedure Put_State (W : Window; Item : Binding_Array);
 
       Config_1 : constant Binding_Array :=

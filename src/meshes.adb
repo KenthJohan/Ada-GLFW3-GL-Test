@@ -1,6 +1,7 @@
 with System;
 with GL.C;
 with GL.C.Complete;
+with GL.Math;
 
 package body Meshes is
 
@@ -11,6 +12,7 @@ package body Meshes is
       use GL.Buffers;
       use GL.C;
       use GL.C.Complete;
+      use GL.Math;
       use System;
       use Vertices;
       use Vertices.Vertex_Vectors;
@@ -33,10 +35,10 @@ package body Meshes is
 
    procedure Update (List : in out Mesh_Vectors.Vector) is
    begin
-      for E : Mesh of List loop
-         if E.State = Setup_Mesh_State then
-            Setup (E);
-            E.State := Draw_Mesh_State;
+      for I in List.First_Index .. List.Last_Index loop
+         if List (I).State = Setup_Mesh_State then
+            Setup (List (I));
+            List (I).State := Draw_Mesh_State;
             exit;
          end if;
       end loop;
@@ -45,10 +47,10 @@ package body Meshes is
 
    procedure Draw (List : in out Mesh_Vectors.Vector) is
    begin
-      for E : Mesh of List loop
-         if E.State = Draw_Mesh_State then
-            GL.Vertex_Array_Objects.Bind (E.VAO);
-            GL.Drawings.Draw (E.Draw_Mode, 0, Integer (E.Data.Last_Index));
+      for I in List.First_Index .. List.Last_Index loop
+         if List (I).State = Draw_Mesh_State then
+            GL.Vertex_Array_Objects.Bind (List (I).VAO);
+            GL.Drawings.Draw (List (I).Draw_Mode, 0, Integer (List (I).Data.Last_Index));
          end if;
       end loop;
    end;
@@ -73,6 +75,7 @@ package body Meshes is
    procedure Make_Grid_Lines (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
+      use GL.Math;
       D : constant GLfloat := 10.0;
    begin
       --Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
@@ -98,6 +101,7 @@ package body Meshes is
    procedure Make_Sin (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
+      use GL.Math;
    begin
       Item.Draw_Mode := GL.Drawings.Line_Strip_Mode;
       for I in 1 .. 40 loop
