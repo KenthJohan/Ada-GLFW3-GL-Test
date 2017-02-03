@@ -1,21 +1,21 @@
 with GL.Math;
-with Matpack;
-with Matpack.Projections;
-with Matpack.Quaternions;
-with Matpack.Text_IO;
-with Matpack.Products;
-with Matpack.Additions;
+with Home_Mathematics;
+with Home_Mathematics.Projections;
+with Home_Mathematics.Quaternions;
+with Home_Mathematics.Text_IO;
+with Home_Mathematics.Products;
+with Home_Mathematics.Additions;
 
 package Maths is
 
    use GL.Math;
    use type GL.Math.GLfloat;
-   use Matpack;
-   use Matpack.Projections;
-   use Matpack.Quaternions;
-   use Matpack.Text_IO;
-   use Matpack.Additions;
-   use Matpack.Products;
+   use Home_Mathematics;
+   use Home_Mathematics.Projections;
+   use Home_Mathematics.Quaternions;
+   use Home_Mathematics.Text_IO;
+   use Home_Mathematics.Additions;
+   use Home_Mathematics.Products;
 
 
    function "+" is new
@@ -95,21 +95,21 @@ package Maths is
      Generic_Quaternion_Matrix3_Conversion_Function (Dimension3, Dimension4, GLfloat, Float_Vector4, Float_Matrix3);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension4, GLfloat, Float_Matrix4);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension4, GLfloat, Float_Matrix4);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension3, GLfloat, Float_Matrix3);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension3, GLfloat, Float_Matrix3);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Constrained_Vector_N (Dimension4, GLfloat, Float_Vector4);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector_N (Dimension4, GLfloat, Float_Vector4);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Constrained_Vector_N (Dimension3, GLfloat, Float_Vector3);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector_N (Dimension3, GLfloat, Float_Vector3);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Unconstrained_Matrix_NxN (Dimension, GLfloat, Float_Matrix);
+     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Matrix_NxN (Dimension, GLfloat, Float_Matrix);
 
    procedure Put is new
-     Matpack.Text_IO.Generic_Put_Unconstrained_Vector_N (Dimension, GLfloat, Float_Vector);
+     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Vector_N (Dimension, GLfloat, Float_Vector);
 
 end;

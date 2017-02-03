@@ -1,7 +1,6 @@
-with Ada.Exceptions;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
-with Ada.Text_IO;
+
 
 package File_Name_List is
 
