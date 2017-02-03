@@ -2,6 +2,9 @@ with GL.Math;
 with Matpack;
 with Matpack.Projections;
 with Matpack.Quaternions;
+with Matpack.Text_IO;
+with Matpack.Products;
+with Matpack.Additions;
 
 package Maths is
 
@@ -10,18 +13,24 @@ package Maths is
    use Matpack;
    use Matpack.Projections;
    use Matpack.Quaternions;
+   use Matpack.Text_IO;
+
+
 
    function "+" is new
-     Generic_Vector_Vector_Addition (Dimension, GLfloat, Float_Vector);
+     Matpack.Additions.Generic_CVecN_CVecN_Addition (Dimension3, GLfloat, Float_Vector3);
 
    function "*" is new
-     Generic_Matrix_T0_Vector_Product (Dimension, GLfloat, Float_Matrix, Float_Vector, 0.0);
+     Matpack.Products.Generic_CMatNxN_CVecN_Product (Dimension3, GLfloat, Float_Matrix3, Float_Vector3);
+
+   function "*" is new
+     Matpack.Products.Generic_CMatNxN_CMatNxN_Product_IKJ (Dimension4, GLfloat, Float_Matrix4);
+
+
 
    function "*" is new
      Generic_Quaternion_Quaternion_Hamilton_Product (Dimension4, GLfloat, Float_Vector4, 0.0);
 
-   function "*" is new
-     Generic_Matrix_Matrix_Product_IKJ (Dimension, GLfloat, Float_Matrix, 0.0);
 
    procedure Normalize is new
      Generic_Normalize (Dimension, GLfloat, Float_Vector, 0.0, 1.0, Elementary_Functions.Sqrt);
@@ -32,6 +41,13 @@ package Maths is
    -- | 0  0  0  1 |
    function Identity is new
      Generic_Create_Matrix_Identidy (Dimension4, GLfloat, Float_Matrix4, 0.0, 1.0);
+
+   -- | 1  0  0  0 |
+   -- | 0  1  0  0 |
+   -- | 0  0  1  0 |
+   -- | 0  0  0  1 |
+   function Identity is new
+     Generic_Create_Matrix_Identidy (Dimension3, GLfloat, Float_Matrix3, 0.0, 1.0);
 
    -- | d  r  r  r |
    -- | r  d  r  r |
@@ -50,7 +66,8 @@ package Maths is
 
    -- A^T x + x -> x
    procedure Product_Transpose_Accumulate is new
-     Generic_Matrix_T1_Vector_Product_Accumulate (Dimension, GLfloat, Float_Matrix, Float_Vector);
+     Matpack.Products.Generic_CMatNxN_CMatNxN_CVecN_Transpose_Product_Accumulate
+       (Dimension4, GLfloat, Float_Matrix4, Float_Vector4);
 
    -- A^T x = y
    function Product_Transpose is new
@@ -76,11 +93,22 @@ package Maths is
    function Make_Rotation_Matrix3 is new
      Generic_Quaternion_Matrix3_Conversion_Function (Dimension3, Dimension4, GLfloat, Float_Vector4, Float_Matrix3);
 
+   procedure Put is new
+     Matpack.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension4, GLfloat, Float_Matrix4);
 
    procedure Put is new
-     Generic_Put_Matrix (Dimension, GLfloat, Float_Matrix);
+     Matpack.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension3, GLfloat, Float_Matrix3);
 
    procedure Put is new
-     Generic_Put_Vector (Dimension, GLfloat, Float_Vector);
+     Matpack.Text_IO.Generic_Put_Constrained_Vector_N (Dimension4, GLfloat, Float_Vector4);
+
+   procedure Put is new
+     Matpack.Text_IO.Generic_Put_Constrained_Vector_N (Dimension3, GLfloat, Float_Vector3);
+
+   procedure Put is new
+     Matpack.Text_IO.Generic_Put_Unconstrained_Matrix_NxN (Dimension, GLfloat, Float_Matrix);
+
+   procedure Put is new
+     Matpack.Text_IO.Generic_Put_Unconstrained_Vector_N (Dimension, GLfloat, Float_Vector);
 
 end;

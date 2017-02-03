@@ -101,7 +101,7 @@ procedure Dev is
       if Get_Key (W, Key_L) = Key_Action_Press then
          C.FOV := C.FOV - 0.001;
       end if;
-      Normalize (Q);
+      Normalize (Float_Vector (Q));
    end;
 
 

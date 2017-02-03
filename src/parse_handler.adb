@@ -59,7 +59,7 @@ package body Parse_Handler is
          Put_Line ("Get");
          Me.Data.Append;
          Get (F, M);
-         Get (F, Me.Data.Last_Element.Pos);
+         Get (F, Float_Vector (Me.Data.Last_Element.Pos));
          Colors_RGBA.Get (F, Me.Data.Last_Element.Col);
          Skip_Line (F);
 --           Put (M);

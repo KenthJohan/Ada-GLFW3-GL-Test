@@ -114,16 +114,7 @@ package Matpack is
       with function "/" (Left : Element; Right : Element) return Element is <>;
    procedure Generic_Normalize (Result : in out Vector);
 
-   generic
-      type Index is (<>);
-      type Element is digits <>;
-      type Matrix is array (Index range <>, Index range <>) of Element;
-   procedure Generic_Put_Matrix (Item : Matrix);
 
-   generic
-      type Index is (<>);
-      type Element is digits <>;
-      type Vector is array (Index range <>) of Element;
-   procedure Generic_Put_Vector (Item : Vector);
+
 
 end;

@@ -1,5 +1,3 @@
-with Ada.Text_IO;
-
 package body Matpack is
 
 
@@ -156,27 +154,7 @@ package body Matpack is
    end;
 
 
-   procedure Generic_Put_Matrix (Item : Matrix) is
-      package IO is new Ada.Text_IO.Float_IO (Element);
-      use IO;
-      use Ada.Text_IO;
-   begin
-      for I in Item'Range (1) loop
-         for J in Item'Range (1) loop
-            Put (Item (J, I), 3, 3, 0);
-         end loop;
-         New_Line;
-      end loop;
-   end;
 
 
-   procedure Generic_Put_Vector (Item : Vector) is
-      package IO is new Ada.Text_IO.Float_IO (Element);
-      use IO;
-      use Ada.Text_IO;
-   begin
-      for E of Item loop
-         Put (E, 3, 3, 0);
-      end loop;
-   end;
+
 end;
