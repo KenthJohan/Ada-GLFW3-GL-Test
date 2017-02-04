@@ -19,7 +19,7 @@ package Maths is
 
 
    function "+" is new
-     Generic_CVecN_CVecN_Addition (Dimension3, GLfloat, Float_Vector3);
+     Generic_Constrained_Vector_Vector_Addition (Dimension3, GLfloat, Float_Vector3);
 
    function "*" is new
      Generic_Constrained_Square_Matrix_Vector_Product (Dimension3, GLfloat, Float_Matrix3, Float_Vector3);
@@ -95,21 +95,21 @@ package Maths is
      Generic_Quaternion_Matrix3_Conversion_Function (Dimension3, Dimension4, GLfloat, Float_Vector4, Float_Matrix3);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension4, GLfloat, Float_Matrix4);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Square_Matrix (Dimension4, GLfloat, Float_Matrix4);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Constrained_Matrix_NxN (Dimension3, GLfloat, Float_Matrix3);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Square_Matrix (Dimension3, GLfloat, Float_Matrix3);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector_N (Dimension4, GLfloat, Float_Vector4);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector (Dimension4, GLfloat, Float_Vector4);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector_N (Dimension3, GLfloat, Float_Vector3);
+     Home_Mathematics.Text_IO.Generic_Put_Constrained_Vector (Dimension3, GLfloat, Float_Vector3);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Matrix_NxN (Dimension, GLfloat, Float_Matrix);
+     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Matrix (Dimension, GLfloat, Float_Matrix);
 
    procedure Put is new
-     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Vector_N (Dimension, GLfloat, Float_Vector);
+     Home_Mathematics.Text_IO.Generic_Put_Unconstrained_Vector (Dimension, GLfloat, Float_Vector);
 
 end;
