@@ -59,10 +59,10 @@ package body Parse_Handler is
       Open (F, In_File, File_Name);
       while not End_Of_File (F) loop
          Put_Line ("Get");
-         Me.Data.Append;
+         --Me.Data.Append;
          Get (F, M);
-         Get (F, Float_Vector (Me.Data.Last_Element.Pos));
-         Colors_RGBA.Get (F, Me.Data.Last_Element.Col);
+         --Get (F, Float_Vector (Me.Data.Last_Element.Pos));
+         --Colors_RGBA.Get (F, Me.Data.Last_Element.Col);
          Skip_Line (F);
 --           Put (M);
 --           Put (V.Pos (1));
@@ -76,7 +76,7 @@ package body Parse_Handler is
       end loop;
       Close (F);
 
-      Me.Draw_Mode := GL.Drawings.Line_Strip_Mode;
+      --Me.Draw_Mode := GL.Drawings.Line_Strip_Mode;
       Meshes.Mesh_Vectors.Append (Mesh_List, Me);
       Key_Pad_List (Key_Pad_List_Current) := Mesh_List.Last_Index;
       Key_Pad_List_Current := Key_Pad_List_Current + 1;
@@ -116,13 +116,14 @@ package body Parse_Handler is
    procedure Hide (I : Natural) is
       use Meshes;
    begin
-      if Parse_Handler.Mesh_List.Exists (Parse_Handler.Key_Pad_List (I)) then
-         if Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Draw_Mesh_State then
-            Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Hide_Mesh_State;
-         elsif Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Hide_Mesh_State then
-            Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Draw_Mesh_State;
-         end if;
-      end if;
+      null;
+--        if Parse_Handler.Mesh_List.Exists (Parse_Handler.Key_Pad_List (I)) then
+--           if Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Draw_Mesh_State then
+--              Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Hide_Mesh_State;
+--           elsif Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State = Hide_Mesh_State then
+--              Parse_Handler.Mesh_List (Parse_Handler.Key_Pad_List (I)).State := Draw_Mesh_State;
+--           end if;
+--        end if;
    end;
 
 end;

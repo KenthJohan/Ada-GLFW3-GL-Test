@@ -20,154 +20,20 @@ with OpenGL_Loader_Test;
 --with OS_Systems;
 
 with GL.Math;
-with Maths;
+
 with Meshes;
 with Parse_Handler;
 with Cameras;
 --with Inputs;
 with GLFW3.Windows.Drops;
-with Interfaces.C;
+
 
 procedure Dev is
 
    Main_Window : GLFW3.Window := GLFW3.Null_Window;
    C : Cameras.Camera;
 
-   procedure Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) with Convention => C;
-   procedure Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
-      pragma Unreferenced (Mods, Scancode, W);
-      use GLFW3.Windows.Keys;
-   begin
-      if A = Key_Action_Press then
-         case K is
-         when Key_Kp_0 =>
-            Parse_Handler.Hide (0);
-         when Key_Kp_1 =>
-            Parse_Handler.Hide (1);
-         when Key_Kp_2 =>
-            Parse_Handler.Hide (2);
-         when Key_Kp_3 =>
-            Parse_Handler.Hide (3);
-         when Key_Kp_4 =>
-            Parse_Handler.Hide (4);
-         when Key_Kp_5 =>
-            Parse_Handler.Hide (5);
-         when Key_Kp_6 =>
-            Parse_Handler.Hide (6);
-         when others =>
-            null;
-         end case;
-      end if;
-   end;
 
-
-   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
-      use GL.C;
-      use type GL.C.GLfloat;
-      use GLFW3.Windows.Keys;
-      Amount : constant GLfloat := 0.1;
-   begin
-      T := (0.0, 0.0, 0.0, 0.0);
-      if Get_Key (W, Key_W) = Key_Action_Press then
-         T (3) := T (3) + Amount;
-      end if;
-      if Get_Key (W, Key_S) = Key_Action_Press then
-         T (3) := T (3) - Amount;
-      end if;
-      if Get_Key (W, Key_Space) = Key_Action_Press then
-         T (2) := T (2) - Amount;
-      end if;
-      if Get_Key (W, Key_Left_Control) = Key_Action_Press then
-         T (2) := T (2) + Amount;
-      end if;
-      if Get_Key (W, Key_A) = Key_Action_Press then
-         T (1) := T (1) + Amount;
-      end if;
-      if Get_Key (W, Key_D) = Key_Action_Press then
-         T (1) := T (1) - Amount;
-      end if;
-   end;
-
-   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Float_Vector4) is
-      use GL.Math;
-      use type GL.Math.GLfloat;
-      use GLFW3.Windows.Keys;
-      use Maths;
-      Amount : constant GLfloat := 0.01;
-      Pith_Axis : constant Float_Vector3 := (1.0, 0.0, 0.0);
-      Yaw_Axis : constant Float_Vector3 := (0.0, 1.0, 0.0);
-      Roll_Axis : constant Float_Vector3 := (0.0, 0.0, 1.0);
-      Pith_Up : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
-      Pith_Down : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
-      Yaw_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
-      Yaw_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
-      Roll_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
-      Roll_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
-   begin
-      if Get_Key (W, Key_Up) = Key_Action_Press then
-         Q := Q * Pith_Up;
-      end if;
-      if Get_Key (W, Key_Down) = Key_Action_Press then
-         Q := Q * Pith_Down;
-      end if;
-      if Get_Key (W, Key_Left) = Key_Action_Press then
-         Q := Q * Yaw_Left;
-      end if;
-      if Get_Key (W, Key_Right) = Key_Action_Press then
-         Q := Q * Yaw_Right;
-      end if;
-      if Get_Key (W, Key_Q) = Key_Action_Press then
-         Q := Q * Roll_Left;
-      end if;
-      if Get_Key (W, Key_E) = Key_Action_Press then
-         Q := Q * Roll_Right;
-      end if;
-      if Get_Key (W, Key_O) = Key_Action_Press then
-         C.FOV := C.FOV + 0.001;
-      end if;
-      if Get_Key (W, Key_L) = Key_Action_Press then
-         C.FOV := C.FOV - 0.001;
-      end if;
-      Normalize (Float_Vector (Q));
-   end;
-
-
-
-
-   function Setup_Shader (Name : String; Stage : GL.Shaders.Shader_Stage) return GL.Shaders.Shader is
-      use GL.Shaders;
-      use GL.Shaders.Files;
-      use Ada.Text_IO;
-      Item : constant Shader := Create_Empty (Stage);
-   begin
-      Set_Source_File (Item, Name);
-      Compile_Checked (Item);
-      return Item;
-   exception
-      when Compile_Error =>
-         Put_Line ("Compile_Error");
-         Put_Line (Get_Compile_Log (Item));
-         return Item;
-   end;
-
-   function Setup_Program return GL.Programs.Program is
-      use GL.Shaders;
-      use GL.Programs;
-      use GL.Programs.Shaders;
-      use GL.Shaders.Files;
-      use Ada.Text_IO;
-      Item : constant Program := GL.Programs.Create_Empty;
-   begin
-      GL.Programs.Shaders.Attach (Item, Setup_Shader ("test.glvs", Vertex_Stage));
-      GL.Programs.Shaders.Attach (Item, Setup_Shader ("test.glfs", Fragment_Stage));
-      GL.Programs.Link_Checked (Item);
-      return Item;
-   exception
-      when Link_Error =>
-         Put_Line ("Link_Error");
-         Put_Line (GL.Programs.Get_Link_Log (Item));
-         return Item;
-   end;
 
 
    procedure Render_Loop (W : GLFW3.Window) is
@@ -184,17 +50,12 @@ procedure Dev is
       P : constant Program := Setup_Program;
       Transform_Location : constant GL.Uniforms.Location := Get (P, "transform");
       Time_Location : constant GL.Uniforms.Location := Get (P, "u_time");
-      M : Meshes.Mesh_Vectors.Vector (3);
+      M : Meshes.Mesh;
    begin
       Cameras.Init (C);
       Set_Current (P);
 
-      M.Append;
-      Make_Grid_Lines (M.Last_Element);
-      M.Append;
-      Make_Triangle (M.Last_Element);
-      M.Append;
-      Make_Sin (M.Last_Element);
+
 
       loop
          GLFW3.Poll_Events;
@@ -211,11 +72,6 @@ procedure Dev is
          --GL.Uniforms.Modify_1f (Time_Location, GL.C.GLfloat (GLFW3.Clock));
 
 
-
-         Update (M);
-         Update (Parse_Handler.Mesh_List);
-         Draw (M);
-         Draw (Parse_Handler.Mesh_List);
 
 
 

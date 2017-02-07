@@ -1,5 +1,4 @@
 with Ada.Numerics.Float_Random;
-with GL.C;
 with Maths;
 with Ada.Numerics; use Ada.Numerics;
 

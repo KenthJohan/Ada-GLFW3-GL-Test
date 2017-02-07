@@ -21,9 +21,14 @@ package body Generic_Vectors is
       return Container.Data'Size;
    end;
 
-   function Get (C : in out Vector; K : Index) return Accessor is
+   function Get_Reference (C : in out Vector; K : Index) return Accessor is
    begin
       return Accessor'(Generic_Vectors_Element => C.Data (K)'Access);
+   end;
+
+   function Get_Reference (Container : aliased in out Vector; Position : Cursor) return Accessor is
+   begin
+      return Accessor'(Generic_Vectors_Element => Container.Data (Position.Index)'Access);
    end;
 
    function First_Element (C : in out Vector) return Accessor is
@@ -63,6 +68,35 @@ package body Generic_Vectors is
       else
          return False;
       end if;
+   end;
+
+   function Has_Element (Position : Cursor) return Boolean is
+   begin
+      return Position.Index <= Position.Container.Last;
+   end;
+
+   function First (Item : Iterator) return Cursor is
+   begin
+      return Position : Cursor do
+         Position.Container := Item.Container;
+         Position.Index := 1;
+      end return;
+   end;
+
+   function Next (Item : Iterator; Position : Cursor) return Cursor is
+      pragma Unreferenced (Item);
+   begin
+      return C : Cursor do
+         C.Container := Position.Container;
+         C.Index := Position.Index + 1;
+      end return;
+   end;
+
+   function Iterate (Item : Vector) return Iterators.Forward_Iterator'Class is
+   begin
+      return I : Iterator do
+         I.Container := Item'Unrestricted_Access;
+      end return;
    end;
 
 end;

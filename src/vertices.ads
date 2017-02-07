@@ -1,11 +1,14 @@
 with GL.Math;
 with Generic_Vectors;
 with GL.Colors;
+with System;
+with GL.C;
 
 package Vertices is
 
    use GL.Math;
    use GL.Colors.Colors_RGBA;
+   use System;
 
    type Vertex is record
       Pos : Float_Vector3 := (0.0, 0.0, 0.0);
@@ -13,6 +16,9 @@ package Vertices is
    end record;
 
    type Vertex_Array is array (Positive range <>) of Vertex;
+
+   use type GL.C.GLsizei;
+   Vertex_Array_Stride : constant GL.C.GLsizei := Vertex_Array'Component_Size / Storage_Unit;
 
    package Vertex_Vectors is new Generic_Vectors (Vertex);
    subtype Vertex_Vector is Vertex_Vectors.Vector;

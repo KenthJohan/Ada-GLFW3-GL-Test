@@ -6,7 +6,7 @@ project Main is
 
    for Languages use ("ada");
    for Source_Dirs use ("src");
-   for Main use ("dev.adb", "dev_drop_test.adb", "dev_drop_test1.adb", "dev_glfw.adb");
+   for Main use ("dev_mesh_test.adb", "dev_vector_test.adb");
    --for Main use ("test.adb");
    for Object_Dir use "obj";
    for Library_Dir use "lib";
