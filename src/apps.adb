@@ -12,7 +12,7 @@ with Ada.Strings.Fixed;
 with System;
 with System.Address_Image;
 with Ada.Unchecked_Conversion;
-with System.Storage_Elements;
+with Ada.Real_Time;
 
 package body Apps is
 
@@ -20,27 +20,36 @@ package body Apps is
       pragma Unreferenced (Mods, Scancode);
       use Ada.Text_IO;
       use Ada.Strings.Fixed;
+      use type GL.C.GLfloat;
       --use Ada.Integer_Text_IO;
       use System;
-      procedure Put_Address (A : Address) is
-      begin
-         Put (Address_Image (A));
-      end;
-      procedure Put_Column (S : String) is
-      begin
-         Put (Head (S, 30));
-      end;
+--        procedure Put_Address (A : Address) is
+--        begin
+--           Put (Address_Image (A));
+--        end;
       type App_Access is access all App;
       function Convert is new Ada.Unchecked_Conversion (Address, App_Access);
-      Main_App : access App := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));
+      Main_App : constant access App := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));
    begin
       if A = Key_Action_Press then
          case K is
             when Key_Kp_Add =>
                --Put_Column ("App'Address");
                --pragma Assert (Main_App.Check_Sum = 555);
-               Ada.Text_IO.Put_Line (Main_App.Check_Sum'Img);
-               Put_Address (GLFW3.Windows.Get_Window_User_Pointer (W));
+               --Ada.Text_IO.Put_Line (Main_App.Check_Sum'Img);
+               --Put_Address (GLFW3.Windows.Get_Window_User_Pointer (W));
+               Main_App.Grid_Mesh.Vertex_List.Empty;
+               Main_App.Grid_Stride := Main_App.Grid_Stride + 0.1;
+               Make_Grid_Lines (Main_App.Grid_Mesh, 100.0, Main_App.Grid_Stride);
+               null;
+            when Key_Kp_Subtract =>
+               --Put_Column ("App'Address");
+               --pragma Assert (Main_App.Check_Sum = 555);
+               --Ada.Text_IO.Put_Line (Main_App.Check_Sum'Img);
+               --Put_Address (GLFW3.Windows.Get_Window_User_Pointer (W));
+               Main_App.Grid_Mesh.Vertex_List.Empty;
+               Main_App.Grid_Stride := Main_App.Grid_Stride - 0.1;
+               Make_Grid_Lines (Main_App.Grid_Mesh, 100.0, Main_App.Grid_Stride);
                null;
 --           when Key_Kp_0 =>
 --              Parse_Handler.Hide (0);
@@ -74,13 +83,21 @@ package body Apps is
 
    task body Info_Task is
       --package Time_Span_IO is new Ada.Text_IO.Integer_IO (Duration);
-      --use Time_Span_IO;
+      use Ada.Real_Time;
       use Ada.Text_IO;
    begin
-      accept Start;
       loop
+         select
+            accept Pause;
+            accept Resume;
+         or
+            accept Quit;
+            exit;
+         else
+            null;
+         end select;
          Put ("Time span :");
-         Put (Duration'Image (To_Duration (A.Main_Time_Span / A.Main_Frame_Counter)));
+         Put (Duration'Image (To_Duration (Simple_Moving_Averages.Diff (A.Main_SMA))));
          New_Line;
          --Put ("Frame counter :");
          --Put (Natural'Image (A.Main_Frame_Counter));
@@ -95,31 +112,25 @@ package body Apps is
 --           New_Line;
 --           Put (A.Main_Camera.Result_Matrix);
 --           New_Line;
-         A.Main_Time_Span := A.Main_Time_End - A.Main_Time_Start;
-         A.Main_Frame_Counter := 1;
          delay 1.0;
-         select
-            accept Quit;
-            exit;
-         else
-            null;
-         end select;
       end loop;
    end;
 
 
    task body Controller_Task is
    begin
-      accept Start;
       loop
-         Input_Controller (A.all);
-         delay 0.01;
          select
+            accept Pause;
+            accept Resume;
+         or
             accept Quit;
             exit;
          else
             null;
          end select;
+         --Input_Controller (A.all);
+         delay 1.0;
       end loop;
    end;
 
@@ -183,4 +194,10 @@ package body Apps is
       end if;
    end;
 
-end Apps;
+   procedure Test (Item : in out App) is
+   begin
+      null;
+   end;
+   pragma Unreferenced (Test);
+
+end;

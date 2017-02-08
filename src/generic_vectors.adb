@@ -1,5 +1,10 @@
 package body Generic_Vectors is
 
+   procedure Empty (Container : out Vector) is
+   begin
+      Container.Last := 0;
+   end;
+
    procedure Append (Container : in out Vector) is
    begin
       Container.Last := Container.Last + 1;

@@ -32,6 +32,7 @@ package Generic_Vectors is
    type Accessor (Generic_Vectors_Element : not null access Element) is private with
      Implicit_Dereference => Generic_Vectors_Element;
 
+   procedure Empty (Container : out Vector);
 
    function Get_Reference (C : in out Vector; K : Index) return Accessor;
    function Get_Reference (Container : aliased in out Vector; Position : Cursor) return Accessor;

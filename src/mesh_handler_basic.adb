@@ -1,4 +1,3 @@
-with GL.C;
 with GL.Math;
 with System;
 with GL.C.Complete;
@@ -29,25 +28,6 @@ package body Mesh_Handler_Basic is
       Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address, Static_Usage);
    end;
 
-
-   procedure Make_Triangle (Item : in out Mesh) is
-      use GL;
-      use GL.Buffers;
-      use type GL.C.GLfloat;
-   begin
-      Item.Draw_Mode := GL.Drawings.Triangles_Mode;
-      Item.Vertex_List.Append;
-      Item.Vertex_List.Last_Element.Pos := (0.5, -0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (1.0, 0.0, 0.0, 1.0);
-      Item.Vertex_List.Append;
-      Item.Vertex_List.Last_Element.Pos := (-0.5, -0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (0.0, 1.0, 0.0, 1.0);
-      Item.Vertex_List.Append;
-      Item.Vertex_List.Last_Element.Pos := (0.0,  0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (0.0, 0.0, 1.0, 1.0);
-      Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
-   end;
-
    procedure Draw (Item : in out Mesh) is
    begin
       Item.Dummy1 := False;
@@ -73,6 +53,53 @@ package body Mesh_Handler_Basic is
             exit;
          end if;
       end loop;
+   end;
+
+   procedure Make_Triangle (Item : in out Mesh) is
+      use GL;
+      use GL.Buffers;
+      use type GL.C.GLfloat;
+   begin
+      Item.Main_Mesh_Status := Contruction_Mesh_Status;
+      Item.Draw_Mode := GL.Drawings.Triangles_Mode;
+      Item.Vertex_List.Append;
+      Item.Vertex_List.Last_Element.Pos := (0.5, -0.5, 0.0);
+      Item.Vertex_List.Last_Element.Col := (1.0, 0.0, 0.0, 1.0);
+      Item.Vertex_List.Append;
+      Item.Vertex_List.Last_Element.Pos := (-0.5, -0.5, 0.0);
+      Item.Vertex_List.Last_Element.Col := (0.0, 1.0, 0.0, 1.0);
+      Item.Vertex_List.Append;
+      Item.Vertex_List.Last_Element.Pos := (0.0,  0.5, 0.0);
+      Item.Vertex_List.Last_Element.Col := (0.0, 0.0, 1.0, 1.0);
+      Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
+   end;
+
+   procedure Make_Grid_Lines (Item : in out Mesh; Size : GL.C.GLfloat; Stride : GL.C.GLfloat) is
+      use GL;
+      use GL.Buffers;
+      use type GL.C.GLfloat;
+      use GL.C;
+      Count : constant Natural := Natural (Size / Stride);
+      X1 : GLfloat;
+   begin
+      Item.Main_Mesh_Status := Contruction_Mesh_Status;
+      Item.Draw_Mode := GL.Drawings.Lines_Mode;
+      for I in -Count .. Count loop
+         X1 := Stride * GLfloat (I);
+         Item.Vertex_List.Append;
+         Item.Vertex_List.Last_Element.Pos := (X1, -Size, 0.0);
+         Item.Vertex_List.Last_Element.Col := (1.0, 1.0, 1.0, 0.4);
+         Item.Vertex_List.Append;
+         Item.Vertex_List.Last_Element.Pos := (X1, Size, 0.0);
+         Item.Vertex_List.Last_Element.Col := (1.0, 1.0, 1.0, 0.4);
+         Item.Vertex_List.Append;
+         Item.Vertex_List.Last_Element.Pos := (-Size, X1, 0.0);
+         Item.Vertex_List.Last_Element.Col := (1.0, 1.0, 1.0, 0.4);
+         Item.Vertex_List.Append;
+         Item.Vertex_List.Last_Element.Pos := (Size, X1, 0.0);
+         Item.Vertex_List.Last_Element.Col := (1.0, 1.0, 1.0, 0.4);
+      end loop;
+      Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
    end;
 
 end;
