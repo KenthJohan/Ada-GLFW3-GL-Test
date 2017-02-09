@@ -18,7 +18,7 @@ begin
 
    Main_Mesh_Vector.Append;
    Mesh_Handler_Basic.Make_Triangle (Main_Mesh_Vector.Last_Element);
-   Mesh_Handler_Basic.GPU_Load (Main_Mesh_Vector);
+   Mesh_Handler_Basic.Update (Main_Mesh_Vector);
 
    --Main_Mesh_Vector.Append;
    --Mesh_Handler_Basic.Make_Grid_Lines (Main_Mesh_Vector.Last_Element);
@@ -39,7 +39,7 @@ begin
 
       Mesh_Handler_Basic.Draw (Main_Mesh_Vector);
 
-      Mesh_Handler_Basic.GPU_Load (Main_App.Grid_Mesh);
+      Mesh_Handler_Basic.Update (Main_App.Grid_Mesh);
       Mesh_Handler_Basic.Draw (Main_App.Grid_Mesh);
 
       GLFW3.Windows.Swap_Buffers (Main_App.Main_Window);

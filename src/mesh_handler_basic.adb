@@ -1,6 +1,11 @@
+--with Ada.Text_IO;
+
 with GL.Math;
-with System;
 with GL.C.Complete;
+
+with System;
+
+with Debugs;
 
 package body Mesh_Handler_Basic is
 
@@ -15,6 +20,7 @@ package body Mesh_Handler_Basic is
       use type GL.C.GLuint;
       use type GL.C.GLsizei;
    begin
+      Debugs.Enqueue (1, "GPU Load Mesh");
       Item.VAO := Create_Attribute;
       Item.VBO := Create_Buffer;
       Set_Attribute_Enable (Item.VAO, 0);
@@ -26,6 +32,25 @@ package body Mesh_Handler_Basic is
       glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Vertices.Vertex_Array_Stride);
       --Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, System.Null_Address, Static_Usage);
       Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address, Static_Usage);
+   end;
+
+   procedure Update (Item : in out Mesh) is
+   begin
+      if Item.Main_Mesh_Status = GPU_Load_Mesh_Status then
+         GPU_Load (Item);
+         Item.Main_Mesh_Status := Draw_Mesh_Status;
+      end if;
+   end;
+
+   procedure Update (Item : in out Mesh_Vector) is
+   begin
+      for E of Item loop
+         if E.Main_Mesh_Status = GPU_Load_Mesh_Status then
+            GPU_Load (E);
+            E.Main_Mesh_Status := Draw_Mesh_Status;
+            exit;
+         end if;
+      end loop;
    end;
 
    procedure Draw (Item : in out Mesh) is
@@ -44,16 +69,7 @@ package body Mesh_Handler_Basic is
       end loop;
    end;
 
-   procedure GPU_Load (Item : in out Mesh_Vector) is
-   begin
-      for E of Item loop
-         if E.Main_Mesh_Status = GPU_Load_Mesh_Status then
-            GPU_Load (E);
-            E.Main_Mesh_Status := Draw_Mesh_Status;
-            exit;
-         end if;
-      end loop;
-   end;
+
 
    procedure Make_Triangle (Item : in out Mesh) is
       use GL;

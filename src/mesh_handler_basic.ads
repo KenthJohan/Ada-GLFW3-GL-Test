@@ -22,8 +22,9 @@ package Mesh_Handler_Basic is
    subtype Mesh_Vector is Mesh_Vectors.Vector;
 
 
-   procedure GPU_Load (Item : in out Mesh);
-   procedure GPU_Load (Item : in out Mesh_Vector);
+   procedure Update (Item : in out Mesh_Vector);
+   procedure Update (Item : in out Mesh);
+
    procedure Draw (Item : in out Mesh);
    procedure Draw (Item : in out Mesh_Vector);
 

@@ -1,18 +1,24 @@
-with GL.C.Initializations;
-with OpenGL_Loader_Test;
-with Shaders;
-with GL.Programs.Uniforms;
---with OS_Systems;
---with Maths;
-
 with Ada.Text_IO;
 with Ada.Strings;
 with Ada.Strings.Fixed;
--- with Ada.Integer_Text_IO;
 with System;
 with System.Address_Image;
+
 with Ada.Unchecked_Conversion;
 with Ada.Real_Time;
+
+with GL.C.Initializations;
+with GL.Programs.Uniforms;
+
+
+with OpenGL_Loader_Test;
+with Shaders;
+
+with Debugs;
+
+--with Generic_Vectors;
+--with OS_Systems;
+--with Maths;
 
 package body Apps is
 
@@ -20,13 +26,8 @@ package body Apps is
       pragma Unreferenced (Mods, Scancode);
       use Ada.Text_IO;
       use Ada.Strings.Fixed;
-      use type GL.C.GLfloat;
-      --use Ada.Integer_Text_IO;
       use System;
---        procedure Put_Address (A : Address) is
---        begin
---           Put (Address_Image (A));
---        end;
+      use type GL.C.GLfloat;
       type App_Access is access all App;
       function Convert is new Ada.Unchecked_Conversion (Address, App_Access);
       Main_App : constant access App := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));
@@ -34,19 +35,11 @@ package body Apps is
       if A = Key_Action_Press then
          case K is
             when Key_Kp_Add =>
-               --Put_Column ("App'Address");
-               --pragma Assert (Main_App.Check_Sum = 555);
-               --Ada.Text_IO.Put_Line (Main_App.Check_Sum'Img);
-               --Put_Address (GLFW3.Windows.Get_Window_User_Pointer (W));
                Main_App.Grid_Mesh.Vertex_List.Empty;
                Main_App.Grid_Stride := Main_App.Grid_Stride + 0.1;
                Make_Grid_Lines (Main_App.Grid_Mesh, 100.0, Main_App.Grid_Stride);
                null;
             when Key_Kp_Subtract =>
-               --Put_Column ("App'Address");
-               --pragma Assert (Main_App.Check_Sum = 555);
-               --Ada.Text_IO.Put_Line (Main_App.Check_Sum'Img);
-               --Put_Address (GLFW3.Windows.Get_Window_User_Pointer (W));
                Main_App.Grid_Mesh.Vertex_List.Empty;
                Main_App.Grid_Stride := Main_App.Grid_Stride - 0.1;
                Make_Grid_Lines (Main_App.Grid_Mesh, 100.0, Main_App.Grid_Stride);
@@ -93,12 +86,15 @@ package body Apps is
          or
             accept Quit;
             exit;
-         else
+         or
+            delay 1.0;
             null;
          end select;
          Put ("Time span :");
          Put (Duration'Image (To_Duration (Simple_Moving_Averages.Diff (A.Main_SMA))));
          New_Line;
+         Debugs.Put_Lines;
+
          --Put ("Frame counter :");
          --Put (Natural'Image (A.Main_Frame_Counter));
          --New_Line;
@@ -112,7 +108,6 @@ package body Apps is
 --           New_Line;
 --           Put (A.Main_Camera.Result_Matrix);
 --           New_Line;
-         delay 1.0;
       end loop;
    end;
 
@@ -126,11 +121,11 @@ package body Apps is
          or
             accept Quit;
             exit;
-         else
+         or
+            delay 1.0;
             null;
          end select;
          --Input_Controller (A.all);
-         delay 1.0;
       end loop;
    end;
 
