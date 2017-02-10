@@ -2,7 +2,7 @@ with GL.Programs.Shaders;
 with GL.Shaders.Files;
 with Ada.Text_IO;
 
-package body Shaders is
+package body Simple_Shaders is
 
    function Setup_Shader (Name : String; Stage : GL.Shaders.Shader_Stage) return GL.Shaders.Shader is
       use GL.Shaders;
@@ -39,4 +39,4 @@ package body Shaders is
          return Item;
    end;
 
-end Shaders;
+end;

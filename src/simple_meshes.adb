@@ -7,7 +7,7 @@ with System;
 
 with Simple_Debug_Systems;
 
-package body Mesh_Handler_Basic is
+package body Simple_Meshes is
 
    procedure Initialize (Item : in out Mesh) is
       use GL;
@@ -29,7 +29,7 @@ package body Mesh_Handler_Basic is
       Set_Attribute_Memory_Layout (Item.VAO, 1, Float_Vector4'Length, Float_Type, False, Float_Vector3'Size / Storage_Unit);
       glVertexArrayAttribBinding (GLuint (Item.VAO), 0, 0);
       glVertexArrayAttribBinding (GLuint (Item.VAO), 1, 0);
-      glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Vertices.Vertex_Array_Stride);
+      glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Simple_Vertices.Vertex_Array_Stride);
       --Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, System.Null_Address, Static_Usage);
       Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address, Static_Usage);
    end;
@@ -153,15 +153,6 @@ package body Mesh_Handler_Basic is
       end loop;
       Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
    end;
-
-
-
-
-
-
-
-
-
 
 
 

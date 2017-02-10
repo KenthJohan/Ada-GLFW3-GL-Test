@@ -1,11 +1,11 @@
-with Vertices;
+with Simple_Vertices;
 with GL.Vertex_Array_Objects;
 with GL.Buffers;
 with GL.Drawings;
 with Home_Containers.Generic_Vectors;
 with GL.C;
 
-package Mesh_Handler_Basic is
+package Simple_Meshes is
 
    type Mesh_Status is (Uninitialized_Mesh_Status, Contruction_Mesh_Status, GPU_Load_Mesh_Status, Draw_Mesh_Status);
 
@@ -13,7 +13,7 @@ package Mesh_Handler_Basic is
       Dummy1 : Boolean := False;
       VAO : GL.Vertex_Array_Objects.Vertex_Array_Object;
       VBO : GL.Buffers.Buffer;
-      Vertex_List : Vertices.Vertex_Vector (10000);
+      Vertex_List : Simple_Vertices.Vertex_Vector (10000);
       Draw_Mode : GL.Drawings.Mode := GL.Drawings.Line_Strip_Mode;
       Main_Mesh_Status : Mesh_Status := Uninitialized_Mesh_Status;
    end record;

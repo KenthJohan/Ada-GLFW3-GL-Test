@@ -1,6 +1,6 @@
 with GL.Math;
 
-package Cameras is
+package Simple_Cameras is
 
    use GL.Math;
    use type GL.Math.GLfloat;

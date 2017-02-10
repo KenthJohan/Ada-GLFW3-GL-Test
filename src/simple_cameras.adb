@@ -1,6 +1,6 @@
 with Maths;
 
-package body Cameras is
+package body Simple_Cameras is
 
    procedure Init (Result : out Camera) is
       use Maths;

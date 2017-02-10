@@ -4,7 +4,7 @@ with GL.Colors;
 with System;
 with GL.C;
 
-package Vertices is
+package Simple_Vertices is
 
    use GL.Math;
    use GL.Colors.Colors_RGBA;

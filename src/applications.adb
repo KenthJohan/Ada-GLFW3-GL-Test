@@ -1,5 +1,4 @@
 with Ada.Unchecked_Conversion;
-with GLFW3.Windows;
 
 with System;
 
@@ -8,12 +7,14 @@ with Interfaces.C;
 
 with GL.C.Initializations;
 with GL.Programs.Uniforms;
+with GL.Drawings;
 
+with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 
 with OpenGL_Loader_Test;
-with Shaders;
-with GL.Drawings;
+
+with Simple_Shaders;
 
 
 
@@ -35,7 +36,7 @@ package body Applications is
 
    procedure Key_Callback (Item_Application : in out Application; K : GLFW3.Windows.Keys.Key; A : GLFW3.Windows.Keys.Key_Action) is
       use GLFW3.Windows.Keys;
-      use Mesh_Handler_Basic;
+      use Simple_Meshes;
       use type GL.C.GLfloat;
    begin
       if A = Key_Action_Press then
@@ -68,18 +69,18 @@ package body Applications is
       GLFW3.Windows.Set_Window_User_Pointer (Item.Main_Window, Item'Address);
       GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.P);
 
-      Item.Main_Program := Shaders.Setup_Program;
+      Item.Main_Program := Simple_Shaders.Setup_Program;
       Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program, "transform");
       Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program, "u_time");
 
-      Cameras.Init (Item.Main_Camera);
+      Simple_Cameras.Init (Item.Main_Camera);
       GL.Programs.Set_Current (Item.Main_Program);
 
 
 
-      Mesh_Handler_Basic.Make_Triangle (Item.Main_Mesh);
-      Mesh_Handler_Basic.Initialize (Item.Grid_Mesh);
-      Mesh_Handler_Basic.Initialize (Item.Main_Mesh);
+      Simple_Meshes.Make_Triangle (Item.Main_Mesh);
+      Simple_Meshes.Initialize (Item.Grid_Mesh);
+      Simple_Meshes.Initialize (Item.Main_Mesh);
    end;
 
 
@@ -121,7 +122,7 @@ package body Applications is
 
 
    procedure Render_Stuff (Item : in out Application) is
-      use Mesh_Handler_Basic;
+      use Simple_Meshes;
    begin
       Update (Item.Grid_Mesh);
       GL.Drawings.Clear (GL.Drawings.Color_Plane);
@@ -136,7 +137,7 @@ package body Applications is
       procedure GLFW3_Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
          pragma Unreferenced (Mods, Scancode);
          use System;
-         use Mesh_Handler_Basic;
+         use Simple_Meshes;
          type Application_Access is access all Application;
          function Convert is new Ada.Unchecked_Conversion (Address, Application_Access);
          Main_App : constant Application_Access := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));

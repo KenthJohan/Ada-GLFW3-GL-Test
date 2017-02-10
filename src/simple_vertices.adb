@@ -2,7 +2,7 @@ with Ada.Numerics.Float_Random;
 with Maths;
 with Ada.Numerics; use Ada.Numerics;
 
-package body Vertices is
+package body Simple_Vertices is
 
    procedure Set_Random (Item : out Color_Amount_Vector) is
       use GL.Colors;

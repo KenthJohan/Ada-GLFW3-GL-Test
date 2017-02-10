@@ -1,8 +1,11 @@
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
+
 with Maths;
+
 with GL.Math;
-with Cameras;
+
+with Simple_Cameras;
 
 package body Applications.Inputs is
 
@@ -89,7 +92,7 @@ package body Applications.Inputs is
 
    procedure Get_Camera_Input (A : in out Application) is
       use type GL.Math.GLfloat;
-      use Cameras;
+      use Simple_Cameras;
       use GLFW3.Windows.Keys;
    begin
       if Get_Key (A.Main_Window, Key_O) = Key_Action_Press then
