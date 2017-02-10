@@ -24,7 +24,7 @@ package Applications is
       Main_Debug_Queue : Simple_Debug_Systems.Debug_Message_Queue;
       Grid_Stride : GL.C.GLfloat := 1.0;
       Grid_Mesh : Mesh_Handler_Basic.Mesh;
-      Main_Mesh_Vector : Mesh_Handler_Basic.Mesh_Vector (5);
+      Main_Mesh : Mesh_Handler_Basic.Mesh;
       Main_SMA : Simple_Moving_Averages.SMA;
       Main_Camera : Cameras.Camera;
       Main_Program : GL.Programs.Program;

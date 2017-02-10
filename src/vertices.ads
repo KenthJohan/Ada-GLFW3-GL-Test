@@ -1,5 +1,5 @@
 with GL.Math;
-with Generic_Vectors;
+with Home_Containers.Generic_Vectors;
 with GL.Colors;
 with System;
 with GL.C;
@@ -20,7 +20,7 @@ package Vertices is
    use type GL.C.GLsizei;
    Vertex_Array_Stride : constant GL.C.GLsizei := Vertex_Array'Component_Size / Storage_Unit;
 
-   package Vertex_Vectors is new Generic_Vectors (Vertex);
+   package Vertex_Vectors is new Home_Containers.Generic_Vectors (Vertex);
    subtype Vertex_Vector is Vertex_Vectors.Vector;
 
    procedure Set_Random_Color (Item : out Vertex);

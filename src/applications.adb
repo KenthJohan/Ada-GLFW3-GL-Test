@@ -75,9 +75,11 @@ package body Applications is
       Cameras.Init (Item.Main_Camera);
       GL.Programs.Set_Current (Item.Main_Program);
 
-      Item.Main_Mesh_Vector.Append;
-      Mesh_Handler_Basic.Make_Triangle (Item.Main_Mesh_Vector.Last_Element);
-      Mesh_Handler_Basic.Update (Item.Main_Mesh_Vector);
+
+
+      Mesh_Handler_Basic.Make_Triangle (Item.Main_Mesh);
+      Mesh_Handler_Basic.Initialize (Item.Grid_Mesh);
+      Mesh_Handler_Basic.Initialize (Item.Main_Mesh);
    end;
 
 
@@ -125,7 +127,7 @@ package body Applications is
       GL.Drawings.Clear (GL.Drawings.Color_Plane);
       GL.Drawings.Clear (GL.Drawings.Depth_Plane);
       Draw (Item.Grid_Mesh);
-      Draw (Item.Main_Mesh_Vector);
+      Draw (Item.Main_Mesh);
    end;
 
 

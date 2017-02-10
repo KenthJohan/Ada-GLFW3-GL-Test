@@ -9,7 +9,7 @@ with Simple_Debug_Systems;
 
 package body Mesh_Handler_Basic is
 
-   procedure GPU_Load (Item : in out Mesh) is
+   procedure Initialize (Item : in out Mesh) is
       use GL;
       use GL.Vertex_Array_Objects;
       use GL.Buffers;
@@ -20,7 +20,7 @@ package body Mesh_Handler_Basic is
       use type GL.C.GLuint;
       use type GL.C.GLsizei;
    begin
-      Simple_Debug_Systems.Enqueue (1, "GPU Load Mesh");
+      Simple_Debug_Systems.Enqueue (1, "GPU Init Mesh Storage");
       Item.VAO := Create_Attribute;
       Item.VBO := Create_Buffer;
       Set_Attribute_Enable (Item.VAO, 0);
@@ -32,6 +32,35 @@ package body Mesh_Handler_Basic is
       glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Vertices.Vertex_Array_Stride);
       --Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, System.Null_Address, Static_Usage);
       Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address, Static_Usage);
+   end;
+
+
+   procedure Initialize (Item : in out Mesh_Vector) is
+   begin
+      for E of Item loop
+         if E.Main_Mesh_Status = Uninitialized_Mesh_Status then
+            Initialize (E);
+            E.Main_Mesh_Status := Contruction_Mesh_Status;
+         end if;
+      end loop;
+      null;
+   end;
+
+
+   procedure GPU_Load (Item : in out Mesh) is
+      use GL;
+      use GL.Vertex_Array_Objects;
+      use GL.Buffers;
+      use GL.C;
+      use GL.C.Complete;
+      use GL.Math;
+      use System;
+      use type GL.C.GLuint;
+      use type GL.C.GLsizei;
+   begin
+      Item.Dummy1 := False;
+      Simple_Debug_Systems.Enqueue (1, "GPU Load Mesh");
+      Redefine_Storage (Item.VBO, 0, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address);
    end;
 
    procedure Update (Item : in out Mesh) is
@@ -68,6 +97,13 @@ package body Mesh_Handler_Basic is
          end if;
       end loop;
    end;
+
+
+
+
+
+
+
 
 
 
@@ -117,5 +153,17 @@ package body Mesh_Handler_Basic is
       end loop;
       Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
    end;
+
+
+
+
+
+
+
+
+
+
+
+
 
 end;
