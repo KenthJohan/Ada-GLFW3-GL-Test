@@ -11,7 +11,7 @@ package Simple_Vertices is
    use System;
 
    type Vertex is record
-      Pos : Float_Vector3 := (0.0, 0.0, 0.0);
+      Pos : Real_Float_Vector3 := (0.0, 0.0, 0.0);
       Col : Color_Amount_Vector := (0.0, 0.0, 0.0, 0.0);
    end record;
 
@@ -25,9 +25,9 @@ package Simple_Vertices is
 
    procedure Set_Random_Color (Item : out Vertex);
 
-   procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural);
+   procedure Make_1 (V : in out Vertex_Vector; D : Real_Float; Count : Natural);
 
-   procedure Translate (V : in out Vertex_Vector; T : Float_Vector3);
-   procedure Transform (V : in out Vertex_Vector; T : Float_Matrix3);
+   procedure Translate (V : in out Vertex_Vector; T : Real_Float_Vector3);
+   procedure Transform (V : in out Vertex_Vector; T : Real_Float_Matrix3);
 
 end;

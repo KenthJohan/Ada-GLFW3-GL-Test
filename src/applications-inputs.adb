@@ -23,13 +23,13 @@ package body Applications.Inputs is
    end;
 
 
-   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
+   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Real_Float_Vector4) is
       use GLFW3;
       use GLFW3.Windows;
       use GL.Math;
       use GLFW3.Windows.Keys;
-      use type GL.Math.GLfloat;
-      Amount : constant GLfloat := 0.1;
+      use type GL.Math.Real_Float;
+      Amount : constant Real_Float := 0.1;
    begin
       T := (0.0, 0.0, 0.0, 0.0);
       if Get_Key (W, Key_W) = Key_Action_Press then
@@ -52,21 +52,21 @@ package body Applications.Inputs is
       end if;
    end;
 
-   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Float_Vector4) is
+   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Real_Float_Vector4) is
       use Maths;
       use GL.Math;
       use GLFW3.Windows.Keys;
-      use type GL.Math.GLfloat;
-      Amount : constant GLfloat := 0.01;
-      Pith_Axis : constant Float_Vector3 := (1.0, 0.0, 0.0);
-      Yaw_Axis : constant Float_Vector3 := (0.0, 1.0, 0.0);
-      Roll_Axis : constant Float_Vector3 := (0.0, 0.0, 1.0);
-      Pith_Up : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
-      Pith_Down : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
-      Yaw_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
-      Yaw_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
-      Roll_Left : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
-      Roll_Right : constant Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
+      use type GL.Math.Real_Float;
+      Amount : constant Real_Float := 0.01;
+      Pith_Axis : constant Real_Float_Vector3 := (1.0, 0.0, 0.0);
+      Yaw_Axis : constant Real_Float_Vector3 := (0.0, 1.0, 0.0);
+      Roll_Axis : constant Real_Float_Vector3 := (0.0, 0.0, 1.0);
+      Pith_Up : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, Amount);
+      Pith_Down : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Pith_Axis, -Amount);
+      Yaw_Left : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, Amount);
+      Yaw_Right : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Yaw_Axis, -Amount);
+      Roll_Left : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, Amount);
+      Roll_Right : constant Real_Float_Vector4 := Convert_Axis_Angle_To_Quaternion (Roll_Axis, -Amount);
    begin
       if Get_Key (W, Key_Up) = Key_Action_Press then
          Q := Q * Pith_Up;
@@ -86,12 +86,12 @@ package body Applications.Inputs is
       if Get_Key (W, Key_E) = Key_Action_Press then
          Q := Q * Roll_Right;
       end if;
-      Normalize (Float_Vector (Q));
+      Normalize (Real_Float_Vector (Q));
    end;
 
 
    procedure Get_Camera_Input (A : in out Application) is
-      use type GL.Math.GLfloat;
+      use type GL.Math.Real_Float;
       use Simple_Cameras;
       use GLFW3.Windows.Keys;
    begin

@@ -25,8 +25,8 @@ package body Simple_Meshes is
       Item.VBO := Create_Buffer;
       Set_Attribute_Enable (Item.VAO, 0);
       Set_Attribute_Enable (Item.VAO, 1);
-      Set_Attribute_Memory_Layout (Item.VAO, 0, Float_Vector3'Length, Float_Type, False, 0);
-      Set_Attribute_Memory_Layout (Item.VAO, 1, Float_Vector4'Length, Float_Type, False, Float_Vector3'Size / Storage_Unit);
+      Set_Attribute_Memory_Layout (Item.VAO, 0, Real_Float_Vector3'Length, Float_Type, False, 0);
+      Set_Attribute_Memory_Layout (Item.VAO, 1, Real_Float_Vector4'Length, Float_Type, False, Real_Float_Vector3'Size / Storage_Unit);
       glVertexArrayAttribBinding (GLuint (Item.VAO), 0, 0);
       glVertexArrayAttribBinding (GLuint (Item.VAO), 1, 0);
       glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Simple_Vertices.Vertex_Array_Stride);

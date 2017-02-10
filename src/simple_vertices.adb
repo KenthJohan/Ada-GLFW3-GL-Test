@@ -20,7 +20,7 @@ package body Simple_Vertices is
       Set_Random (Item.Col);
    end;
 
-   procedure Translate (V : in out Vertex_Vector; T : Float_Vector3) is
+   procedure Translate (V : in out Vertex_Vector; T : Real_Float_Vector3) is
       use Maths;
    begin
       for I in V.First_Index .. V.Last_Index loop
@@ -28,7 +28,7 @@ package body Simple_Vertices is
       end loop;
    end;
 
-   procedure Transform (V : in out Vertex_Vector; T : Float_Matrix3) is
+   procedure Transform (V : in out Vertex_Vector; T : Real_Float_Matrix3) is
       use Maths;
    begin
       for I in V.First_Index .. V.Last_Index loop
@@ -37,21 +37,21 @@ package body Simple_Vertices is
    end;
 
 
-   procedure Make_2 (V : in out Vertex_Vector; D : GLfloat; Count : Natural; R : Float_Matrix3; T : Float_Vector3) is
-      use type GL.C.GLfloat;
+   procedure Make_2 (V : in out Vertex_Vector; D : Real_Float; Count : Natural; R : Real_Float_Matrix3; T : Real_Float_Vector3) is
+      use type GL.Math.Real_Float;
       use GL.Colors;
-      procedure Set_Pos (P : Float_Vector3) is
+      procedure Set_Pos (P : Real_Float_Vector3) is
          use Maths;
       begin
          V.Last_Element.Pos := R * P + T;
       end;
-      U : GLfloat;
+      U : Real_Float;
    begin
       V.Append;
       Set_Pos ((0.0, 0.0, 0.0));
       V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
       V.Append;
-      Set_Pos ((D * GLfloat (Count), 0.0, 0.0));
+      Set_Pos ((D * Real_Float (Count), 0.0, 0.0));
       V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
 
       for I in 0 .. Count - 1 loop
@@ -63,19 +63,19 @@ package body Simple_Vertices is
             U := 0.1;
          end if;
          V.Append;
-         Set_Pos ((D * GLfloat (I), -1.0 * U, 0.0));
+         Set_Pos ((D * Real_Float (I), -1.0 * U, 0.0));
          V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
          V.Append;
-         Set_Pos ((D * GLfloat (I), 1.0 * U, 0.0));
+         Set_Pos ((D * Real_Float (I), 1.0 * U, 0.0));
          V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
       end loop;
    end;
 
-   procedure Make_1 (V : in out Vertex_Vector; D : GLfloat; Count : Natural) is
+   procedure Make_1 (V : in out Vertex_Vector; D : Real_Float; Count : Natural) is
       use Maths;
-      use type GL.Math.GLfloat;
-      Q : Float_Vector4;
-      R : Float_Matrix3;
+      use type GL.Math.Real_Float;
+      Q : Real_Float_Vector4;
+      R : Real_Float_Matrix3;
    begin
       Q := Convert_Axis_Angle_To_Quaternion ((0.0, 0.0, 1.0), 0.0);
       R := Make_Rotation_Matrix3 (Q);
