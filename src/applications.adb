@@ -12,8 +12,12 @@ with GL.Programs;
 
 with GLFW3.Windows;
 with GLFW3.Windows.Keys;
+with GLFW3.Windows.Drops;
 
 with OpenGL_Loader_Test;
+with Ada.Text_IO;
+with Interfaces.C.Strings;
+with Ada.Exceptions;
 
 
 
@@ -23,15 +27,22 @@ with OpenGL_Loader_Test;
 package body Applications is
 
 
+   package GLFW3_Drop_Callbacks is
+      use GLFW3;
+      use GLFW3.Windows.Drops;
+      use Interfaces.C;
+      pragma Warnings (Off);
+      procedure drop_callback (W : Window; Count : int; Paths : File_Path_List) with Convention => C;
+      pragma Warnings (On);
+   end GLFW3_Drop_Callbacks;
 
    package GLFW3_Key_Callbacks is
       use GLFW3;
       use GLFW3.Windows;
       use GLFW3.Windows.Keys;
       use Interfaces.C;
-      procedure  GLFW3_Key_Callback (W : Window; K : Key; Scancode : int; A : Key_Action; Mods : int) with
+      procedure GLFW3_Key_Callback (W : Window; K : Key; Scancode : int; A : Key_Action; Mods : int) with
         Convention => C;
-      P : Key_Callback_Procedure := GLFW3_Key_Callback'Access;
    end;
 
 
@@ -72,7 +83,8 @@ package body Applications is
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
 
       GLFW3.Windows.Set_Window_User_Pointer (Item.Main_Window, Item'Address);
-      GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.P);
+      GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
+      GLFW3.Windows.Drops.Set_Drop_Callback (Item.Main_Window, GLFW3_Drop_Callbacks.drop_callback'Access);
 
       Simple_Shaders.Setup (Item.Main_Program);
       Simple_Shaders.Compile_Vertex_Shader_File (Item.Main_Program, "test.glvs");
@@ -159,6 +171,28 @@ package body Applications is
       end;
    end;
 
-
+   package body GLFW3_Drop_Callbacks is
+      procedure drop_callback (W : Window; Count : int; Paths : File_Path_List) is
+         use Interfaces.C.Strings;
+         use Ada.Text_IO;
+         use Simple_File_Drop_Storage;
+         use System;
+         type Application_Access is access all Application;
+         function Convert is new Ada.Unchecked_Conversion (Address, Application_Access);
+         Main_App : constant Application_Access := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));
+      begin
+         Put_Line ("Count: " & Count'Img);
+         for I in size_t (0) .. size_t (Count - 1) loop
+            declare
+               Name : constant String := Value (Paths (I));
+            begin
+               Enqueue (Main_App.Main_Dropped_Files_Queue, 1, Name);
+            end;
+         end loop;
+      exception
+         when E : Constraint_Error =>
+            Put_Line (Ada.Exceptions.Exception_Message (E));
+      end;
+   end GLFW3_Drop_Callbacks;
 
 end Applications;

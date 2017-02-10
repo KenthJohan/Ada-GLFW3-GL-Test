@@ -10,6 +10,7 @@ with Simple_Debug_Systems;
 with Simple_Meshes;
 with Simple_Cameras;
 with Simple_Shaders;
+with Simple_File_Drop_Storage;
 
 package Applications is
 
@@ -26,6 +27,7 @@ package Applications is
       Main_Program : Simple_Shaders.Program;
       Main_Transform_Location : GL.Uniforms.Location;
       Main_Time_Location : GL.Uniforms.Location;
+      Main_Dropped_Files_Queue : Simple_File_Drop_Storage.Simple_File_Queue;
    end record;
 
 
