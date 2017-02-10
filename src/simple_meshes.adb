@@ -2,6 +2,9 @@ with System;
 
 with Simple_Debug_Systems;
 
+with GL.Colors;
+
+
 package body Simple_Meshes is
 
    procedure Initialize (Item : in out Mesh) is
@@ -105,19 +108,21 @@ package body Simple_Meshes is
    procedure Make_Triangle (Item : in out Mesh) is
       use GL;
       use GL.Buffers;
+      use GL.Colors;
+      use GL.Colors.RGBA;
       use type GL.C.GLfloat;
    begin
       Item.Main_Mesh_Status := Contruction_Mesh_Status;
       Item.Draw_Mode := GL.Drawings.Triangles_Mode;
       Item.Vertex_List.Append;
       Item.Vertex_List.Last_Element.Pos := (0.5, -0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (1.0, 0.0, 0.0, 1.0);
+      Item.Vertex_List.Last_Element.Col := RGBA.Red_Vector;
       Item.Vertex_List.Append;
       Item.Vertex_List.Last_Element.Pos := (-0.5, -0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (0.0, 1.0, 0.0, 1.0);
+      Item.Vertex_List.Last_Element.Col := RGBA.Blue_Vector;
       Item.Vertex_List.Append;
       Item.Vertex_List.Last_Element.Pos := (0.0,  0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := (0.0, 0.0, 1.0, 1.0);
+      Item.Vertex_List.Last_Element.Col := RGBA.Red_Vector;
       Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
    end;
 

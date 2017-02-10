@@ -11,12 +11,11 @@ with Home_Containers.Generic_Vectors;
 package Simple_Vertices is
 
    use GL.Math;
-   use GL.Colors.Colors_RGBA;
    use System;
 
    type Vertex is record
       Pos : Real_Float_Vector3 := (0.0, 0.0, 0.0);
-      Col : Color_Amount_Vector := (0.0, 0.0, 0.0, 0.0);
+      Col : GL.Colors.RGBA.Vector := (0.0, 0.0, 0.0, 0.0);
    end record;
 
    type Vertex_Array is array (Positive range <>) of Vertex;

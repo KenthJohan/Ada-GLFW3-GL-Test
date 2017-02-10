@@ -9,7 +9,7 @@ with GL.C.Complete;
 
 package body Simple_Vertices is
 
-   procedure Set_Random (Item : out Color_Amount_Vector) is
+   procedure Set_Random (Item : out GL.Colors.RGBA.Vector) is
       use GL.Colors;
       use Ada.Numerics.Float_Random;
       G : Generator;
@@ -54,10 +54,10 @@ package body Simple_Vertices is
    begin
       V.Append;
       Set_Pos ((0.0, 0.0, 0.0));
-      V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
+      V.Last_Element.Col := RGBA.White_Vector;
       V.Append;
       Set_Pos ((D * Real_Float (Count), 0.0, 0.0));
-      V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
+      V.Last_Element.Col := RGBA.White_Vector;
 
       for I in 0 .. Count - 1 loop
          if I mod 10 = 0 then
@@ -69,10 +69,10 @@ package body Simple_Vertices is
          end if;
          V.Append;
          Set_Pos ((D * Real_Float (I), -1.0 * U, 0.0));
-         V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
+         V.Last_Element.Col := RGBA.White_Vector;
          V.Append;
          Set_Pos ((D * Real_Float (I), 1.0 * U, 0.0));
-         V.Last_Element.Col := Colors_RGBA.White_Color_Amount_Vector;
+         V.Last_Element.Col := RGBA.White_Vector;
       end loop;
    end;
 
