@@ -23,7 +23,7 @@ package body Applications.Inputs is
    end;
 
 
-   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Real_Float_Vector4) is
+   procedure Get_Translation_Input (W : GLFW3.Windows.Window; T : in out GL.Math.Real_Float_Vector4) is
       use GLFW3;
       use GLFW3.Windows;
       use GL.Math;
@@ -52,7 +52,7 @@ package body Applications.Inputs is
       end if;
    end;
 
-   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Real_Float_Vector4) is
+   procedure Get_Rotation_Input (W : GLFW3.Windows.Window; Q : in out GL.Math.Real_Float_Vector4) is
       use Maths;
       use GL.Math;
       use GLFW3.Windows.Keys;

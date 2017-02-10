@@ -1,5 +1,5 @@
 with GLFW3;
---with GLFW3.Windows.Keys;
+with GLFW3.Windows;
 
 with GL.Uniforms;
 with GL.C;
@@ -17,7 +17,7 @@ package Applications is
    type Application is record
       Check_Sum : Integer := 555;
       Dummy1 : Boolean := False;
-      Main_Window : GLFW3.Window;
+      Main_Window : GLFW3.Windows.Window;
       Main_Debug_Queue : Simple_Debug_Systems.Debug_Message_Queue;
       Grid_Stride : GL.C.GLfloat := 1.0;
       Grid_Mesh : Simple_Meshes.Mesh;

@@ -10,7 +10,6 @@ with GL.Programs.Uniforms;
 with GL.Drawings;
 with GL.Programs;
 
-with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 with GLFW3.Windows.Drops;
 
@@ -28,7 +27,7 @@ package body Applications is
 
 
    package GLFW3_Drop_Callbacks is
-      use GLFW3;
+      use GLFW3.Windows;
       use GLFW3.Windows.Drops;
       use Interfaces.C;
       pragma Warnings (Off);
@@ -159,7 +158,7 @@ package body Applications is
 
 
    package body GLFW3_Key_Callbacks is
-      procedure GLFW3_Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
+      procedure GLFW3_Key_Callback (W : GLFW3.Windows.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
          pragma Unreferenced (Mods, Scancode);
          use System;
          use Simple_Meshes;
