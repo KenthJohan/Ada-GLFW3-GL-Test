@@ -1,26 +1,30 @@
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
 with Maths;
+with GL.Math;
+with Cameras;
 
+package body Applications.Inputs is
 
-package body Inputs is
-
-   procedure Put_State (W : Window; Item : Binding_Array) is
+   procedure Put_State (A : Application; B : Binding_Array) is
       use Ada.Text_IO;
       use Ada.Strings.Fixed;
+      use GLFW3.Windows.Keys;
    begin
       for I in Action loop
          Put (Head (Action'Image (I), 30));
          Put (" ");
-         Put (Key_Action'Image (Keys.Get_Key (W, Item (I))));
+         Put (Key_Action'Image (Get_Key (A.Main_Window, B (I))));
          New_Line;
       end loop;
    end;
 
 
-
-
-   procedure Get_Translation_Input (W : Window; T : in out Float_Vector4) is
+   procedure Get_Translation_Input (W : GLFW3.Window; T : in out GL.Math.Float_Vector4) is
+      use GLFW3;
+      use GLFW3.Windows;
+      use GL.Math;
+      use GLFW3.Windows.Keys;
       use type GL.Math.GLfloat;
       Amount : constant GLfloat := 0.1;
    begin
@@ -45,8 +49,10 @@ package body Inputs is
       end if;
    end;
 
-   procedure Get_Rotation_Input (W : Window; Q : in out Float_Vector4) is
+   procedure Get_Rotation_Input (W : GLFW3.Window; Q : in out GL.Math.Float_Vector4) is
       use Maths;
+      use GL.Math;
+      use GLFW3.Windows.Keys;
       use type GL.Math.GLfloat;
       Amount : constant GLfloat := 0.01;
       Pith_Axis : constant Float_Vector3 := (1.0, 0.0, 0.0);
@@ -81,17 +87,22 @@ package body Inputs is
    end;
 
 
-   procedure Get_Camera_Input (W : Window; C : in out Cameras.Camera) is
+   procedure Get_Camera_Input (A : in out Application) is
       use type GL.Math.GLfloat;
+      use Cameras;
+      use GLFW3.Windows.Keys;
    begin
-      if Get_Key (W, Key_O) = Key_Action_Press then
-         C.FOV := C.FOV + 0.001;
+      if Get_Key (A.Main_Window, Key_O) = Key_Action_Press then
+         A.Main_Camera.FOV := A.Main_Camera.FOV + 0.001;
       end if;
-      if Get_Key (W, Key_L) = Key_Action_Press then
-         C.FOV := C.FOV - 0.001;
+      if Get_Key (A.Main_Window, Key_L) = Key_Action_Press then
+         A.Main_Camera.FOV := A.Main_Camera.FOV - 0.001;
       end if;
+      Get_Rotation_Input (A.Main_Window, A.Main_Camera.Rotation);
+      Get_Translation_Input (A.Main_Window, A.Main_Camera.Translation_Velocity);
+      Update (A.Main_Camera);
+      GL.Uniforms.Modify_Matrix_4f (A.Main_Transform_Location, A.Main_Camera.Result_Matrix'Address);
+      GL.Uniforms.Modify_1f (A.Main_Time_Location, 0.0);
    end;
-
-
 
 end;

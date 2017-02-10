@@ -1,8 +1,5 @@
 with Ada.Text_IO;
-with Ada.Strings;
-with Ada.Strings.Fixed;
 with System;
-with System.Address_Image;
 
 with Ada.Unchecked_Conversion;
 with Ada.Real_Time;
@@ -22,10 +19,11 @@ with Debugs;
 
 package body Apps is
 
+
+
    procedure Key_Callback (W : GLFW3.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
       pragma Unreferenced (Mods, Scancode);
       use Ada.Text_IO;
-      use Ada.Strings.Fixed;
       use System;
       use type GL.C.GLfloat;
       type App_Access is access all App;
@@ -95,10 +93,8 @@ package body Apps is
          New_Line;
          Debugs.Put_Lines;
 
-         --Put ("Frame counter :");
-         --Put (Natural'Image (A.Main_Frame_Counter));
-         --New_Line;
-         --Inputs.Put_State (A.Main_Window, A.Main_Binding_Array);
+--           New_Line;
+--           Inputs.Put_State (A.Main_Window, A.Main_Binding_Array);
 --           OS_Systems.Clear_Screen;
 --           Put (A.Main_Camera.Projection_Matrix);
 --           New_Line;
@@ -130,32 +126,11 @@ package body Apps is
    end;
 
 
-   procedure Debug_App (Item : in out App) is
-      use Ada.Text_IO;
-      use Ada.Strings.Fixed;
-      --use Ada.Integer_Text_IO;
-      use System;
-      procedure Put_Address (A : Address) is
-      begin
-         Put (Address_Image (A));
-      end;
-      procedure Put_Column (S : String) is
-      begin
-         Put (Head (S, 30));
-      end;
-   begin
-      Item.Dummy1 := False;
-      Put_Column ("App'Address");
-      Put_Address (Item'Address);
-      New_Line;
-      Put_Column ("App.Main_Window'Address");
-      Put_Address (Item.Main_Window'Address);
-      New_Line;
-   end;
 
 
    procedure Init (Item : in out App) is
    begin
+      Debugs.Enqueue (1, "Application Initializing");
       GLFW3.Initialize;
       Item.Main_Window := GLFW3.Windows.Create_Window_Ada (1024, 1024, "Hello123##");
       GLFW3.Windows.Make_Context_Current (Item.Main_Window);
@@ -170,7 +145,6 @@ package body Apps is
 
       Cameras.Init (Item.Main_Camera);
       GL.Programs.Set_Current (Item.Main_Program);
-      Debug_App (Item);
    end;
 
    procedure Update_Camera_GL (Item : App) is
@@ -183,6 +157,7 @@ package body Apps is
    begin
       Item.Dummy1 := False;
       if Window_Should_Close (Item.Main_Window) = 1 then
+         Debugs.Enqueue (1, "Window Closing");
          return True;
       else
          return False;

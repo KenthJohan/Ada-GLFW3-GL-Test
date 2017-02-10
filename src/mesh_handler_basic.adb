@@ -5,7 +5,7 @@ with GL.C.Complete;
 
 with System;
 
-with Debugs;
+with Simple_Debug_Systems;
 
 package body Mesh_Handler_Basic is
 
@@ -20,7 +20,7 @@ package body Mesh_Handler_Basic is
       use type GL.C.GLuint;
       use type GL.C.GLsizei;
    begin
-      Debugs.Enqueue (1, "GPU Load Mesh");
+      Simple_Debug_Systems.Enqueue (1, "GPU Load Mesh");
       Item.VAO := Create_Attribute;
       Item.VBO := Create_Buffer;
       Set_Attribute_Enable (Item.VAO, 0);
