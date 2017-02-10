@@ -1,6 +1,11 @@
 with Ada.Numerics.Float_Random;
-with Maths;
 with Ada.Numerics; use Ada.Numerics;
+
+with Maths;
+
+
+with GL.C.Complete;
+
 
 package body Simple_Vertices is
 
@@ -84,6 +89,20 @@ package body Simple_Vertices is
       R := Make_Rotation_Matrix3 (Q);
       Make_2 (V, D, Count, R, (0.0, 0.0, 0.0));
       null;
+   end;
+
+   procedure Configurate_Vertex_Attributes (VAO : GL.Vertex_Array_Objects.Vertex_Array_Object; VBO : GL.Buffers.Buffer) is
+      use GL.Vertex_Array_Objects;
+      use GL.C;
+      use GL.C.Complete;
+   begin
+      Set_Attribute_Enable (VAO, 0);
+      Set_Attribute_Enable (VAO, 1);
+      Set_Attribute_Memory_Layout (VAO, 0, Real_Float_Vector3'Length, Float_Type, False, 0);
+      Set_Attribute_Memory_Layout (VAO, 1, Real_Float_Vector4'Length, Float_Type, False, Real_Float_Vector3'Size / Storage_Unit);
+      glVertexArrayAttribBinding (GLuint (VAO), 0, 0);
+      glVertexArrayAttribBinding (GLuint (VAO), 1, 0);
+      glVertexArrayVertexBuffer (GLuint (VAO), 0, GLuint (VBO), 0, Vertex_Array_Stride);
    end;
 
 end;

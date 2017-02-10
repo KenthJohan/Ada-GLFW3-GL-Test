@@ -1,8 +1,12 @@
-with GL.Math;
-with Home_Containers.Generic_Vectors;
-with GL.Colors;
 with System;
+
+with GL.Math;
+with GL.Colors;
 with GL.C;
+with GL.Vertex_Array_Objects;
+with GL.Buffers;
+
+with Home_Containers.Generic_Vectors;
 
 package Simple_Vertices is
 
@@ -30,4 +34,5 @@ package Simple_Vertices is
    procedure Translate (V : in out Vertex_Vector; T : Real_Float_Vector3);
    procedure Transform (V : in out Vertex_Vector; T : Real_Float_Matrix3);
 
+   procedure Configurate_Vertex_Attributes (VAO : GL.Vertex_Array_Objects.Vertex_Array_Object; VBO : GL.Buffers.Buffer);
 end;

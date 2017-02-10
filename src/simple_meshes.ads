@@ -1,8 +1,10 @@
 with Simple_Vertices;
+
+with Home_Containers.Generic_Vectors;
+
 with GL.Vertex_Array_Objects;
 with GL.Buffers;
 with GL.Drawings;
-with Home_Containers.Generic_Vectors;
 with GL.C;
 
 package Simple_Meshes is
