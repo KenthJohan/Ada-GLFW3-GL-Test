@@ -9,13 +9,21 @@ uniform float u_time;
 
 out vec4 vcolor;
 
+vec4 pos;
+
 void main()
 {
-    gl_Position = transform * vec4(position, 1.0);
+	pos = vec4(position, 1.0);
 	if (u_time > 0)
 	{
-		gl_Position.x += sin (u_time + gl_VertexID);
+		//pos.x = pos.x + sin (u_time + 0.0 * gl_VertexID);
+		pos.xyz = pos.xyz * (abs (10.0 * sin (u_time)) + 2.0);
+		//pos.y = pos.y + cos (u_time + 0.0 * gl_VertexID);
+		vcolor = color * vec4 (1.0, abs (sin (u_time)), 1.0, 1.0);
 	}
-    //gl_Position = vec4(position, 1.0);
-    vcolor = color; // * vec4 (1.0, abs (sin (u_time)), 1.0, 1.0);
+	else
+	{
+		vcolor = color; // * vec4 (1.0, abs (sin (u_time)), 1.0, 1.0);
+	}
+    gl_Position = transform * pos;
 }

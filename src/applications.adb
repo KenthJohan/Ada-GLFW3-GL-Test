@@ -8,13 +8,14 @@ with Interfaces.C;
 with GL.C.Initializations;
 with GL.Programs.Uniforms;
 with GL.Drawings;
+with GL.Programs;
 
 with GLFW3.Windows;
 with GLFW3.Windows.Keys;
 
 with OpenGL_Loader_Test;
 
-with Simple_Shaders;
+
 
 
 
@@ -49,6 +50,10 @@ package body Applications is
                Item_Application.Grid_Mesh.Vertex_List.Empty;
                Item_Application.Grid_Stride := Item_Application.Grid_Stride - 0.1;
                Make_Grid_Lines (Item_Application.Grid_Mesh, 100.0, Item_Application.Grid_Stride);
+            when Key_P =>
+               Simple_Shaders.Compile_Vertex_Shader_File (Item_Application.Main_Program, "test.glvs");
+               Simple_Shaders.Compile_Fragment_Shader_File (Item_Application.Main_Program, "test.glfs");
+               Simple_Shaders.Compile_Program (Item_Application.Main_Program);
             when others =>
                null;
          end case;
@@ -69,12 +74,17 @@ package body Applications is
       GLFW3.Windows.Set_Window_User_Pointer (Item.Main_Window, Item'Address);
       GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.P);
 
-      Item.Main_Program := Simple_Shaders.Setup_Program;
-      Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program, "transform");
-      Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program, "u_time");
+      Simple_Shaders.Setup (Item.Main_Program);
+      Simple_Shaders.Compile_Vertex_Shader_File (Item.Main_Program, "test.glvs");
+      Simple_Shaders.Compile_Fragment_Shader_File (Item.Main_Program, "test.glfs");
+      Simple_Shaders.Compile_Program (Item.Main_Program);
+
+
+      Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "transform");
+      Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "u_time");
 
       Simple_Cameras.Init (Item.Main_Camera);
-      GL.Programs.Set_Current (Item.Main_Program);
+      GL.Programs.Set_Current (Item.Main_Program.Item_Program);
 
 
 
@@ -123,11 +133,14 @@ package body Applications is
 
    procedure Render_Stuff (Item : in out Application) is
       use Simple_Meshes;
+      use GL.C;
    begin
       Update (Item.Grid_Mesh);
       GL.Drawings.Clear (GL.Drawings.Color_Plane);
       GL.Drawings.Clear (GL.Drawings.Depth_Plane);
+      GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (0.0));
       Draw (Item.Grid_Mesh);
+      GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (GLFW3.Clock));
       Draw (Item.Main_Mesh);
    end;
 

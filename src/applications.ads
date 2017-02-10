@@ -2,7 +2,6 @@ with GLFW3;
 --with GLFW3.Windows.Keys;
 
 with GL.Uniforms;
-with GL.Programs;
 with GL.C;
 
 
@@ -10,7 +9,7 @@ with Simple_Moving_Averages;
 with Simple_Debug_Systems;
 with Simple_Meshes;
 with Simple_Cameras;
-
+with Simple_Shaders;
 
 package Applications is
 
@@ -24,7 +23,7 @@ package Applications is
       Main_Mesh : Simple_Meshes.Mesh;
       Main_SMA : Simple_Moving_Averages.SMA;
       Main_Camera : Simple_Cameras.Camera;
-      Main_Program : GL.Programs.Program;
+      Main_Program : Simple_Shaders.Program;
       Main_Transform_Location : GL.Uniforms.Location;
       Main_Time_Location : GL.Uniforms.Location;
    end record;

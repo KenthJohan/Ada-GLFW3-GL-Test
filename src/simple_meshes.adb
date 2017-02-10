@@ -20,17 +20,7 @@ package body Simple_Meshes is
       Simple_Debug_Systems.Enqueue (1, "GPU Init Mesh Storage");
       Item.VAO := Create_Attribute;
       Item.VBO := Create_Buffer;
-
       Simple_Vertices.Configurate_Vertex_Attributes (Item.VAO, Item.VBO);
-
---        Set_Attribute_Enable (Item.VAO, 0);
---        Set_Attribute_Enable (Item.VAO, 1);
---        Set_Attribute_Memory_Layout (Item.VAO, 0, Real_Float_Vector3'Length, Float_Type, False, 0);
---        Set_Attribute_Memory_Layout (Item.VAO, 1, Real_Float_Vector4'Length, Float_Type, False, Real_Float_Vector3'Size / Storage_Unit);
---        glVertexArrayAttribBinding (GLuint (Item.VAO), 0, 0);
---        glVertexArrayAttribBinding (GLuint (Item.VAO), 1, 0);
---        glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Simple_Vertices.Vertex_Array_Stride);
-      --Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, System.Null_Address, Static_Usage);
       Create_New_Storage (Item.VBO, Item.Vertex_List.Data_Size / Storage_Unit, Item.Vertex_List.Data_Address, Static_Usage);
    end;
 
@@ -122,7 +112,7 @@ package body Simple_Meshes is
       Item.Vertex_List.Last_Element.Col := RGBA.Blue_Vector;
       Item.Vertex_List.Append;
       Item.Vertex_List.Last_Element.Pos := (0.0,  0.5, 0.0);
-      Item.Vertex_List.Last_Element.Col := RGBA.Red_Vector;
+      Item.Vertex_List.Last_Element.Col := RGBA.Green_Vector;
       Item.Main_Mesh_Status := GPU_Load_Mesh_Status;
    end;
 
