@@ -17,6 +17,7 @@ with OpenGL_Loader_Test;
 with Ada.Text_IO;
 with Interfaces.C.Strings;
 with Ada.Exceptions;
+with GLFW3.Monitors;
 
 
 
@@ -64,20 +65,25 @@ package body Applications is
                Simple_Shaders.Compile_Vertex_Shader_File (Item_Application.Main_Program, "test.glvs");
                Simple_Shaders.Compile_Fragment_Shader_File (Item_Application.Main_Program, "test.glfs");
                Simple_Shaders.Compile_Program (Item_Application.Main_Program);
+            when Key_Escape =>
+                 GLFW3.Windows.Set_Window_Should_Close (Item_Application.Main_Window, 1);
             when others =>
                null;
          end case;
       end if;
    end;
 
-
-
-   procedure Initialize (Item : in out Application) is
+   procedure Initialize_Context (Item : in out Application; Fullscreen : Boolean) is
       use Simple_Debug_Systems;
    begin
-      Enqueue (Item.Main_Debug_Queue, 1, "Application Initializing");
-      GLFW3.Initialize;
-      Item.Main_Window := GLFW3.Windows.Create_Window_Ada (1024, 1024, "Hello123##");
+      Enqueue (Item.Main_Debug_Queue, 1, "Application Context Initializing");
+
+      if Fullscreen then
+         Item.Main_Window := GLFW3.Windows.Create_Window_Ada (1024, 1024, "Hello123##", GLFW3.Monitors.Get_Primary_Monitor);
+      else
+         Item.Main_Window := GLFW3.Windows.Create_Window_Ada (1024, 1024, "Hello123##");
+      end if;
+
       GLFW3.Windows.Make_Context_Current (Item.Main_Window);
       GL.C.Initializations.Initialize (OpenGL_Loader_Test'Unrestricted_Access);
 
@@ -90,18 +96,22 @@ package body Applications is
       Simple_Shaders.Compile_Fragment_Shader_File (Item.Main_Program, "test.glfs");
       Simple_Shaders.Compile_Program (Item.Main_Program);
 
-
       Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "transform");
       Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "u_time");
 
-      Simple_Cameras.Init (Item.Main_Camera);
       GL.Programs.Set_Current (Item.Main_Program.Item_Program);
 
-
-
-      Simple_Meshes.Make_Triangle (Item.Main_Mesh);
       Simple_Meshes.Initialize (Item.Grid_Mesh);
       Simple_Meshes.Initialize (Item.Main_Mesh);
+   end;
+
+
+   procedure Initialize_Logic (Item : in out Application) is
+      use Simple_Debug_Systems;
+   begin
+      Enqueue (Item.Main_Debug_Queue, 1, "Application Logic Initializing");
+      Simple_Cameras.Init (Item.Main_Camera);
+      Simple_Meshes.Make_Triangle (Item.Main_Mesh);
    end;
 
 
@@ -133,12 +143,11 @@ package body Applications is
    end;
 
 
-   procedure Quit (Item : in out Application) is
+   procedure Destroy (Item : in out Application) is
       use Simple_Debug_Systems;
    begin
-      Enqueue (Item.Main_Debug_Queue, 1, "Application closing");
+      Enqueue (Item.Main_Debug_Queue, 1, "Destroy Window");
       GLFW3.Windows.Destroy_Window (Item.Main_Window);
-      GLFW3.Terminate_GLFW3;
    end;
 
 
