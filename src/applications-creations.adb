@@ -40,7 +40,7 @@ package body Applications.Creations is
    end;
 
 
-   procedure Key_Callback (Item_Application : in out Application; K : GLFW3.Windows.Keys.Key; A : GLFW3.Windows.Keys.Key_Action) is
+   procedure Key_Callback (App : in out Application; K : GLFW3.Windows.Keys.Key; A : GLFW3.Windows.Keys.Key_Action) is
       use GLFW3.Windows.Keys;
       use Simple_Meshes;
       use type GL.C.GLfloat;
@@ -48,23 +48,28 @@ package body Applications.Creations is
       if A = Key_Action_Press then
          case K is
             when Key_Kp_Add =>
-               Item_Application.Grid_Mesh.Vertex_List.Empty;
-               Item_Application.Grid_Stride := Item_Application.Grid_Stride + 0.1;
-               Make_Grid_Lines (Item_Application.Grid_Mesh, 100.0, Item_Application.Grid_Stride);
+               App.Grid_Mesh.Vertex_List.Empty;
+               App.Grid_Stride := App.Grid_Stride + 0.1;
+               Make_Grid_Lines (App.Grid_Mesh, 100.0, App.Grid_Stride);
             when Key_Kp_Subtract =>
-               Item_Application.Grid_Mesh.Vertex_List.Empty;
-               Item_Application.Grid_Stride := Item_Application.Grid_Stride - 0.1;
-               Make_Grid_Lines (Item_Application.Grid_Mesh, 100.0, Item_Application.Grid_Stride);
+               App.Grid_Mesh.Vertex_List.Empty;
+               App.Grid_Stride := App.Grid_Stride - 0.1;
+               Make_Grid_Lines (App.Grid_Mesh, 100.0, App.Grid_Stride);
             when Key_P =>
-               Simple_Shaders.Compile_Vertex_Shader_File (Item_Application.Main_Program, "test.glvs");
-               Simple_Shaders.Compile_Fragment_Shader_File (Item_Application.Main_Program, "test.glfs");
-               Simple_Shaders.Compile_Program (Item_Application.Main_Program);
+               Simple_Shaders.Build (App.Main_Program);
+               --App.Main_Transform_Location := GL.Programs.Uniforms.Get (App.Main_Program.Obj, "transform");
+               --App.Main_Time_Location := GL.Programs.Uniforms.Get (App.Main_Program.Obj, "u_time");
+               --GL.Programs.Set_Current (App.Main_Program.Obj);
             when Key_Escape =>
-                 GLFW3.Windows.Set_Window_Should_Close (Item_Application.Main_Window, 1);
+               GLFW3.Windows.Set_Window_Should_Close (App.Main_Window, 1);
             when others =>
                null;
          end case;
       end if;
+   exception
+      when E : others =>
+         Simple_Debug_Systems.Enqueue (1, "Key_Callback");
+         Simple_Debug_Systems.Enqueue (1, Ada.Exceptions.Exception_Message (E));
    end;
 
    procedure Initialize_Context (Item : in out Application; Fullscreen : Boolean) is
@@ -85,18 +90,21 @@ package body Applications.Creations is
       GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Item.Main_Window, GLFW3_Drop_Callbacks.drop_callback'Access);
 
-      Simple_Shaders.Setup (Item.Main_Program);
-      Simple_Shaders.Compile_Vertex_Shader_File (Item.Main_Program, "test.glvs");
-      Simple_Shaders.Compile_Fragment_Shader_File (Item.Main_Program, "test.glfs");
-      Simple_Shaders.Compile_Program (Item.Main_Program);
-
-      Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "transform");
-      Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Item_Program, "u_time");
-
-      GL.Programs.Set_Current (Item.Main_Program.Item_Program);
+      Simple_Shaders.Delete (Item.Main_Program);
+      Item.Main_Program.Obj := GL.Programs.Create_Empty;
+      Simple_Shaders.Append (Item.Main_Program, "test.glvs");
+      Simple_Shaders.Append (Item.Main_Program, "test.glfs");
+      Simple_Shaders.Build (Item.Main_Program);
+      Item.Main_Transform_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Obj, "transform");
+      Item.Main_Time_Location := GL.Programs.Uniforms.Get (Item.Main_Program.Obj, "u_time");
+      GL.Programs.Set_Current (Item.Main_Program.Obj);
 
       Simple_Meshes.Initialize (Item.Grid_Mesh);
       Simple_Meshes.Initialize (Item.Main_Mesh);
+   exception
+      when E : others =>
+         Simple_Debug_Systems.Enqueue (1, "Initialize_Context");
+         Simple_Debug_Systems.Enqueue (1, Ada.Exceptions.Exception_Message (E));
    end;
 
 
@@ -123,18 +131,6 @@ package body Applications.Creations is
       end if;
    end;
 
-
-   procedure Swap_Buffers (Item : Application) is
-   begin
-      GLFW3.Windows.Swap_Buffers (Item.Main_Window);
-   end;
-
-
-   procedure Poll_Events (Item : Application) is
-      pragma Unreferenced (Item);
-   begin
-      GLFW3.Poll_Events;
-   end;
 
 
    procedure Destroy (Item : in out Application) is

@@ -24,7 +24,7 @@ package Applications is
       Main_Mesh : Simple_Meshes.Mesh;
       Main_SMA : Simple_Moving_Averages.SMA;
       Main_Camera : Simple_Cameras.Camera;
-      Main_Program : Simple_Shaders.Program;
+      Main_Program : Simple_Shaders.Program_Composition (2);
       Main_Transform_Location : GL.Uniforms.Location;
       Main_Time_Location : GL.Uniforms.Location;
       Main_Dropped_Files_Queue : Simple_File_Drop_Storage.Simple_File_Queue;

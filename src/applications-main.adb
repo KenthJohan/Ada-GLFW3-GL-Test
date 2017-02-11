@@ -25,7 +25,6 @@ begin
 
    loop
       delay 0.01;
-
       declare
          use GLFW3.Windows.Keys;
       begin
@@ -38,14 +37,10 @@ begin
             Initialize_Context (A, False);
          end if;
       end;
-
-
       Get_Camera_Input (A);
-
-
       Render_Stuff (A);
-      Poll_Events (A);
-      Swap_Buffers (A);
+      GLFW3.Poll_Events;
+      GLFW3.Windows.Swap_Buffers (A.Main_Window);
       exit when Window_Closing (A);
    end loop;
 
