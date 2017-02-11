@@ -1,10 +1,13 @@
 with Applications.Information_Tasks;
 with Applications.Inputs;
+with Applications.Creations;
+
 with GLFW3.Windows.Keys;
 
 
 procedure Applications.Main is
 
+   use Creations;
    use Information_Tasks;
    use Inputs;
 
@@ -38,6 +41,8 @@ begin
 
 
       Get_Camera_Input (A);
+
+
       Render_Stuff (A);
       Poll_Events (A);
       Swap_Buffers (A);
