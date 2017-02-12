@@ -21,20 +21,34 @@ package body Simple_Text_Render is
       use type GL.Math.Real_Float;
       type Vertex_Array1 is array (Integer range <>) of Real_Float_Vector4;
       type Bitmap is array (Integer range <>, Integer range <>) of GL.C.GLubyte;
-      Bitmap_Data : Bitmap (1 .. 100, 1 .. 100) := (others => (others => 10));
+      Bitmap_Data : Bitmap (1 .. 100, 1 .. 100) := (others => (others => 200));
+      Bitmap_Data2 : Bitmap (1 .. 10, 1 .. 10);
       Vertex_Data : Vertex_Array1 (1 .. 6) := (others => (others => 0.0));
       X : constant Real_Float := 0.0;
       Y : constant Real_Float := 0.0;
-      W : constant Real_Float := 0.6;
-      H : constant Real_Float := 0.6;
+      W : constant Real_Float := 1.0;
+      H : constant Real_Float := 1.0;
    begin
-      for X in Bitmap_Data'Range (1) loop
-         for Y in Bitmap_Data'Range (2) loop
-            if abs (X - Y) > 5 then
-               Bitmap_Data (X, Y) := 255;
-            end if;
-         end loop;
-      end loop;
+      Bitmap_Data2 :=
+        (
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+         (50, 255, 255, 255, 255, 255, 255, 255, 255, 255)
+        );
+--        for X in Bitmap_Data'Range (1) loop
+--           for Y in Bitmap_Data'Range (2) loop
+--              if abs (X - Y) > 5 then
+--                 Bitmap_Data (X, Y) := 0;
+--              end if;
+--           end loop;
+--        end loop;
       Vertex_Data (1) := (X,     Y + H, 0.0, 0.0);
       Vertex_Data (2) := (X,     Y,     0.0, 1.0);
       Vertex_Data (3) := (X + W, Y,     1.0, 1.0);
@@ -49,19 +63,22 @@ package body Simple_Text_Render is
 
       --glActiveTexture (GL_TEXTURE0);
       --glEnable (GL_BLEND);
-      --GL.Textures.Set_Pixel_Alignment (1);
+      GL.Textures.Set_Pixel_Alignment (1);
 
 
-      Item.T := Generate;
-      Bind (Texture_2D_Texture_Target, Item.T);
-      --glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      --glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      GL.Textures.Set_Parameter (Texture_2D_Texture_Target, Texture_Wrap_S, Repeat_Param);
-      GL.Textures.Set_Parameter (Texture_2D_Texture_Target, Texture_Wrap_T, Repeat_Param);
-      GL.Textures.Set_Parameter (Texture_2D_Texture_Target, Texture_Mag_Filter, Nearest_Param);
-      GL.Textures.Set_Parameter (Texture_2D_Texture_Target, Texture_Min_Filter, Nearest_Param);
-      Load (Texture_2D_Texture_Target, 100, 100, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
+      Item.T := Create (Texture_2D_Texture_Target);
 
+      Set_Parameter (Item.T, Texture_Wrap_S, Repeat_Param);
+      Set_Parameter (Item.T, Texture_Wrap_T, Repeat_Param);
+      Set_Parameter (Item.T, Texture_Mag_Filter, Nearest_Param);
+      Set_Parameter (Item.T, Texture_Min_Filter, Nearest_Param);
+      Allocate (Item.T, RGBA2_Internal_Pixel_Format, 10, 10);
+      --Load (Item.T, 0, 0, 100, 100, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
+      Load (Item.T, 0, 0, 10, 10, RGB_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data2'Address);
+      --Load (Item.T, 0, 20, 10, 10, RGBA_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data2'Address);
+      --Load (Texture_2D_Texture_Target, 100, 100, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
+      --Load (Item.T, 0, 0, 100, 100, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
+      --Load (Item.T, 0, 0, 50, 50, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
 
 
       Item.VBO := GL.Buffers.Create_Buffer;

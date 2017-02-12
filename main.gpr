@@ -31,7 +31,8 @@ project Main is
    -- Full errors. Multiple errors per line, all undefined references, do not attempt to suppress cascaded errors.
 
    package Compiler is
-      for Default_Switches ("ada") use ("-gnata", "-gnatwa", "-gnatf");
+      --for Default_Switches ("ada") use ("-gnata", "-gnatwa", "-gnatf");
+      for Default_Switches ("ada") use ("-gnata");
    end Compiler;
 
 end Main;
