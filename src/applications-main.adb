@@ -4,15 +4,22 @@ with Applications.Creations;
 
 with GLFW3.Windows.Keys;
 
+with Simple_Text_Render;
+
+with Ada.Exceptions;
+with GL.Drawings;
 
 procedure Applications.Main is
 
    use Creations;
    use Information_Tasks;
    use Inputs;
+   use Ada.Exceptions;
 
    A : aliased Application;
    T : Information_Task (A'Access);
+
+   Tex : Simple_Text_Render.Text_Render;
 
 begin
 
@@ -21,6 +28,13 @@ begin
    Initialize_Logic (A);
 
    Initialize_Context (A, False);
+
+   begin
+      Simple_Text_Render.Load_Texture (Tex);
+   exception
+      when E : others =>
+         Simple_Debug_Systems.Enqueue (1, Exception_Message (E));
+   end;
 
 
    loop
@@ -37,7 +51,10 @@ begin
             Initialize_Context (A, False);
          end if;
       end;
+      GL.Drawings.Clear (GL.Drawings.Color_Plane);
+      GL.Drawings.Clear (GL.Drawings.Depth_Plane);
       Get_Camera_Input (A);
+      Simple_Text_Render.Render (Tex);
       Render_Stuff (A);
       GLFW3.Poll_Events;
       GLFW3.Windows.Swap_Buffers (A.Main_Window);

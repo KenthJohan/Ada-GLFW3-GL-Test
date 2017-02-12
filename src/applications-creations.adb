@@ -18,6 +18,7 @@ with GLFW3.Windows.Drops;
 with GLFW3.Monitors;
 
 with Applications.OpenGL_Loader;
+with GL.Vertex_Array_Objects;
 
 package body Applications.Creations is
 
@@ -57,9 +58,6 @@ package body Applications.Creations is
                Make_Grid_Lines (App.Grid_Mesh, 100.0, App.Grid_Stride);
             when Key_P =>
                Simple_Shaders.Build (App.Main_Program);
-               --App.Main_Transform_Location := GL.Programs.Uniforms.Get (App.Main_Program.Obj, "transform");
-               --App.Main_Time_Location := GL.Programs.Uniforms.Get (App.Main_Program.Obj, "u_time");
-               --GL.Programs.Set_Current (App.Main_Program.Obj);
             when Key_Escape =>
                GLFW3.Windows.Set_Window_Should_Close (App.Main_Window, 1);
             when others =>
@@ -145,9 +143,9 @@ package body Applications.Creations is
       use Simple_Meshes;
       use GL.C;
    begin
+      GL.Vertex_Array_Objects.Bind (Item.Main_Mesh.VAO);
+      GL.Programs.Set_Current (Item.Main_Program.Obj);
       Update (Item.Grid_Mesh);
-      GL.Drawings.Clear (GL.Drawings.Color_Plane);
-      GL.Drawings.Clear (GL.Drawings.Depth_Plane);
       GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (0.0));
       Draw (Item.Grid_Mesh);
       GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (GLFW3.Clock));

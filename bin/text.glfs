@@ -1,0 +1,11 @@
+#version 330
+
+uniform sampler2D gSampler;
+in vec2 UV;
+out vec4 FragColor;
+
+void main()
+{
+	FragColor = texture( gSampler, UV );
+	//FragColor = vec4 (1.0, 1.0, 0.54, 1.0);
+}
