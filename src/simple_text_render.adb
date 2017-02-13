@@ -63,7 +63,7 @@ package body Simple_Text_Render is
 
       --glActiveTexture (GL_TEXTURE0);
       --glEnable (GL_BLEND);
-      GL.Textures.Set_Pixel_Alignment (1);
+      --GL.Textures.Set_Unpack_Pixel_Alignment (1);
 
 
       Item.T := Create (Texture_2D_Texture_Target);

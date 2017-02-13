@@ -8,6 +8,7 @@ with Simple_Text_Render;
 
 with Ada.Exceptions;
 with GL.Drawings;
+with GL.Errors;
 
 procedure Applications.Main is
 
@@ -15,6 +16,7 @@ procedure Applications.Main is
    use Information_Tasks;
    use Inputs;
    use Ada.Exceptions;
+
 
    A : aliased Application;
    T : Information_Task (A'Access);
@@ -29,12 +31,8 @@ begin
 
    Initialize_Context (A, False);
 
-   begin
-      Simple_Text_Render.Load_Texture (Tex);
-   exception
-      when E : others =>
-         Simple_Debug_Systems.Enqueue (1, Exception_Message (E));
-   end;
+
+   Simple_Text_Render.Load_Texture (Tex);
 
 
    loop
@@ -68,4 +66,11 @@ begin
 
    GLFW3.Terminate_GLFW3;
 
+exception
+   when E : others =>
+      Simple_Debug_Systems.Enqueue (1, "Error count: " & GL.Errors.Error_Vector.Length'Img);
+      for Er of GL.Errors.Error_Vector loop
+         Simple_Debug_Systems.Enqueue (1, Er'Img);
+      end loop;
+      Simple_Debug_Systems.Enqueue (1, Exception_Message (E));
 end;
