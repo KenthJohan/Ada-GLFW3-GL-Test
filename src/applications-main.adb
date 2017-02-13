@@ -12,6 +12,8 @@ with GL.Errors;
 
 procedure Applications.Main is
 
+   pragma Assertion_Policy (Check);
+
    use Creations;
    use Information_Tasks;
    use Inputs;

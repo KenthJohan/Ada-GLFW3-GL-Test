@@ -2,12 +2,15 @@ with Ada.Strings.Unbounded;
 
 with GL.Programs;
 with GL.Programs.Shaders;
+with GL.Errors;
+
 
 with Home_Containers.Generic_Vectors;
 
 
 package Simple_Shaders is
 
+   use GL.Errors;
    use GL.Programs;
    use GL.Programs.Shaders;
    use Ada.Strings.Unbounded;
@@ -27,8 +30,13 @@ package Simple_Shaders is
       Shader_List : Shader_Composition_Vector (Count);
    end record;
 
-   procedure Append (P : out Program_Composition; File_Name : String);
-   procedure Build (P : in out Program_Composition);
-   procedure Delete (P : in out Program_Composition);
+   procedure Append (P : out Program_Composition; File_Name : String) with
+     Post => Check_No_Error;
+
+   procedure Build (P : in out Program_Composition) with
+     Post => Check_No_Error;
+
+   procedure Delete (P : in out Program_Composition) with
+     Post => Check_No_Error;
 
 end;

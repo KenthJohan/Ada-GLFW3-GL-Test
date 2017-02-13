@@ -64,10 +64,6 @@ package body Applications.Creations is
                null;
          end case;
       end if;
-   exception
-      when E : others =>
-         Simple_Debug_Systems.Enqueue (1, "Key_Callback");
-         Simple_Debug_Systems.Enqueue (1, Ada.Exceptions.Exception_Message (E));
    end;
 
    procedure Initialize_Context (Item : in out Application; Fullscreen : Boolean) is
@@ -88,7 +84,7 @@ package body Applications.Creations is
       GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Item.Main_Window, GLFW3_Drop_Callbacks.drop_callback'Access);
 
-      Simple_Shaders.Delete (Item.Main_Program);
+
       Item.Main_Program.Obj := GL.Programs.Create_Empty;
       Simple_Shaders.Append (Item.Main_Program, "test.glvs");
       Simple_Shaders.Append (Item.Main_Program, "test.glfs");
@@ -99,10 +95,6 @@ package body Applications.Creations is
 
       Simple_Meshes.Initialize (Item.Grid_Mesh);
       Simple_Meshes.Initialize (Item.Main_Mesh);
-   exception
-      when E : others =>
-         Simple_Debug_Systems.Enqueue (1, "Initialize_Context");
-         Simple_Debug_Systems.Enqueue (1, Ada.Exceptions.Exception_Message (E));
    end;
 
 
@@ -134,6 +126,7 @@ package body Applications.Creations is
    procedure Destroy (Item : in out Application) is
       use Simple_Debug_Systems;
    begin
+      Simple_Shaders.Delete (Item.Main_Program);
       Enqueue (Item.Main_Debug_Queue, 1, "Destroy Window");
       GLFW3.Windows.Destroy_Window (Item.Main_Window);
    end;
@@ -185,9 +178,6 @@ package body Applications.Creations is
                Enqueue (Main_App.Main_Dropped_Files_Queue, 1, Name);
             end;
          end loop;
-      exception
-         when E : Constraint_Error =>
-            Put_Line (Ada.Exceptions.Exception_Message (E));
       end;
    end GLFW3_Drop_Callbacks;
 

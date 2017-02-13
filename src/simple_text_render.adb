@@ -90,13 +90,14 @@ package body Simple_Text_Render is
       glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Vertex_Array1'Component_Size / Storage_Unit);
    end;
 
+   -- Program object is invalid if the application is restarted.
    procedure Render (Item : in out Text_Render) is
       use GL.Textures;
    begin
-      Bind (Texture_2D_Texture_Target, Item.T);
-      GL.Programs.Set_Current (Item.P.Obj);
-      GL.Vertex_Array_Objects.Bind (Item.VAO);
-      GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
+      --Bind (Texture_2D_Texture_Target, Item.T);
+      --GL.Programs.Set_Current (Item.P.Obj);
+      --GL.Vertex_Array_Objects.Bind (Item.VAO);
+      --GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
       null;
    end;
 
