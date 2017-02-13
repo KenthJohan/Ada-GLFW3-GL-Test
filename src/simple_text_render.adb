@@ -56,6 +56,9 @@ package body Simple_Text_Render is
       Vertex_Data (5) := (X + W, Y,     1.0, 1.0);
       Vertex_Data (6) := (X + W, Y + H, 1.0, 0.0);
 
+      --Shader list need to be empty for this to works.
+      --Empty the list does not feel like a good solution.
+      Item.P.Shader_List.Empty;
       Item.P.Obj := GL.Programs.Create_Empty;
       Simple_Shaders.Append (Item.P, "text.glvs");
       Simple_Shaders.Append (Item.P, "text.glfs");
@@ -94,10 +97,10 @@ package body Simple_Text_Render is
    procedure Render (Item : in out Text_Render) is
       use GL.Textures;
    begin
-      --Bind (Texture_2D_Texture_Target, Item.T);
-      --GL.Programs.Set_Current (Item.P.Obj);
-      --GL.Vertex_Array_Objects.Bind (Item.VAO);
-      --GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
+      Bind (Texture_2D_Texture_Target, Item.T);
+      GL.Programs.Set_Current (Item.P.Obj);
+      GL.Vertex_Array_Objects.Bind (Item.VAO);
+      GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
       null;
    end;
 

@@ -45,10 +45,12 @@ begin
          if Get_Key (A.Main_Window, Key_F12) = Key_Action_Press then
             Destroy (A);
             Initialize_Context (A, True);
+            Simple_Text_Render.Load_Texture (Tex);
          end if;
          if Get_Key (A.Main_Window, Key_F11) = Key_Action_Press then
             Destroy (A);
             Initialize_Context (A, False);
+            Simple_Text_Render.Load_Texture (Tex);
          end if;
       end;
       GL.Drawings.Clear (GL.Drawings.Color_Plane);
