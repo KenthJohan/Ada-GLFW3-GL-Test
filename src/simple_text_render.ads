@@ -31,10 +31,8 @@ package Simple_Text_Render is
    end record;
 
 
-
-
    procedure Load_Texture (Item : in out Text_Render);
-   procedure Render (Item : in out Text_Render; Lay : GL.C.GLint);
-   procedure Render_Char (Item : in out Text_Render; I : Natural);
+   --procedure Render_Char (Item : in out Text_Render; I : Natural);
+   procedure Render_Text (Item : in out Text_Render; Text : String);
 
 end Simple_Text_Render;
