@@ -1,11 +1,13 @@
-#version 330
-
-uniform sampler2D gSampler;
-in vec2 UV;
+#version 430 core
 out vec4 FragColor;
+in vec2 uv;
+layout (binding=0) uniform sampler2DArray gSampler;
+layout (location=1) uniform int layer;
+
+
 
 void main()
 {
-	FragColor = texture( gSampler, UV );
+	FragColor = vec4 (0.0, 1.0, 0.0, texture (gSampler, vec3 (uv, layer)).r);
 	//FragColor = vec4 (1.0, 1.0, 0.54, 1.0);
 }

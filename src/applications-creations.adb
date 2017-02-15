@@ -31,40 +31,12 @@ package body Applications.Creations is
       pragma Warnings (On);
    end GLFW3_Drop_Callbacks;
 
-   package GLFW3_Key_Callbacks is
-      use GLFW3;
-      use GLFW3.Windows;
-      use GLFW3.Windows.Keys;
-      use Interfaces.C;
-      procedure GLFW3_Key_Callback (W : Window; K : Key; Scancode : int; A : Key_Action; Mods : int) with
-        Convention => C;
-   end;
 
 
-   procedure Key_Callback (App : in out Application; K : GLFW3.Windows.Keys.Key; A : GLFW3.Windows.Keys.Key_Action) is
-      use GLFW3.Windows.Keys;
-      use Simple_Meshes;
-      use type GL.C.GLfloat;
-   begin
-      if A = Key_Action_Press then
-         case K is
-            when Key_Kp_Add =>
-               App.Grid_Mesh.Vertex_List.Empty;
-               App.Grid_Stride := App.Grid_Stride + 0.1;
-               Make_Grid_Lines (App.Grid_Mesh, 100.0, App.Grid_Stride);
-            when Key_Kp_Subtract =>
-               App.Grid_Mesh.Vertex_List.Empty;
-               App.Grid_Stride := App.Grid_Stride - 0.1;
-               Make_Grid_Lines (App.Grid_Mesh, 100.0, App.Grid_Stride);
-            when Key_P =>
-               Simple_Shaders.Build (App.Main_Program);
-            when Key_Escape =>
-               GLFW3.Windows.Set_Window_Should_Close (App.Main_Window, 1);
-            when others =>
-               null;
-         end case;
-      end if;
-   end;
+
+
+
+
 
    procedure Initialize_Context (Item : in out Application; Fullscreen : Boolean) is
       use Simple_Debug_Systems;
@@ -81,9 +53,8 @@ package body Applications.Creations is
       GL.C.Initializations.Initialize (OpenGL_Loader.Loader'Unrestricted_Access);
 
       GLFW3.Windows.Set_Window_User_Pointer (Item.Main_Window, Item'Address);
-      GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
       GLFW3.Windows.Drops.Set_Drop_Callback (Item.Main_Window, GLFW3_Drop_Callbacks.drop_callback'Access);
-
+     -- GLFW3.Windows.Keys.Set_Key_Callback_Procedure (Item.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
 
       Item.Main_Program.Obj := GL.Programs.Create_Empty;
       Simple_Shaders.Append (Item.Main_Program, "test.glvs");
@@ -147,18 +118,7 @@ package body Applications.Creations is
 
 
 
-   package body GLFW3_Key_Callbacks is
-      procedure GLFW3_Key_Callback (W : GLFW3.Windows.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
-         pragma Unreferenced (Mods, Scancode);
-         use System;
-         use Simple_Meshes;
-         type Application_Access is access all Application;
-         function Convert is new Ada.Unchecked_Conversion (Address, Application_Access);
-         Main_App : constant Application_Access := Convert (GLFW3.Windows.Get_Window_User_Pointer (W));
-      begin
-         Key_Callback (Main_App.all, K, A);
-      end;
-   end;
+
 
    package body GLFW3_Drop_Callbacks is
       procedure drop_callback (W : Window; Count : int; Paths : File_Path_List) is

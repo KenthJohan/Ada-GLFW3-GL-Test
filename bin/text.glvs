@@ -1,11 +1,10 @@
-#version 330
+#version 430 core
 
-layout(location = 0) in vec4 vposition;
-
-out vec2 UV;
+layout (location = 0) in vec4 vposition;
+out vec2 uv;
 
 void main()
 {
 	gl_Position = vec4 (vposition.xy, 0.0, 1.0);
-	UV = vposition.zw;
+	uv = vposition.zw;
 }
