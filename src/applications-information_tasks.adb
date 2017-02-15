@@ -22,9 +22,9 @@ package body Applications.Information_Tasks is
             delay 1.0;
             null;
          end select;
-         Put ("Time span :");
-         Put (Duration'Image (To_Duration (Simple_Moving_Averages.Diff (Item_Application.Main_SMA))));
-         New_Line;
+         --Put ("Time span :");
+         --Put (Duration'Image (To_Duration (Simple_Moving_Averages.Diff (Item_Application.Main_SMA))));
+         --New_Line;
          Simple_Debug_Systems.Put_Lines_Dequeue (Item_Application.Main_Debug_Queue);
          Simple_Debug_Systems.Put_Lines_Dequeue;
          Simple_File_Drop_Storage.Put_Lines_Dequeue (Item_Application.Main_Dropped_Files_Queue);

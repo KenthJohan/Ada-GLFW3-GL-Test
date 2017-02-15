@@ -104,8 +104,8 @@ package body Applications.Inputs is
       Get_Rotation_Input (A.Main_Window, A.Main_Camera.Rotation);
       Get_Translation_Input (A.Main_Window, A.Main_Camera.Translation_Velocity);
       Update (A.Main_Camera);
-      GL.Uniforms.Modify_Matrix_4f (A.Main_Transform_Location, A.Main_Camera.Result_Matrix'Address);
-      GL.Uniforms.Modify_1f (A.Main_Time_Location, 0.0);
+      GL.Programs.Uniforms.Modify_Matrix_4f (A.Main_Transform_Location, A.Main_Camera.Result_Matrix'Address);
+      GL.Programs.Uniforms.Modify_1f (A.Main_Time_Location, 0.0);
    end;
 
 end;

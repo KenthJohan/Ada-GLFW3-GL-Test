@@ -23,6 +23,7 @@ procedure Applications.Main is
    use Information_Tasks;
    use Inputs;
    use Ada.Exceptions;
+   use type GLFW3.Windows.Keys.Key_Action;
 
    procedure GLFW3_Key_Callback (W : GLFW3.Windows.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) with
      Convention => C;
@@ -84,7 +85,21 @@ begin
       GL.Drawings.Clear (GL.Drawings.Color_Plane);
       GL.Drawings.Clear (GL.Drawings.Depth_Plane);
       Get_Camera_Input (A);
-      Simple_Text_Render.Render (A.Main_Window, Tex);
+
+      if GLFW3.Windows.Keys.Get_Key (A.Main_Window, GLFW3.Windows.Keys.Key_Kp_0) = GLFW3.Windows.Keys.Key_Action_Press then
+         --Simple_Text_Render.Render (Tex, 0);
+         Simple_Text_Render.Render_Char (Tex, 0);
+      end if;
+      if GLFW3.Windows.Keys.Get_Key (A.Main_Window, GLFW3.Windows.Keys.Key_Kp_1) = GLFW3.Windows.Keys.Key_Action_Press then
+         --Simple_Text_Render.Render (Tex, 1);
+         Simple_Text_Render.Render_Char (Tex, 1);
+      end if;
+      if GLFW3.Windows.Keys.Get_Key (A.Main_Window, GLFW3.Windows.Keys.Key_Kp_2) = GLFW3.Windows.Keys.Key_Action_Press then
+         --Simple_Text_Render.Render (Tex, 2);
+         Simple_Text_Render.Render_Char (Tex, 2);
+      end if;
+
+
       Render_Stuff (A);
       GLFW3.Poll_Events;
       GLFW3.Windows.Swap_Buffers (A.Main_Window);

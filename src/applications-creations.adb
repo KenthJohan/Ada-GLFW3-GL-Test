@@ -110,9 +110,9 @@ package body Applications.Creations is
       GL.Vertex_Array_Objects.Bind (Item.Main_Mesh.VAO);
       GL.Programs.Set_Current (Item.Main_Program.Obj);
       Update (Item.Grid_Mesh);
-      GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (0.0));
+      GL.Programs.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (0.0));
       Draw (Item.Grid_Mesh);
-      GL.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (GLFW3.Clock));
+      GL.Programs.Uniforms.Modify_1f (Item.Main_Time_Location, GLfloat (GLFW3.Clock));
       Draw (Item.Main_Mesh);
    end;
 

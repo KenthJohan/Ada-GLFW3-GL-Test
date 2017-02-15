@@ -5,7 +5,7 @@ with GL.C.Complete;
 with GL.Drawings;
 with GL.Programs;
 with GLFW3.Windows.Keys;
-with GL.Uniforms;
+with GL.Programs.Uniforms;
 
 package body Simple_Text_Render is
 
@@ -76,19 +76,46 @@ package body Simple_Text_Render is
 
    procedure Render_Char (Item : in out Text_Render; I : Natural) is
       use GL.Math;
+      use GL.Buffers;
+      use System;
       use type GL.Math.Real_Float;
-      X : constant Real_Float := 0.4;
-      Y : constant Real_Float := 0.4;
-      W : constant Real_Float := 0.5;
-      H : constant Real_Float := 0.5;
-   begin
-      Item.V (1) := (X,     Y,     0.0, 1.0);
-      Item.V (2) := (X + W, Y,     1.0, 1.0);
-      Item.V (3) := (X,     Y + H, 0.0, 0.0);
+      use GL.Textures;
 
-      Item.V (4) := (X + W, Y + H, 1.0, 0.0);
-      Item.V (5) := (X,     Y + H, 0.0, 0.0);
-      Item.V (6) := (X + W, Y,     1.0, 1.0);
+
+      X : constant Real_Float := -1.0;
+      Y : constant Real_Float := -1.0;
+      W : constant Real_Float := 2.0;
+      H : constant Real_Float := 2.0;
+   begin
+      Item.V (1).Pos  := (X,     Y,     0.0, 1.0);
+      Item.V (1).STUV := (0.0, 1.0, Real_Float (I), 0.0);
+
+      Item.V (2).Pos  := (X + W, Y,     1.0, 1.0);
+      Item.V (2).STUV := (1.0, 1.0, Real_Float (I), 0.0);
+
+      Item.V (3).Pos  := (X,     Y + H, 0.0, 0.0);
+      Item.V (3).STUV := (0.0, 0.0, Real_Float (I), 0.0);
+
+      Item.V (4).Pos  := (X + W, Y + H, 1.0, 0.0);
+      Item.V (4).STUV := (1.0, 0.0, Real_Float (I), 0.0);
+
+      Item.V (5).Pos  := (X,     Y + H, 0.0, 0.0);
+      Item.V (5).STUV := (0.0, 0.0, Real_Float (I), 0.0);
+
+      Item.V (6).Pos  := (X + W, Y,     1.0, 1.0);
+      Item.V (6).STUV := (1.0, 1.0, Real_Float (I), 0.0);
+
+      Redefine_Storage (Item.VBO, 0, Item.V'Size / Storage_Unit, Item.V'Address);
+
+      Bind (Targets.Texture_2D_Array, Item.T);
+      GL.Programs.Set_Current (Item.P.Obj);
+      GL.Vertex_Array_Objects.Bind (Item.VAO);
+      GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
+
+--        for E of Item.V loop
+--           E (1) := E (1) * 0.2;
+--           E (2) := E (2) * 0.2;
+--        end loop;
    end;
 
 
@@ -146,7 +173,7 @@ package body Simple_Text_Render is
       Simple_Shaders.Append (Item.P, "text.glfs");
       Simple_Shaders.Build (Item.P);
 
-      Item.Layer_Loc := GL.Programs.Uniforms.Get (Item.P.Obj, "layer");
+      Item.Layer_Loc := GL.Programs.Uniforms.Get_Checked (Item.P.Obj, "layer");
 
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       glActiveTexture (GL_TEXTURE0);
@@ -173,32 +200,26 @@ package body Simple_Text_Render is
       --Load (Item.T, 0, 0, 100, 100, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
       --Load (Item.T, 0, 0, 50, 50, Red_Pixel_Format, Unsigned_Byte_Pixel_Type, Bitmap_Data'Address);
 
-      Render_Char (Item, 1);
+      --Render_Char (Item, 1);
       Item.VBO := GL.Buffers.Create_Buffer;
       Item.VAO := GL.Vertex_Array_Objects.Create_Attribute;
       Create_New_Storage (Item.VBO, Item.V'Size / Storage_Unit, Item.V'Address, Dynamic_Usage);
       Set_Attribute_Enable (Item.VAO, 0);
+      Set_Attribute_Enable (Item.VAO, 1);
       Set_Attribute_Memory_Layout (Item.VAO, 0, Real_Float_Vector4'Length, Float_Type, False, 0);
+      Set_Attribute_Memory_Layout (Item.VAO, 1, Real_Float_Vector4'Length, Float_Type, False, Real_Float_Vector4'Size / Storage_Unit);
       glVertexArrayAttribBinding (GLuint (Item.VAO), 0, 0);
+      glVertexArrayAttribBinding (GLuint (Item.VAO), 1, 0);
       glVertexArrayVertexBuffer (GLuint (Item.VAO), 0, GLuint (Item.VBO), 0, Item.V'Component_Size / Storage_Unit);
    end;
 
    -- Program object is invalid if the application is restarted.
-   procedure Render (W : GLFW3.Windows.Window; Item : in out Text_Render) is
+   procedure Render (Item : in out Text_Render; Lay : GL.C.GLint) is
       use GL.Textures;
-      use type GLFW3.Windows.Keys.Key_Action;
    begin
       Bind (Targets.Texture_2D_Array, Item.T);
       GL.Programs.Set_Current (Item.P.Obj);
-      if GLFW3.Windows.Keys.Get_Key (W, GLFW3.Windows.Keys.Key_Kp_0) = GLFW3.Windows.Keys.Key_Action_Press then
-         GL.Uniforms.Modify_1i (Item.Layer_Loc, 0);
-      end if;
-      if GLFW3.Windows.Keys.Get_Key (W, GLFW3.Windows.Keys.Key_Kp_1) = GLFW3.Windows.Keys.Key_Action_Press then
-         GL.Uniforms.Modify_1i (Item.Layer_Loc, 1);
-      end if;
-      if GLFW3.Windows.Keys.Get_Key (W, GLFW3.Windows.Keys.Key_Kp_2) = GLFW3.Windows.Keys.Key_Action_Press then
-         GL.Uniforms.Modify_1i (Item.Layer_Loc, 2);
-      end if;
+      GL.Programs.Uniforms.Modify_1i (Item.Layer_Loc, Lay);
       GL.Vertex_Array_Objects.Bind (Item.VAO);
       GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
       null;

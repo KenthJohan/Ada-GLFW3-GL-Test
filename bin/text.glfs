@@ -1,13 +1,22 @@
 #version 430 core
 out vec4 FragColor;
-in vec2 uv;
+in vec4 stuv;
 layout (binding=0) uniform sampler2DArray gSampler;
+
 layout (location=1) uniform int layer;
 
+//flat in uint layer;
 
+vec4 FragColorFake;
 
 void main()
 {
-	FragColor = vec4 (0.0, 1.0, 0.0, texture (gSampler, vec3 (uv, layer)).r);
-	//FragColor = vec4 (1.0, 1.0, 0.54, 1.0);
+	if (layer == 10)
+	{
+		FragColor = vec4 (1.0, 1.0, 0.54, 1.0);
+	}
+	else
+	{
+		FragColor = vec4 (layer, 1.0, 0.0, texture (gSampler, vec3(stuv.xy, stuv.z)).r);
+	}
 }
