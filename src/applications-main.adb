@@ -2,18 +2,25 @@ with Applications.Information_Tasks;
 with Applications.Inputs;
 with Applications.Creations;
 with Applications.Main_Key_Callbacks;
+with Applications.Main_Drop_Callbacks;
+
+with GL.Drawings;
+with GL.Errors;
 
 with GLFW3.Windows.Keys;
+with GLFW3.Windows.Drops;
 
 with Simple_Text_Render;
 
 with Ada.Exceptions;
-with GL.Drawings;
-with GL.Errors;
+with Ada.Unchecked_Conversion;
+
 with Interfaces;
 with Interfaces.C;
+
 with System;
-with Ada.Unchecked_Conversion;
+
+
 
 procedure Applications.Main is
 
@@ -25,20 +32,7 @@ procedure Applications.Main is
    use Ada.Exceptions;
    use type GLFW3.Windows.Keys.Key_Action;
 
-   procedure GLFW3_Key_Callback (W : GLFW3.Windows.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) with
-     Convention => C;
-   procedure GLFW3_Key_Callback (W : GLFW3.Windows.Window; K : GLFW3.Windows.Keys.Key; Scancode : Interfaces.C.int; A : GLFW3.Windows.Keys.Key_Action; Mods : Interfaces.C.int) is
-   begin
-      null;
-   end;
 
-   procedure Init (A : Application);
-   procedure Init (A : Application) is
-      use GLFW3.Windows.Keys;
-   begin
-      null;
-      --Set_Key_Callback_Procedure (A.Main_Window, GLFW3_Key_Callbacks.GLFW3_Key_Callback'Access);
-   end;
 
    A : aliased Application;
    T : Information_Task (A'Access);
@@ -46,10 +40,10 @@ procedure Applications.Main is
 
 
    procedure Init_Context is
-
    begin
       Initialize_Context (A, False);
-
+      GLFW3.Windows.Keys.Set_Key_Callback_Procedure (A.Main_Window, Applications.Main_Key_Callbacks.Key_Callback'Access);
+      GLFW3.Windows.Drops.Set_Drop_Callback (A.Main_Window, Applications.Main_Drop_Callbacks.drop_callback'Access);
       Simple_Text_Render.Load_Texture (Tex);
    end;
 
@@ -65,7 +59,7 @@ begin
    Initialize_Logic (A);
    Init_Context;
 
-   GLFW3.Windows.Keys.Set_Key_Callback_Procedure (A.Main_Window, Applications.Main_Key_Callbacks.Key_Callback'Access);
+
 
    loop
       delay 0.01;

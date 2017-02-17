@@ -27,7 +27,7 @@ package Applications is
       Main_Program : Simple_Shaders.Program_Composition (2);
       Main_Transform_Location : GL.Programs.Uniforms.Location;
       Main_Time_Location : GL.Programs.Uniforms.Location;
-      Main_Dropped_Files_Queue : Simple_File_Drop_Storage.Simple_File_Queue;
+      Main_Dropped_Files : Simple_File_Drop_Storage.Dropped_File_Vector;
    end record;
 
 

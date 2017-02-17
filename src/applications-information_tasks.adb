@@ -27,7 +27,9 @@ package body Applications.Information_Tasks is
          --New_Line;
          Simple_Debug_Systems.Put_Lines_Dequeue (Item_Application.Main_Debug_Queue);
          Simple_Debug_Systems.Put_Lines_Dequeue;
-         Simple_File_Drop_Storage.Put_Lines_Dequeue (Item_Application.Main_Dropped_Files_Queue);
+
+         Simple_File_Drop_Storage.Put_Lines (Item_Application.Main_Dropped_Files);
+         Item_Application.Main_Dropped_Files.Clear;
 
 
 
