@@ -2,6 +2,7 @@ with "../Ada-GL/GL";
 with "../Ada-GLFW3/GLFW3";
 with "../Home_Mathematics/home_mathematics";
 with "../Home_Containers/home_containers";
+with "../Home_Pictures/home_pictures";
 
 project Main is
 

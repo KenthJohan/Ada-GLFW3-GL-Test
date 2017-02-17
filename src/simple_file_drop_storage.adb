@@ -1,8 +1,12 @@
 with Ada.Text_IO;
 with Ada.Text_IO.Unbounded_IO;
 with Ada.Integer_Text_IO;
-
-
+with Home_Pictures.BMP_Images;
+with Home_Pictures.BMP_Images.Puts;
+with Ada.Directories;
+with Ada.Strings.Unbounded;
+with Ada.Streams.Stream_IO;
+with Interfaces;
 
 
 package body Simple_File_Drop_Storage is
@@ -26,7 +30,25 @@ package body Simple_File_Drop_Storage is
       Item.Q.Enqueue ((Priority, To_Unbounded_String (File_Name)));
    end;
 
+   procedure Put_BMP (Name : String) is
+      use Interfaces;
+      use Ada.Streams.Stream_IO;
+      use type Interfaces.Unsigned_32;
+      File : File_Type;
+      Streamer : Stream_Access;
+      Header : Home_Pictures.BMP_Images.BMP_Header;
+   begin
+      Open (File, In_File, Name);
+      Streamer := Stream (File);
+      Home_Pictures.BMP_Images.BMP_Header'Read (Streamer, Header);
+      Home_Pictures.BMP_Images.Puts.Put_Lines (Header);
+      Close (File);
+   end;
+
+
    procedure Put_Lines_Dequeue (Item : in out Simple_File_Queue) is
+      use Ada.Strings.Unbounded;
+      use Ada.Directories;
       use Ada.Text_IO.Unbounded_IO;
       use Ada.Integer_Text_IO;
       use Ada.Text_IO;
@@ -39,8 +61,13 @@ package body Simple_File_Drop_Storage is
          Put (" : ");
          Put (Element.Content);
          New_Line;
+         if Extension (To_String (Element.Content)) = "bmp" then
+            Put_BMP (To_String (Element.Content));
+         end if;
       end loop;
    end;
+
+
 
 
 end;

@@ -21,7 +21,7 @@ Internal features.
 * [ ] Implement log file outout.
 * [ ] Complete error checking, Implement OpenGL https://www.khronos.org/opengl/wiki/Debug_Output.
 * [ ] Clear seperation beetween context functions and non context functions. Some preperation does not need to be reinitialized to restart the context, but some do.
-
+* [ ] Ability to read and render pictures.
 
 ## Dependency
 * https://github.com/AdaHome/Ada-GL

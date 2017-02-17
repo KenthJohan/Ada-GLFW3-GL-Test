@@ -195,11 +195,6 @@ package body Simple_Text_Render is
       GL.Programs.Set_Current (Item.P.Obj);
       GL.Vertex_Array_Objects.Bind (Item.VAO);
       GL.Drawings.Draw (GL.Drawings.Triangles_Mode, 0, 6);
-
---        for E of Item.V loop
---           E (1) := E (1) * 0.2;
---           E (2) := E (2) * 0.2;
---        end loop;
    end;
 
 

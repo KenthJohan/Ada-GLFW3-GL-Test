@@ -20,6 +20,9 @@ with GLFW3.Monitors;
 with Applications.OpenGL_Loader;
 with GL.Vertex_Array_Objects;
 
+
+with Home_Pictures.BMP_Images;
+
 package body Applications.Creations is
 
    package GLFW3_Drop_Callbacks is
