@@ -10,6 +10,9 @@ with Interfaces;
 
 with Home_Pictures.BMP_Images;
 with Home_Pictures.BMP_Images.Puts;
+with Home_Pictures.PNG_Images;
+with Home_Pictures.PNG_Images.Puts;
+with Home_Pictures.Swaps;
 
 package body Simple_File_Drop_Storage is
 
@@ -40,6 +43,20 @@ package body Simple_File_Drop_Storage is
       Close (File);
    end;
 
+   procedure Put_PNG (Name : String) is
+      use Interfaces;
+      use Ada.Streams.Stream_IO;
+      use type Interfaces.Unsigned_32;
+      File : File_Type;
+      Streamer : Stream_Access;
+      PNG : Home_Pictures.PNG_Images.PNG;
+   begin
+      Open (File, In_File, Name);
+      Streamer := Stream (File);
+      Home_Pictures.PNG_Images.Read_Image (Streamer, PNG);
+      Close (File);
+      Home_Pictures.PNG_Images.Puts.Put_Lines (PNG);
+   end;
 
    procedure Put_Lines (Item : in out Dropped_File_Vector) is
       use Ada.Strings.Unbounded;
@@ -59,6 +76,9 @@ package body Simple_File_Drop_Storage is
          New_Line;
          if E.Ext_Name = "bmp" then
             Put_BMP (To_String (E.File_Name));
+         end if;
+         if E.Ext_Name = "png" then
+            Put_PNG (To_String (E.File_Name));
          end if;
       end loop;
    end;
