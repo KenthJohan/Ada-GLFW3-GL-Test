@@ -13,6 +13,6 @@ package Simple_Moving_Averages is
    procedure Update (Item : in out SMA);
    procedure Update (Item : in out SMA; Max : Natural);
 
-   function Diff (Item : SMA) return Time_Span;
+   function Diff (Item : SMA) return Duration;
 
 end;

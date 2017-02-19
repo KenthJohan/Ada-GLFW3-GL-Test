@@ -201,18 +201,15 @@ package body Simple_Text_Render is
 
 
 
-   procedure Render_Text (Item : in out Text_Render; Text : String) is
+   procedure Render_Text (Item : in out Text_Render; X, Y, W, H : Real_Float; Text : String) is
       use GL.Math;
       use type GL.Math.Real_Float;
-      X : Real_Float := -1.0;
-      Y : Real_Float := -1.0;
-      W : Real_Float := 0.1;
-      H : Real_Float := 0.1;
+      XX : Real_Float := X;
    begin
       for C of Text loop
          if C in '0' .. '9' then
-            Render_Char (Item, X, Y, W, H, Integer'Value (C & ""));
-            X := X + W;
+            Render_Char (Item, XX, Y, W, H, Integer'Value (C & ""));
+            XX := XX + W;
          end if;
       end loop;
    end;

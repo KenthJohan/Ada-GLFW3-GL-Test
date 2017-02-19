@@ -33,6 +33,6 @@ package Simple_Text_Render is
 
    procedure Load_Texture (Item : in out Text_Render);
    --procedure Render_Char (Item : in out Text_Render; I : Natural);
-   procedure Render_Text (Item : in out Text_Render; Text : String);
+   procedure Render_Text (Item : in out Text_Render; X, Y, W, H : Real_Float; Text : String);
 
 end Simple_Text_Render;

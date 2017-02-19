@@ -17,12 +17,12 @@ package body Simple_Moving_Averages is
       Update (Item);
    end;
 
-   function Diff (Item : SMA) return Time_Span is
+   function Diff (Item : SMA) return Duration is
    begin
       if Item.N = 0 then
-         return Nanoseconds (0);
+         return To_Duration (Nanoseconds (0));
       else
-         return Item.S / Item.N;
+         return To_Duration (Item.S / Item.N);
       end if;
    end;
 

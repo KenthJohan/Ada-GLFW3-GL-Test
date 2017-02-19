@@ -6,6 +6,7 @@ with Applications.Main_Drop_Callbacks;
 
 with GL.Drawings;
 with GL.Errors;
+with GL.Math;
 
 with GLFW3.Windows.Keys;
 with GLFW3.Windows.Drops;
@@ -31,6 +32,8 @@ procedure Applications.Main is
    use Inputs;
    use Ada.Exceptions;
    use type GLFW3.Windows.Keys.Key_Action;
+
+   use type GL.Math.Real_Float;
 
 
 
@@ -63,6 +66,9 @@ begin
 
    loop
       delay 0.01;
+
+      Simple_Moving_Averages.Update (A.Main_SMA, 100);
+
       declare
          use GLFW3.Windows.Keys;
       begin
@@ -80,7 +86,8 @@ begin
       GL.Drawings.Clear (GL.Drawings.Depth_Plane);
       Get_Camera_Input (A);
 
-      Simple_Text_Render.Render_Text (Tex, GLFW3.Clock'Img);
+      Simple_Text_Render.Render_Text (Tex, -1.0, -1.0, 0.1, 0.1, GLFW3.Clock'Img);
+      Simple_Text_Render.Render_Text (Tex, -1.0, -0.9, 0.1, 0.1, Simple_Moving_Averages.Diff (A.Main_SMA)'Img);
 
 --        if GLFW3.Windows.Keys.Get_Key (A.Main_Window, GLFW3.Windows.Keys.Key_Kp_0) = GLFW3.Windows.Keys.Key_Action_Press then
 --           Simple_Text_Render.Render_Char (Tex, 0);
