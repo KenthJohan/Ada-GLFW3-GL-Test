@@ -21,7 +21,7 @@ with Applications.OpenGL_Loader;
 with GL.Vertex_Array_Objects;
 
 
-with Home_Pictures.BMP_Images;
+with Home_Pictures.BMP_Surfaces;
 
 package body Applications.Creations is
 

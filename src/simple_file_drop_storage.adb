@@ -8,10 +8,10 @@ with Ada.Strings.Fixed;
 
 with Interfaces;
 
-with Home_Pictures.BMP_Images;
-with Home_Pictures.BMP_Images.Puts;
-with Home_Pictures.PNG_Images;
-with Home_Pictures.PNG_Images.Puts;
+with Home_Pictures.BMP_Surfaces;
+with Home_Pictures.BMP_Surfaces.Puts;
+with Home_Pictures.PNG_Surfaces;
+with Home_Pictures.PNG_Surfaces.Puts;
 with Home_Pictures.Swaps;
 
 package body Simple_File_Drop_Storage is
@@ -34,28 +34,29 @@ package body Simple_File_Drop_Storage is
       use type Interfaces.Unsigned_32;
       File : File_Type;
       Streamer : Stream_Access;
-      Header : Home_Pictures.BMP_Images.BMP_Header;
+      Surface : Home_Pictures.BMP_Surfaces.BMP_Surface;
    begin
       Open (File, In_File, Name);
       Streamer := Stream (File);
-      Home_Pictures.BMP_Images.BMP_Header'Read (Streamer, Header);
-      Home_Pictures.BMP_Images.Puts.Put_Lines (Header);
+      Home_Pictures.BMP_Surfaces.BMP_Surface'Read (Streamer, Surface);
+      Home_Pictures.BMP_Surfaces.Puts.Put_Lines (Surface);
       Close (File);
    end;
 
    procedure Put_PNG (Name : String) is
       use Interfaces;
       use Ada.Streams.Stream_IO;
+      use Home_Pictures.PNG_Surfaces;
       use type Interfaces.Unsigned_32;
       File : File_Type;
       Streamer : Stream_Access;
-      PNG : Home_Pictures.PNG_Images.PNG;
+      Surface : PNG_Surface;
    begin
       Open (File, In_File, Name);
       Streamer := Stream (File);
-      Home_Pictures.PNG_Images.Read_Image (Streamer, PNG);
+      Read_Image (Streamer, Surface);
       Close (File);
-      Home_Pictures.PNG_Images.Puts.Put_Lines (PNG);
+      Puts.Put_Lines (Surface);
    end;
 
    procedure Put_Lines (Item : in out Dropped_File_Vector) is
