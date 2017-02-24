@@ -7,7 +7,7 @@ Many more features need to be added.
 * [X] Ability to change grid size by pressing `Key_Kp_Add` `Key_Kp_Subtract`
 * [X] Ability to link program and recompile shaders by pressing `Key_P`.
 * [X] Ability to switch beetween fullscreen by pressing `Key_F11` `Key_F12`.
-* [ ] Render text of frame count per sec and frame delta.
+* [X] Render frame duration and current time.
 * [ ] Plot graph from files.
 * [ ] Ability to swap between different graphs.
 * [ ] Plot graph from remote clients.
@@ -21,7 +21,7 @@ Internal features.
 * [ ] Implement log file outout.
 * [ ] Complete error checking, Implement OpenGL https://www.khronos.org/opengl/wiki/Debug_Output.
 * [ ] Clear seperation beetween context functions and non context functions. Some preperation does not need to be reinitialized to restart the context, but some do.
-* [ ] Ability to read and render pictures.
+* [ ] Ability to load images into textures.
 
 ## Dependency
 * https://github.com/AdaHome/Ada-GL
@@ -33,4 +33,4 @@ Math functions.
 * https://github.com/AdaHome/Home_Containers
 Vectors.
 * https://github.com/AdaHome/Home_Pictures
-Read Pictures.
+Read image files into pixmaps.
