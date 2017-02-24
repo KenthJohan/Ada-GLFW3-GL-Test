@@ -54,7 +54,7 @@ package body Simple_File_Drop_Storage is
    begin
       Open (File, In_File, Name);
       Streamer := Stream (File);
-      Read_Image (Streamer, Surface);
+      Read (Streamer, Surface);
       Close (File);
       Puts.Put_Lines (Surface);
    end;
