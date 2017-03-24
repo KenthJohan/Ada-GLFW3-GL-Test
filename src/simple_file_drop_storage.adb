@@ -8,10 +8,10 @@ with Ada.Strings.Fixed;
 
 with Interfaces;
 
-with Home_Pictures.BMP_Surfaces;
-with Home_Pictures.BMP_Surfaces.Puts;
-with Home_Pictures.PNG_Surfaces;
-with Home_Pictures.PNG_Surfaces.Puts;
+with Home_Pictures.BMP;
+with Home_Pictures.BMP.Puts;
+with Home_Pictures.PNG;
+with Home_Pictures.PNG.Puts;
 with Home_Pictures.Swaps;
 
 package body Simple_File_Drop_Storage is
@@ -34,23 +34,23 @@ package body Simple_File_Drop_Storage is
       use type Interfaces.Unsigned_32;
       File : File_Type;
       Streamer : Stream_Access;
-      Surface : Home_Pictures.BMP_Surfaces.BMP_Surface;
+      Surface : Home_Pictures.BMP.BMP_Information;
    begin
       Open (File, In_File, Name);
       Streamer := Stream (File);
-      Home_Pictures.BMP_Surfaces.BMP_Surface'Read (Streamer, Surface);
-      Home_Pictures.BMP_Surfaces.Puts.Put_Lines (Surface);
+      Home_Pictures.BMP.BMP_Information'Read (Streamer, Surface);
+      Home_Pictures.BMP.Puts.Put_Lines (Surface);
       Close (File);
    end;
 
    procedure Put_PNG (Name : String) is
       use Interfaces;
       use Ada.Streams.Stream_IO;
-      use Home_Pictures.PNG_Surfaces;
+      use Home_Pictures.PNG;
       use type Interfaces.Unsigned_32;
       File : File_Type;
       Streamer : Stream_Access;
-      Surface : PNG_Surface;
+      Surface : PNG_Information;
    begin
       Open (File, In_File, Name);
       Streamer := Stream (File);
